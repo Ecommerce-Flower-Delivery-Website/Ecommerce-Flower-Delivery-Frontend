@@ -28,6 +28,7 @@ const SideBar = ({
     localStorage.removeItem("token");
     window.location.reload();
   };
+
   const isSmallScreen = window.innerWidth < 768;
   return (
     <>
@@ -142,7 +143,7 @@ export const Dashboard = () => {
               </h1>
               <div className="flex items-center space-x-4">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   onClick={toggleTheme}
                   className="bg-white dark:bg-gray-800"
                 >

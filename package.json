@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mantine/hooks": "^7.14.2",
+    "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-select": "^2.1.2",
     "@tanstack/react-table": "^8.20.5",
     "axios": "^1.7.8",

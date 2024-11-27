@@ -29,7 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/table";
-
+import * as UserForms from "./components/user-forms";
 const dummyUsers = [
   {
     _id: "1",
@@ -120,7 +120,7 @@ export const UserManagementPage = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-0 hover:bg-transparent"
           >
-            Points
+            Phone
             {column.getIsSorted() === "asc" ? (
               <ChevronUp className="ml-2 h-4 w-4" />
             ) : column.getIsSorted() === "desc" ? (
@@ -134,7 +134,7 @@ export const UserManagementPage = () => {
     },
     {
       accessorKey: "subscription",
-      header: "subscription",
+      header: "Subscription",
       filterFn: (row, columnId, filterValue) => {
         const cellValue = row.getValue<string>(columnId);
         return cellValue === filterValue;
@@ -150,6 +150,18 @@ export const UserManagementPage = () => {
             }`}
           >
             {status}
+          </span>
+        );
+      },
+    },
+    {
+      header: "Actions",
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <span>
+            <UserForms.Edit user={user} />
+            <UserForms.Remove username={user.username} userId={user._id} />
           </span>
         );
       },
