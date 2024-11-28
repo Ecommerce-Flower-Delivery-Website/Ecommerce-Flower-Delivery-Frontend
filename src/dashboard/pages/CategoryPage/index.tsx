@@ -27,7 +27,7 @@ const dummyData = [
   {
     id: "1",
     title: "Product A",
-    img: "/assets/images/CategoryImages/categoryOne.jpg",
+    img: "/assets/images/CategoryImages/categoryTwo.jpg",
   },
   {
     id: "2",
