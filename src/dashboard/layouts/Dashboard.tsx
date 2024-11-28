@@ -6,6 +6,7 @@ import {
   Moon,
   Sun,
   Users,
+  ChartColumnStacked
 } from "lucide-react";
 import { useLayoutEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
@@ -15,6 +16,7 @@ import { Button } from "../components/button";
 const menuItems = [
   { id: "overview", label: "Overview", icon: BarChartIcon },
   { id: "users", label: "User Management", icon: Users },
+  { id: "category", label: "Category", icon: ChartColumnStacked },
 ];
 
 const SideBar = ({

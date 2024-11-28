@@ -7,6 +7,7 @@ import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { RootLayout } from "./RootLayout";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
+import  CategoryPage  from "./dashboard/pages/CategoryPage";
 
 const routers = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const routers = createBrowserRouter([
           {
             path: "users",
             element: <UserManagementPage />,
+          },
+          {
+            path: "category",
+            element: <CategoryPage />,
           },
           // {
           //   path: "login",
