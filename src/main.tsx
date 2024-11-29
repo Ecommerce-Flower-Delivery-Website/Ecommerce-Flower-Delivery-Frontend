@@ -7,6 +7,7 @@ import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { RootLayout } from "./RootLayout";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
+import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 
 const routers = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const routers = createBrowserRouter([
           {
             path: "users",
             element: <UserManagementPage />,
+          },
+          {
+            path: "accessories",
+            element: <Accessories />,
           },
           // {
           //   path: "login",
