@@ -1,8 +1,14 @@
 import { StrictMode, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
+import App from "./App";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
 import { OverviewPage } from "./dashboard/pages/overview/OverviewPage";
+import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { RootLayout } from "./RootLayout";
@@ -12,11 +18,15 @@ import AddProductsPage from "./dashboard/pages/products/AddProductsPage";
 import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
 import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
 import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
+import { LoginPage } from "./dashboard/pages/login/LoginPage";
+import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
+import CategoryPage from "./dashboard/pages/CategoryPage";
 
 const routers = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
+      { path: "/", element: <App /> },
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -57,9 +67,23 @@ const routers = createBrowserRouter([
           //   path: "login",
           //   element: <LoginPage />,
           // },
+            path: "orders",
+            element: <OrdersPage />,
+          },
+          {
+            path: "category",
+            element: <CategoryPage />,
+          },
+          {
+            path: "/dashboard",
+            element: <Navigate to={"/dashboard/overview"} replace />,
+          },
         ],
       },
-
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
       {
         path: "/*",
         element: <NotFoundPage />,

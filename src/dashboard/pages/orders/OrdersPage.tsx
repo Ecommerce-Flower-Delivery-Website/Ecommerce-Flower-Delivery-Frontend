@@ -29,48 +29,23 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/table";
-import * as UserForms from "./components/user-forms";
-const dummyUsers = [
-  {
-    _id: "1",
-    username: "JohnDoe",
-    email: "john@example.com",
-    phone: "+0963 9490234897",
-    subscription: "premium",
-  },
-  {
-    _id: "2",
-    username: "JaneSmith",
-    email: "jane@example.com",
-    phone: "+0963 9490234897",
-    subscription: "none",
-  },
-  {
-    _id: "3",
-    username: "AliceBrown",
-    email: "alice@example.com",
-    phone: "+0963 9490234897",
-    subscription: "none",
-  },
-  {
-    _id: "4",
-    username: "BobJones",
-    email: "bob@example.com",
-    phone: "+0963 9490234897",
-    subscription: "none",
-  },
-];
+import * as OrderForms from "./components/order-forms";
+import { useReduxSelector } from "../../store/store";
 
-export const UserManagementPage = () => {
-  const users = dummyUsers;
+export const OrdersPage = () => {
+  const orders = useReduxSelector((state) => state.orders.orders);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const columns: ColumnDef<(typeof users)[number]>[] = [
+  const columns: ColumnDef<(typeof orders)[number]>[] = [
     {
-      accessorKey: "username",
+      accessorKey: "cart_id",
+      header: "cart id",
+    },
+    {
+      accessorKey: "total",
       header: ({ column }) => {
         return (
           <Button
@@ -78,7 +53,7 @@ export const UserManagementPage = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-0 hover:bg-transparent"
           >
-            Name
+            Total
             {column.getIsSorted() === "asc" ? (
               <ChevronUp className="ml-2 h-4 w-4" />
             ) : column.getIsSorted() === "desc" ? (
@@ -91,77 +66,62 @@ export const UserManagementPage = () => {
       },
     },
     {
-      accessorKey: "email",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-0 hover:bg-transparent"
-          >
-            Email
-            {column.getIsSorted() === "asc" ? (
-              <ChevronUp className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ChevronDown className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        );
-      },
-    },
-    {
-      accessorKey: "phone",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-0 hover:bg-transparent"
-          >
-            Phone
-            {column.getIsSorted() === "asc" ? (
-              <ChevronUp className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ChevronDown className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        );
-      },
-    },
-    {
-      accessorKey: "subscription",
-      header: "Subscription",
+      accessorKey: "isDone",
+      header: "status",
       filterFn: (row, columnId, filterValue) => {
-        const cellValue = row.getValue<string>(columnId);
-        return cellValue === filterValue;
+        const cellValue = row.getValue(columnId);
+        const isDone = filterValue === "true";
+        return cellValue === isDone;
       },
       cell: ({ row }) => {
-        const status = row.getValue("subscription") as string;
+        const isDone = row.getValue("isDone") as boolean;
         return (
           <span
-            className={`rounded-full px-2 py-1 text-xs ${
-              status === "premium"
+            className={`rounded-full text-nowrap px-2 py-1 text-xs ${
+              isDone
                 ? "bg-purple-500/25  text-purple-500"
                 : "bg-amber-400/25 text-amber-400"
             }`}
           >
-            {status}
+            {isDone ? "done" : "in progress"}
           </span>
         );
       },
     },
     {
+      accessorKey: "createdAt",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-0 hover:bg-transparent"
+          >
+            CreatedAt
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="ml-2 h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const createdAt = row.getValue("createdAt") as string;
+        return <span className={` px-2 py-1 text-xs`}>{createdAt}</span>;
+      },
+    },
+    {
       header: "Actions",
       cell: ({ row }) => {
-        const user = row.original;
+        const order = row.original;
         return (
           <span>
-            <UserForms.Edit user={user} />
-            <UserForms.Remove username={user.username} userId={user._id} />
+            <OrderForms.Edit order={order} />
+            {/* <OrderForms.Remove orderId={order._id} />
+            <OrderForms.Show order={order} /> */}
           </span>
         );
       },
@@ -169,7 +129,7 @@ export const UserManagementPage = () => {
   ];
 
   const table = useReactTable({
-    data: users,
+    data: orders,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -190,36 +150,36 @@ export const UserManagementPage = () => {
   return (
     <Card>
       <CardHeader className="flex items-end justify-end gap-4">
+        <OrderForms.Create />
         <div className="flex w-full flex-wrap items-center justify-between gap-2">
           <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
             <Input
-              placeholder="Search by name..."
+              placeholder="Search by cart id..."
               value={
-                (table.getColumn("username")?.getFilterValue() as string) ?? ""
+                (table.getColumn("cart_id")?.getFilterValue() as string) ?? ""
               }
               onChange={(event) =>
-                table.getColumn("username")?.setFilterValue(event.target.value)
+                table.getColumn("cart_id")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm bg-white dark:bg-gray-800"
+              className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
             />
             <Select
               value={
-                (table.getColumn("subscription")?.getFilterValue() as string) ??
-                "all"
+                (table.getColumn("isDone")?.getFilterValue() as string) ?? "all"
               }
               onValueChange={(value) =>
                 table
-                  .getColumn("subscription")
+                  .getColumn("isDone")
                   ?.setFilterValue(value === "all" ? "" : value)
               }
             >
               <SelectTrigger className="w-[200px]  bg-white dark:bg-gray-800">
-                <SelectValue placeholder="Filter by subscription" />
+                <SelectValue placeholder="Filter by isDone" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All subscription</SelectItem>
-                <SelectItem value="premium">premium</SelectItem>
-                <SelectItem value="none">none</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="true">Done</SelectItem>
+                <SelectItem value="false">in progress</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -277,7 +237,7 @@ export const UserManagementPage = () => {
           <div className="text-nowrap text-sm text-muted-foreground">
             Showing{" "}
             {table.getRowModel().rows?.length + (currentPage - 1) * rowsPerPage}
-            of {users.length} entries
+            of {orders.length} entries
           </div>
         </div>
       </CardContent>
