@@ -12,7 +12,6 @@ import { UserManagementPage } from "./dashboard/pages/user-management/UserManage
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { RootLayout } from "./RootLayout";
-import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import ProductsPage from "./dashboard/pages/products/ProductsPage";
 import AddProductsPage from "./dashboard/pages/products/AddProductsPage";
 import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
@@ -67,6 +66,7 @@ const routers = createBrowserRouter([
           //   path: "login",
           //   element: <LoginPage />,
           // },
+          {
             path: "orders",
             element: <OrdersPage />,
           },
