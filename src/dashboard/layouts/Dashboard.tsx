@@ -6,6 +6,7 @@ import {
   MenuIcon,
   Moon,
   ShoppingBag,
+  ShoppingCart,
   Sun,
   Users,
 } from "lucide-react";
@@ -20,6 +21,7 @@ const menuItems = [
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "category", label: "Categories", icon: Users },
   { id: "orders", label: "Orders", icon: ChartColumnStacked },
+  { id: "carts", label: "Carts", icon: ShoppingCart },
 ];
 
 const SideBar = ({

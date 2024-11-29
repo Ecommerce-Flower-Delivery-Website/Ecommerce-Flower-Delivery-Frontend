@@ -20,6 +20,7 @@ import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 import { LoginPage } from "./dashboard/pages/login/LoginPage";
 import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
 import CategoryPage from "./dashboard/pages/CategoryPage";
+import { CartsPage } from "./dashboard/pages/carts/CartsPage";
 
 const routers = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const routers = createBrowserRouter([
           {
             path: "orders",
             element: <OrdersPage />,
+          },
+          {
+            path: "carts",
+            element: <CartsPage />,
           },
           {
             path: "category",

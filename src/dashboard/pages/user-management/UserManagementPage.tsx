@@ -200,7 +200,7 @@ export const UserManagementPage = () => {
               onChange={(event) =>
                 table.getColumn("username")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm bg-white dark:bg-gray-800"
+              className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
             />
             <Select
               value={

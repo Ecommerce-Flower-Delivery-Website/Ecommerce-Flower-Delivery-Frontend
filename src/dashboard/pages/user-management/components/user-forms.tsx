@@ -1,7 +1,9 @@
-import { DialogClose } from "@radix-ui/react-dialog";
-import { Edit as EditIcon, Plus, Trash2 } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { validateSchemas } from "../../../../lib/zod";
 import { Button } from "../../../components/button";
 import {
   Dialog,
@@ -12,13 +14,9 @@ import {
 } from "../../../components/dialog";
 import { ErrorMessage } from "../../../components/error-message";
 import { Input } from "../../../components/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../components/select";
+import { removeUser, updateUser } from "../../../store/slices/userSlice";
+import { useReduxDispatch } from "../../../store/store";
+type CreateUserFormType = z.infer<typeof validateSchemas.createUser>;
 
 export const Create = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +25,9 @@ export const Create = () => {
     register,
     handleSubmit,
     formState: { errors, isLoading },
-  } = useForm();
+  } = useForm<CreateUserFormType>({
+    resolver: zodResolver(validateSchemas.createUser),
+  });
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -47,9 +47,9 @@ export const Create = () => {
             <label htmlFor="name" className="text-right">
               User Name
             </label>
-            <Input id="name" {...register("username")} className="col-span-3" />
+            <Input id="name" {...register("name")} className="col-span-3" />
           </div>
-          <ErrorMessage message={errors.username?.message} />
+          <ErrorMessage message={errors.name?.message} />
           <div className="grid grid-cols-4 items-center gap-4">
             <label htmlFor="email" className="text-right">
               Email
@@ -99,126 +99,85 @@ export const Create = () => {
   );
 };
 
+type EditUserFormType = z.infer<typeof validateSchemas.editUser>;
+
 export const Edit = ({ user }: { user: User }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useReduxDispatch();
+
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isLoading },
-  } = useForm({
+  } = useForm<EditUserFormType>({
+    resolver: zodResolver(validateSchemas.editUser),
     defaultValues: user,
   });
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
-          <EditIcon className="h-4 w-4" />
-        </Button>
+        <Button variant="ghost">Edit</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit User</DialogTitle>
         </DialogHeader>
         <form
-          onSubmit={handleSubmit((values) => console.log(values))}
+          onSubmit={handleSubmit((values) =>
+            dispatch(updateUser({ _id: user._id, data: values }))
+          )}
           className="grid gap-4 py-4"
         >
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="name" className="text-right">
-              User Name
-            </label>
-            <Input id="name" {...register("username")} className="col-span-3" />
-          </div>
-          <ErrorMessage message={errors.username?.message} />
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="email" className="text-right">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              {...register("email")}
-              className="col-span-3"
-            />
-          </div>
-          <ErrorMessage message={errors.email?.message} />
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="points" className="text-right">
-              Points
-            </label>
-            <Input
-              id="points"
-              type="number"
-              {...register("points", {
-                valueAsNumber: true,
-              })}
-              className="col-span-3"
-            />
-          </div>
-          <ErrorMessage message={errors.points?.message} />
-
-          <div className="flex items-center justify-center gap-4">
-            <label htmlFor="status" className="text-right">
-              status
-            </label>
-            <Select
-              defaultValue={user.status}
-              onValueChange={(value: "Active" | "In Active" | "Blocked") => {
-                setValue("status", value);
-              }}
-            >
-              <SelectTrigger className="w-[100px] bg-white dark:bg-gray-800">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Active">Active</SelectItem>
-                <SelectItem value="In Active">InActive</SelectItem>
-                <SelectItem value="Blocked">Blocked</SelectItem>
-              </SelectContent>
-            </Select>
+          <div>
+            <label htmlFor="name">Name</label>
+            <Input id="name" {...register("name")} />
+            <ErrorMessage message={errors.name?.message} />
           </div>
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="hover:bg-primary-hover bg-primary text-white"
-          >
-            Save
+          <div>
+            <label htmlFor="email">Email</label>
+            <Input id="email" {...register("email")} />
+            <ErrorMessage message={errors.email?.message} />
+          </div>
+
+          <div>
+            <label htmlFor="verified">Verified</label>
+            <Input type="checkbox" id="verified" {...register("verified")} />
+          </div>
+
+          <Button type="submit" disabled={isLoading}>
+            Save Changes
           </Button>
         </form>
       </DialogContent>
     </Dialog>
   );
 };
-export const Remove = ({
-  userId,
-  username,
-}: {
-  userId: string;
-  username: string;
-}) => {
+
+export const Remove = ({ userId }: { userId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useReduxDispatch();
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <Button variant="ghost">Remove</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete User {username}</DialogTitle>
+          <DialogTitle>Delete User</DialogTitle>
         </DialogHeader>
-        <p>are you sure you want to delete the user {username}</p>
-        <div className="flex w-full justify-between">
-          <DialogClose asChild>
-            <Button variant={"ghost"}>Close</Button>
-          </DialogClose>
+        <p>Are you sure you want to delete this user?</p>
+        <div className="flex justify-between">
+          <Button variant="ghost" onClick={() => setIsOpen(false)}>
+            Cancel
+          </Button>
           <Button
-            onClick={() => {}}
-            className="hover:bg-primary-hover bg-primary text-white"
+            onClick={() => {
+              dispatch(removeUser(userId));
+              setIsOpen(false);
+            }}
           >
             Confirm
           </Button>
