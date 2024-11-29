@@ -1,18 +1,34 @@
 import { StrictMode, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
+import App from "./App";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
 import { OverviewPage } from "./dashboard/pages/overview/OverviewPage";
+import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { RootLayout } from "./RootLayout";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
+import ProductsPage from "./dashboard/pages/products/ProductsPage";
+import AddProductsPage from "./dashboard/pages/products/AddProductsPage";
+import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
+import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
+import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
+import { LoginPage } from "./dashboard/pages/login/LoginPage";
+import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
+import CategoryPage from "./dashboard/pages/CategoryPage";
+import { CartsPage } from "./dashboard/pages/carts/CartsPage";
 
 const routers = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
+      { path: "/", element: <App /> },
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -29,14 +45,54 @@ const routers = createBrowserRouter([
           {
             path: "accessories",
             element: <Accessories />,
+            path: "products",
+            element: <ProductsPage />,
+            children: [
+              {
+                index: true,
+                path: "",
+                element: <ShowProductsPage />,
+              },
+              {
+                path: "add",
+                element: <AddProductsPage />,
+              },
+              {
+                path: "edit",
+                element: <EditProductsPage />,
+              },
+              {
+                path: "product/:id",
+                element: <ShowProductDetails />,
+              },
+            ],
           },
           // {
           //   path: "login",
           //   element: <LoginPage />,
           // },
+          {
+            path: "orders",
+            element: <OrdersPage />,
+          },
+          {
+            path: "carts",
+            element: <CartsPage />,
+          },
+          {
+            path: "category",
+            element: <CategoryPage />,
+          },
+          {
+            path: "/dashboard",
+            element: <Navigate to={"/dashboard/overview"} replace />,
+          },
         ],
       },
-
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
       {
         path: "/*",
         element: <NotFoundPage />,
