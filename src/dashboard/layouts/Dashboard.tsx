@@ -1,6 +1,7 @@
 import { useLocalStorage } from "@mantine/hooks";
 import {
   BarChart as BarChartIcon,
+  Gem,
   ChartColumnStacked,
   LogOut,
   MenuIcon,
@@ -18,6 +19,7 @@ import { Button } from "../components/button";
 const menuItems = [
   { id: "overview", label: "Overview", icon: BarChartIcon },
   { id: "users", label: "User Management", icon: Users },
+  { id: "accessories", label: "Accessories", icon: Gem },
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "category", label: "Categories", icon: Users },
   { id: "orders", label: "Orders", icon: ChartColumnStacked },
