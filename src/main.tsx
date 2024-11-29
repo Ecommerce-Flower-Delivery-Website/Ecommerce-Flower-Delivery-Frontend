@@ -7,6 +7,11 @@ import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { RootLayout } from "./RootLayout";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
+import ProductsPage from "./dashboard/pages/products/ProductsPage";
+import AddProductsPage from "./dashboard/pages/products/AddProductsPage";
+import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
+import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
+import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 
 const routers = createBrowserRouter([
   {
@@ -24,6 +29,29 @@ const routers = createBrowserRouter([
           {
             path: "users",
             element: <UserManagementPage />,
+          },
+          {
+            path: "products",
+            element: <ProductsPage />,
+            children: [
+              {
+                index: true,
+                path: "",
+                element: <ShowProductsPage />,
+              },
+              {
+                path: "add",
+                element: <AddProductsPage />,
+              },
+              {
+                path: "edit",
+                element: <EditProductsPage />,
+              },
+              {
+                path: "product/:id",
+                element: <ShowProductDetails />,
+              },
+            ],
           },
           // {
           //   path: "login",

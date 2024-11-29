@@ -4,6 +4,7 @@ import {
   LogOut,
   MenuIcon,
   Moon,
+  ShoppingBag,
   Sun,
   Users,
 } from "lucide-react";
@@ -15,6 +16,7 @@ import { Button } from "../components/button";
 const menuItems = [
   { id: "overview", label: "Overview", icon: BarChartIcon },
   { id: "users", label: "User Management", icon: Users },
+  { id: "products", label: "Products", icon: ShoppingBag },
 ];
 
 const SideBar = ({
