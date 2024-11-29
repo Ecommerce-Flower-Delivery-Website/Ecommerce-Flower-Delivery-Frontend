@@ -17,6 +17,7 @@ const menuItems = [
   { id: "overview", label: "Overview", icon: BarChartIcon },
   { id: "users", label: "User Management", icon: Users },
   { id: "category", label: "Category", icon: ChartColumnStacked },
+  { id: "orders", label: "Orders", icon: Users },
 ];
 
 const SideBar = ({
@@ -30,6 +31,7 @@ const SideBar = ({
     localStorage.removeItem("token");
     window.location.reload();
   };
+
   const isSmallScreen = window.innerWidth < 768;
   return (
     <>
@@ -144,7 +146,7 @@ export const Dashboard = () => {
               </h1>
               <div className="flex items-center space-x-4">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   onClick={toggleTheme}
                   className="bg-white dark:bg-gray-800"
                 >
