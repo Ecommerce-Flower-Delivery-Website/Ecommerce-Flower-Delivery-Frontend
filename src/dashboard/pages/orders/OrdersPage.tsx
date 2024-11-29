@@ -29,20 +29,20 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/table";
-import * as OrderForms from "./components/order-forms";
 import { useReduxSelector } from "../../store/store";
+import * as OrderForms from "./components/order-forms";
 
 export const OrdersPage = () => {
   const orders = useReduxSelector((state) => state.orders.orders);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const columns: ColumnDef<(typeof orders)[number]>[] = [
     {
-      accessorKey: "cart_id",
-      header: "cart id",
+      accessorKey: "_id",
+      header: "id",
     },
     {
       accessorKey: "total",
@@ -120,8 +120,7 @@ export const OrdersPage = () => {
         return (
           <span>
             <OrderForms.Edit order={order} />
-            {/* <OrderForms.Remove orderId={order._id} />
-            <OrderForms.Show order={order} /> */}
+            <OrderForms.Remove orderId={order._id} />
           </span>
         );
       },
@@ -154,12 +153,10 @@ export const OrdersPage = () => {
         <div className="flex w-full flex-wrap items-center justify-between gap-2">
           <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
             <Input
-              placeholder="Search by cart id..."
-              value={
-                (table.getColumn("cart_id")?.getFilterValue() as string) ?? ""
-              }
+              placeholder="Search by order id..."
+              value={(table.getColumn("_id")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
-                table.getColumn("cart_id")?.setFilterValue(event.target.value)
+                table.getColumn("_id")?.setFilterValue(event.target.value)
               }
               className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
             />

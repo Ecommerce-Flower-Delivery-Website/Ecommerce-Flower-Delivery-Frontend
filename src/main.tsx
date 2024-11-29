@@ -12,8 +12,15 @@ import { UserManagementPage } from "./dashboard/pages/user-management/UserManage
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { RootLayout } from "./RootLayout";
+import ProductsPage from "./dashboard/pages/products/ProductsPage";
+import AddProductsPage from "./dashboard/pages/products/AddProductsPage";
+import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
+import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
+import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 import { LoginPage } from "./dashboard/pages/login/LoginPage";
 import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
+import CategoryPage from "./dashboard/pages/CategoryPage";
+import { CartsPage } from "./dashboard/pages/carts/CartsPage";
 
 const routers = createBrowserRouter([
   {
@@ -34,8 +41,43 @@ const routers = createBrowserRouter([
             element: <UserManagementPage />,
           },
           {
+            path: "products",
+            element: <ProductsPage />,
+            children: [
+              {
+                index: true,
+                path: "",
+                element: <ShowProductsPage />,
+              },
+              {
+                path: "add",
+                element: <AddProductsPage />,
+              },
+              {
+                path: "edit",
+                element: <EditProductsPage />,
+              },
+              {
+                path: "product/:id",
+                element: <ShowProductDetails />,
+              },
+            ],
+          },
+          // {
+          //   path: "login",
+          //   element: <LoginPage />,
+          // },
+          {
             path: "orders",
             element: <OrdersPage />,
+          },
+          {
+            path: "carts",
+            element: <CartsPage />,
+          },
+          {
+            path: "category",
+            element: <CategoryPage />,
           },
           {
             path: "/dashboard",
