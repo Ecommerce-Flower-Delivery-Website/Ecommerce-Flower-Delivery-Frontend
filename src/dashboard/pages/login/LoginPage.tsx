@@ -17,7 +17,6 @@ export const LoginPage = () => {
     console.log(data);
     setIsLoading(false);
   };
-
   return (
     <main className="min-h-screen flex items-center justify-center from-primary to-secondary bg-gradient-to-tr ">
       <div className="w-full max-w-md relative  ">

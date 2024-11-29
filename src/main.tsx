@@ -13,6 +13,7 @@ import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { RootLayout } from "./RootLayout";
 import { LoginPage } from "./dashboard/pages/login/LoginPage";
+import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
 
 const routers = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const routers = createBrowserRouter([
           {
             path: "users",
             element: <UserManagementPage />,
+          },
+          {
+            path: "orders",
+            element: <OrdersPage />,
           },
           {
             path: "/dashboard",

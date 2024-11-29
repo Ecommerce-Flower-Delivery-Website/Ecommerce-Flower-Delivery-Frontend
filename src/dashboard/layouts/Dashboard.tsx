@@ -15,6 +15,7 @@ import { Button } from "../components/button";
 const menuItems = [
   { id: "overview", label: "Overview", icon: BarChartIcon },
   { id: "users", label: "User Management", icon: Users },
+  { id: "orders", label: "Orders", icon: Users },
 ];
 
 const SideBar = ({
