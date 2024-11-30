@@ -1,17 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import { api } from "../../lib/ajax/api";
-import { validateSchemas } from "../../lib/zod";
-import { handleApiError } from "@/lib/helpers";
-
-export type User = {
-  user_name: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  profile_image_url: string;
-};
+import { validateSchemas } from "../../../lib/zod";
+import { api } from "../../../lib/ajax/api";
 
 type AuthState = {
   token: string | null;
@@ -38,18 +29,9 @@ export const signUpUser = createAsyncThunk(
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
       }
-      const res = await api.post(
-        "/register",
-        {
-          ...result.data,
-          user_name: `${values.first_name}_${values.last_name}`,
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await api.post("/register", {
+        ...result.data,
+      });
       toast.success("Signed up successfully");
       return res.data.data;
     } catch (error) {

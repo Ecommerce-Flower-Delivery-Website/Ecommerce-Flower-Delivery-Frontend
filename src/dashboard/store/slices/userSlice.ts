@@ -1,14 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type User = {
-  _id: string;
-  name: string;
-  email: string;
-  subscriptions: string[];
-  verified: boolean;
-  createdAt: Date | string;
-};
-
 type UserState = {
   users: User[];
 };

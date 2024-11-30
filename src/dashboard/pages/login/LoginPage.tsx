@@ -17,16 +17,26 @@ export const LoginPage = () => {
     console.log(data);
     setIsLoading(false);
   };
+
   return (
-    <main className="min-h-screen flex items-center justify-center from-primary to-secondary bg-gradient-to-tr ">
+    <main className="min-h-screen  flex items-center  justify-center ">
+      <div className="     absolute inset-0 bg-black isolate ">
+        <div className=" bg-black w-full  absolute inset-0 " />
+        <div className="dark:mix-blend-lighten absolute animate-[spin_3s_linear_infinite]   w-[200vw] -left-[50vw] -top-[50vh] h-[200vh]  from-primary to-secondary bg-gradient-to-tr" />
+        <div className=" bg-white size-full dark:invert  dark:mix-blend-color-burn mix-blend-lighten dark:filter w-full absolute inset-0">
+          <img
+            className="mx-auto object-cover  h-full  max-h-full  "
+            src="/login-page-background.jpg"
+            alt="background"
+          />
+        </div>
+      </div>
       <div className="w-full max-w-md relative  ">
-        <div className=" border-[8px] absolute  border-transparent border-t-primary border-r-primary   size-40 -top-4 -right-4 rounded-tr-lg " />
-        <div className=" border-[8px] absolute border-transparent border-b-secondary border-l-secondary    size-40 -bottom-4 -left-4 rounded-bl-lg " />
-        <div className="w-full relative  px-8 bg-card/40 outline-1 outline -outline-offset-4  outline-card  rounded-lg shadow-lg">
-          <div className=" size-24 absolute left-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center  bg-card/80 outline outline-1 outline-card outline-offset-4 rounded-full">
-            <h2 className=" text-3xl font-bold text-foreground">login</h2>
-          </div>
-          <form className=" space-y-6 py-10" onSubmit={handleSubmit(onSubmit)}>
+        <div className="w-full relative py-10  px-8 bg-white/20  backdrop-blur-sm rounded-lg shadow-lg">
+          <h2 className="  text-center pb-10 text-3xl font-bold text-foreground">
+            Login
+          </h2>
+          <form className=" space-y-6 " onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label
                 htmlFor="email"

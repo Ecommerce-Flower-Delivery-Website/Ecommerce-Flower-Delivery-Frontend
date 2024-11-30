@@ -1,7 +1,5 @@
-import { useLocalStorage } from "@mantine/hooks";
 import {
   BarChart as BarChartIcon,
-  Gem,
   ChartColumnStacked,
   LogOut,
   MenuIcon,
@@ -11,15 +9,15 @@ import {
   Sun,
   Users,
 } from "lucide-react";
-import { useLayoutEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { useThemeToggle } from "../../contexts/hooks/useThemeToggle";
 import { cn } from "../../lib/utils";
 import { Button } from "../components/button";
 
 const menuItems = [
   { id: "overview", label: "Overview", icon: BarChartIcon },
   { id: "users", label: "User Management", icon: Users },
-  { id: "accessories", label: "Accessories", icon: Gem },
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "category", label: "Categories", icon: Users },
   { id: "orders", label: "Orders", icon: ChartColumnStacked },
@@ -112,30 +110,8 @@ const SideBar = ({
 
 export const Dashboard = () => {
   const location = useLocation();
-  const [isDarkMode, setIsDarkMode] = useLocalStorage<boolean | undefined>({
-    key: "theme",
-  });
-  const toggleTheme = () => {
-    setIsDarkMode((prev) => {
-      document.documentElement.classList.toggle("dark", !prev);
-      return !prev;
-    });
-  };
-  useLayoutEffect(() => {
-    const isDark = JSON.parse(localStorage.getItem("theme") ?? "null") as
-      | boolean
-      | null;
-    const isPreferDarkTheme = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    if (isDark == null) {
-      document.documentElement.classList.toggle("dark", isPreferDarkTheme);
-      setIsDarkMode(isPreferDarkTheme);
-    } else if (isDark) {
-      document.documentElement.classList.toggle("dark", isDark);
-      setIsDarkMode(isDark);
-    }
-  }, [setIsDarkMode]);
+  const { theme, toggleTheme } = useThemeToggle();
+
   const [menuIsOpen, setMenuIsOpen] = useState(window.innerWidth > 768);
   const isSmallScreen = window.innerWidth < 768;
   return (
@@ -156,7 +132,7 @@ export const Dashboard = () => {
                   onClick={toggleTheme}
                   className="bg-white dark:bg-gray-800"
                 >
-                  {isDarkMode ? (
+                  {theme === "dark" ? (
                     <Sun className="h-4 w-4" />
                   ) : (
                     <Moon className="h-4 w-4" />
