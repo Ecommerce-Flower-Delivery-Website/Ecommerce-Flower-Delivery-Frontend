@@ -9,10 +9,11 @@ import {
   Sun,
   Users,
 } from "lucide-react";
-import { useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useThemeToggle } from "../../contexts/hooks/useThemeToggle";
 import { cn } from "../../lib/utils";
+import { useReduxSelector } from "../../store/store";
 import { Button } from "../components/button";
 
 const menuItems = [
@@ -110,9 +111,16 @@ const SideBar = ({
 
 export const Dashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useThemeToggle();
+  const auth = useReduxSelector((state) => state.auth);
 
   const [menuIsOpen, setMenuIsOpen] = useState(window.innerWidth > 768);
+  useEffect(() => {
+    if (!auth.token || !auth?.user?.isAdmin) {
+      navigate("/dashboard/login_dashboard");
+    }
+  }, [auth.token, auth?.user?.isAdmin, navigate]);
   const isSmallScreen = window.innerWidth < 768;
   return (
     <>

@@ -6,20 +6,29 @@ const passwordZodSchema = (name = "password") =>
       invalid_type_error: `${name} must be a string`,
       required_error: `${name} is required`,
     })
-    .min(8, `${name} cannot be less then 8 charecter `)
-    .max(24, `${name} cannot be more then 24 charecter `)
-    .refine((value) => {
-      return /(?=.*[A-Z])(?=.*\d)/.test(value);
-    }, `${name} must have at least one capital and one number`);
+    .min(8, `${name} cannot be less then 8 characters`)
+    .max(24, `${name} cannot be more then 24 charecters`);
+// .refine((value) => {
+//   return /(?=.*[A-Z])(?=.*\d)/.test(value);
+// }, `${name} must have at least one capital and one number`);
 
 const UserSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters long."),
   email: z.string().email("Invalid email address."),
   subscriptions: z.string().nullable().default(null),
   verified: z.boolean().optional().default(false),
-  createdAt: z.date().optional().default(new Date()),
   password: passwordZodSchema("password"),
   password_confirmation: passwordZodSchema("password_confirmation"),
+});
+const signup = UserSchema.omit({
+  subscriptions: true,
+  verified: true,
+});
+const login = UserSchema.omit({
+  subscriptions: true,
+  verified: true,
+  name: true,
+  password_confirmation: true,
 });
 const CartSchema = z.object({
   _id: z.string(),
@@ -91,6 +100,8 @@ const CreateOrderSchema = OrderSchema.omit({
 const EditOrderSchema = OrderSchema.partial();
 
 export const validateSchemas = {
+  signup,
+  login,
   user: UserSchema,
   createUser: CreateUserSchema,
   editUser: EditUserSchema,

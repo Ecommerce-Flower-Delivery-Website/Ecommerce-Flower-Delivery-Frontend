@@ -1,21 +1,37 @@
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { InfoIcon } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Input } from "../../components/input";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { validateSchemas } from "../../../lib/zod";
+import { loginAdmin } from "../../../store/slices/authSlice";
+import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 import { Button } from "../../components/button";
+import { Input } from "../../components/input";
+type LoginFormType = z.infer<typeof validateSchemas.login>;
+export const LoginDashboardPage = () => {
+  const token = useReduxSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  const dispatch = useReduxDispatch();
+  const { isPending } = useReduxSelector((state) => state.auth);
 
-export const LoginPage = () => {
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [navigate, token]);
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const [isLoading, setIsLoading] = useState(false);
+    formState: { errors, isLoading },
+  } = useForm<LoginFormType>({
+    resolver: zodResolver(validateSchemas.login),
+  });
 
-  const onSubmit = async (data) => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+  const onSubmit = async (data: LoginFormType) => {
     console.log(data);
-    setIsLoading(false);
+    await dispatch(loginAdmin(data));
   };
 
   return (
@@ -59,9 +75,19 @@ export const LoginPage = () => {
                 className={errors.email ? "border-destructive" : ""}
               />
               {errors.email && (
-                <p className="mt-1 text-xs text-destructive">
-                  {errors.email.message}
-                </p>
+                <div
+                  className="flex min-h-6 items-center space-x-2 px-3 text-rose-500"
+                  role="alert"
+                >
+                  {errors.email.message && (
+                    <>
+                      <InfoIcon className="h-4 w-4 flex-shrink-0" />
+                      <p className="pb-1 text-sm font-medium">
+                        {errors.email.message}
+                      </p>
+                    </>
+                  )}
+                </div>
               )}
             </div>
             <div>
@@ -86,14 +112,28 @@ export const LoginPage = () => {
                 className={errors.password ? "border-destructive" : ""}
               />
               {errors.password && (
-                <p className="mt-1 text-xs text-destructive">
-                  {errors.password.message}
-                </p>
+                <div
+                  className="flex min-h-6 items-center space-x-2 px-3 text-rose-500"
+                  role="alert"
+                >
+                  {errors.password.message && (
+                    <>
+                      <InfoIcon className="h-4 w-4 flex-shrink-0" />
+                      <p className="pb-1 text-sm font-medium">
+                        {errors.password.message}
+                      </p>
+                    </>
+                  )}
+                </div>
               )}
             </div>
 
             <div className="">
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading || isPending}
+              >
                 {isLoading ? "Signing in..." : "Sign in"}
               </Button>
             </div>

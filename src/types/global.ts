@@ -5,6 +5,7 @@ declare global {
     email: string;
     subscriptions: string;
     verified: boolean;
+    isAdmin: boolean;
     createdAt: Date | string;
   };
   type SubProduct = {
