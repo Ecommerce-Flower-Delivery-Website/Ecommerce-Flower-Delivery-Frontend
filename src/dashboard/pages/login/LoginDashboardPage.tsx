@@ -11,16 +11,10 @@ import { Button } from "../../components/button";
 import { Input } from "../../components/input";
 type LoginFormType = z.infer<typeof validateSchemas.login>;
 export const LoginDashboardPage = () => {
-  const token = useReduxSelector((state) => state.auth.token);
   const navigate = useNavigate();
   const dispatch = useReduxDispatch();
   const { isPending } = useReduxSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (token) {
-      navigate("/dashboard");
-    }
-  }, [navigate, token]);
   const {
     register,
     handleSubmit,
@@ -31,7 +25,12 @@ export const LoginDashboardPage = () => {
 
   const onSubmit = async (data: LoginFormType) => {
     console.log(data);
-    await dispatch(loginAdmin(data));
+    const res = await dispatch(loginAdmin(data));
+    if (res.meta.requestStatus === "fulfilled") {
+      navigate("/dashboard", {
+        replace: true,
+      });
+    }
   };
 
   return (

@@ -10,7 +10,7 @@ export const RootLayout = () => {
   return (
     <ErrorBoundary fallbackRender={(props) => <ErrorPage {...props} />}>
       <ThemeProvider>
-        <ToastContainer theme="colored" />
+      <ToastContainer theme="colored" />
         <Provider store={store}>
           <Outlet />
         </Provider>

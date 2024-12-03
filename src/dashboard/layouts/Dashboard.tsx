@@ -118,7 +118,9 @@ export const Dashboard = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(window.innerWidth > 768);
   useEffect(() => {
     if (!auth.token || !auth?.user?.isAdmin) {
-      navigate("/dashboard/login_dashboard");
+      navigate("/dashboard/login_dashboard", {
+        replace: true,
+      });
     }
   }, [auth.token, auth?.user?.isAdmin, navigate]);
   const isSmallScreen = window.innerWidth < 768;
