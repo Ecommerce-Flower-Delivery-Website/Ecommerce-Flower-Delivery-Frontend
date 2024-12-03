@@ -29,7 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/table";
-import { useReduxSelector } from "../../store/store";
+import { useReduxSelector } from "../../../store/store";
 import * as OrderForms from "./components/order-forms";
 
 export const OrdersPage = () => {

@@ -21,13 +21,13 @@ import {
   SelectTrigger,
 } from "../../../components/select";
 
+import { useReduxDispatch } from "../../../../store/store";
+import { z } from "zod";
 import {
   createCart,
   removeCart,
   updateCart,
-} from "../../../store/slices/CartSlice";
-import { useReduxDispatch } from "../../../store/store";
-import { z } from "zod";
+} from "../../../../store/slices/cartSlice";
 
 type CreateCartFormType = z.infer<typeof validateSchemas.createCart>;
 const ProductOptions = [

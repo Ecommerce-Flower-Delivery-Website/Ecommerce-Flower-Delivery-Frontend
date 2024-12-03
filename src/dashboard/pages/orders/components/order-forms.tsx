@@ -26,8 +26,8 @@ import {
   createOrder,
   removeOrder,
   updateOrder,
-} from "../../../store/slices/orderSlice";
-import { useReduxDispatch } from "../../../store/store";
+} from "../../../../store/slices/orderSlice";
+import { useReduxDispatch } from "../../../../store/store";
 
 type CreateOrderFormType = z.infer<typeof validateSchemas.createOrder>;
 const Products = [

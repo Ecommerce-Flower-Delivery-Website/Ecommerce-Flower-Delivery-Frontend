@@ -6,21 +6,21 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import App from "./App";
+import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
+import CategoryPage from "./dashboard/pages/CategoryPage";
+import { CartsPage } from "./dashboard/pages/carts/CartsPage";
+import { LoginDashboardPage } from "./dashboard/pages/login/LoginDashboardPage";
+import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
 import { OverviewPage } from "./dashboard/pages/overview/OverviewPage";
+import AddProductsPage from "./dashboard/pages/products/AddProductsPage";
+import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
+import ProductsPage from "./dashboard/pages/products/ProductsPage";
+import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
+import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
-import { RootLayout } from "./RootLayout";
-import ProductsPage from "./dashboard/pages/products/ProductsPage";
-import AddProductsPage from "./dashboard/pages/products/AddProductsPage";
-import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
-import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
-import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
-import { LoginPage } from "./dashboard/pages/login/LoginPage";
-import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
-import CategoryPage from "./dashboard/pages/CategoryPage";
-import { CartsPage } from "./dashboard/pages/carts/CartsPage";
 
 const routers = createBrowserRouter([
   {
@@ -40,6 +40,7 @@ const routers = createBrowserRouter([
             path: "users",
             element: <UserManagementPage />,
           },
+
           {
             path: "products",
             element: <ProductsPage />,
@@ -63,10 +64,6 @@ const routers = createBrowserRouter([
               },
             ],
           },
-          // {
-          //   path: "login",
-          //   element: <LoginPage />,
-          // },
           {
             path: "orders",
             element: <OrdersPage />,
@@ -86,8 +83,8 @@ const routers = createBrowserRouter([
         ],
       },
       {
-        path: "login",
-        element: <LoginPage />,
+        path: "/dashboard/login_dashboard",
+        element: <LoginDashboardPage />,
       },
       {
         path: "/*",
