@@ -15,32 +15,27 @@ declare global {
     name: string;
     image: string;
   };
+  type Address = {
+    street: string;
+    apartmentNumber: number;
+    _id: string;
+  };
+
   type Product = {
     title: string;
     image: string;
-    stock: number;
-    price: number;
-    category_id: string;
-    description: string;
-    accessory_array: string[];
-  };
-  type Order = {
+    priceAfterDiscount: number;
+    discount?: number; // Optional, as it's missing in one product
+    quantity: number;
     _id: string;
-    cart_id: string;
-    products: string[];
-    total: number;
-    address: string;
-    isDone: boolean;
-    createdAt: string;
   };
+
   type Cart = {
     _id: string;
-    user_id: string;
-    discount: number;
-    status: "active" | "complete";
+    hasDiscount: boolean;
     totalAmount: number;
-    products: string[];
-    createdAt: Date | string;
+    product_array: Product[];
+    user_id: string;
   };
 }
 export {};

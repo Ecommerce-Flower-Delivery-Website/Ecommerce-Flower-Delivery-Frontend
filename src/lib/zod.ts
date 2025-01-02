@@ -92,13 +92,57 @@ const OrderSchema = z.object({
   }),
   isDone: z.boolean().optional().default(false),
 });
-
-const CreateOrderSchema = OrderSchema.omit({
-  _id: true,
+// Address schema
+const addressSchema = z.object({
+  street: z.string().optional(),
+  apartmentNumber: z.number().optional(),
 });
 
-const EditOrderSchema = OrderSchema.partial();
+// Product schema
+const productSchema = z.object({
+  title: z.string(),
+  image: z.string(),
+  priceAfterDiscount: z.number(),
+  discount: z.number().optional(),
+  quantity: z.number(),
+});
+// Create Order schema
+const createOrderSchema = z.object({
+  array_product: z.array(productSchema),
+  totalAmount: z.number(),
+  discountGift: z.number().optional(),
+  discountSubscribe: z.number().optional(),
+  cart_id: z.string(), // Assuming the `cart_id` is passed as a string
+  recipientName: z.string(),
+  recipientPhone: z.string(),
+  dateDelivery: z.date(),
+  timeDelivery: z.string(),
+  address: addressSchema,
+  doesKnowAddress: z.boolean().optional().default(true),
+  cardNumber: z.string(),
+  cvvCode: z.string(),
+  isDone: z.boolean().default(false),
+});
 
+// Edit Order schema
+const editOrderSchema = z
+  .object({
+    array_product: z.array(productSchema).optional(),
+    totalAmount: z.number().optional(),
+    discountGift: z.number().optional(),
+    discountSubscribe: z.number().optional(),
+    cart_id: z.string().optional(),
+    recipientName: z.string().optional(),
+    recipientPhone: z.string().optional(),
+    dateDelivery: z.date().optional(),
+    timeDelivery: z.string().optional(),
+    address: addressSchema.optional(),
+    doesKnowAddress: z.boolean().optional(),
+    cardNumber: z.string().optional(),
+    cvvCode: z.string().optional(),
+    isDone: z.boolean(),
+  })
+  .partial();
 export const validateSchemas = {
   signup,
   login,
@@ -109,6 +153,6 @@ export const validateSchemas = {
   createCart: CreateCartSchema,
   editCart: EditCartSchema,
   order: OrderSchema,
-  createOrder: CreateOrderSchema,
-  editOrder: EditOrderSchema,
+  createOrder: createOrderSchema,
+  editOrder: editOrderSchema,
 };

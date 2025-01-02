@@ -9,11 +9,21 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, ChevronUp } from "lucide-react";
-import { useState } from "react";
+import { ArrowUpDown, ChevronDown, ChevronUp, LoaderIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getAllOrdersThunk, Order } from "../../../store/slices/orderSlice";
+import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 import { Button } from "../../components/button";
 import { Card, CardContent, CardHeader } from "../../components/card";
 import { Input } from "../../components/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../../components/pagination";
 import {
   Select,
   SelectContent,
@@ -29,23 +39,29 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/table";
-import { useReduxSelector } from "../../../store/store";
-import * as OrderForms from "./components/order-forms";
+import * as OrdersForms from "./components/order-forms";
 
 export const OrdersPage = () => {
-  const orders = useReduxSelector((state) => state.orders.orders);
-
+  const { orders, isPending, pagination } = useReduxSelector(
+    (state) => state.orders
+  );
+  console.log("orders", orders);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const rowsPerPage = 10;
-  const [currentPage, setCurrentPage] = useState(1);
-  const columns: ColumnDef<(typeof orders)[number]>[] = [
+  const [rowsPerPage, setRowsPerPage] = useState(1);
+  const setCurrentPage = ({ page }: { page: number }) => {
+    dispatch(getAllOrdersThunk({ page, limit: rowsPerPage }));
+  };
+  const dispatch = useReduxDispatch();
+  const totalPages = pagination.totalPages;
+
+  const columns: ColumnDef<Order>[] = [
     {
       accessorKey: "_id",
       header: "id",
     },
     {
-      accessorKey: "total",
+      accessorKey: "totalAmount",
       header: ({ column }) => {
         return (
           <Button
@@ -118,10 +134,10 @@ export const OrdersPage = () => {
       cell: ({ row }) => {
         const order = row.original;
         return (
-          <span>
-            <OrderForms.Edit order={order} />
-            <OrderForms.Remove orderId={order._id} />
-          </span>
+          <div className="flex items-center space-x-2">
+            <OrdersForms.ToggleStatusButton order={order} />
+            <OrdersForms.Remove orderId={order._id} />
+          </div>
         );
       },
     },
@@ -141,16 +157,39 @@ export const OrdersPage = () => {
       columnFilters,
       pagination: {
         pageSize: rowsPerPage,
-        pageIndex: currentPage - 1,
+        pageIndex: pagination.currentPage - 1,
       },
     },
   });
+  useEffect(() => {
+    dispatch(
+      getAllOrdersThunk({ page: pagination.currentPage, limit: rowsPerPage })
+    );
+  }, [dispatch, pagination.currentPage, rowsPerPage]);
 
   return (
-    <Card>
+    <Card className="relative">
       <CardHeader className="flex items-end justify-end gap-4">
-        <OrderForms.Create />
         <div className="flex w-full flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm">Show</span>
+            <Select
+              value={rowsPerPage.toString()}
+              onValueChange={(value) => setRowsPerPage(parseInt(value))}
+            >
+              <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
+                <SelectValue placeholder={rowsPerPage} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="25">25</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+              </SelectContent>
+            </Select>
+            <span className="text-sm">entries</span>
+          </div>
           <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
             <Input
               placeholder="Search by order id..."
@@ -183,59 +222,110 @@ export const OrdersPage = () => {
         </div>
       </CardHeader>
 
-      <CardContent className="rounded-md">
+      <CardContent className=" relative rounded-md">
         <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
+          {isPending ? (
+            <div className="h-40 flex justify-center items-center">
+              <LoaderIcon />
+            </div>
+          ) : (
+            <>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
                 ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows?.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+              </TableHeader>
+              <TableBody>
+                {orders.length > 0 ? (
+                  table.getPrePaginationRowModel().rows?.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+                  </TableRow>
+                )}
+              </TableBody>
+            </>
+          )}
         </Table>
         <div className="flex items-center justify-between py-4">
           <div className="text-nowrap text-sm text-muted-foreground">
             Showing{" "}
-            {table.getRowModel().rows?.length + (currentPage - 1) * rowsPerPage}
-            of {orders.length} entries
+            {table.getPrePaginationRowModel().rows?.length +
+              (pagination.currentPage - 1) * rowsPerPage}
+            of {pagination.totalOrders} entries
           </div>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() =>
+                    setCurrentPage({
+                      page: Math.max(pagination.currentPage - 1, 1),
+                    })
+                  }
+                  className={
+                    pagination.currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }
+                />
+              </PaginationItem>
+              {[...Array.from({ length: totalPages })].map((_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage({ page: i + 1 })}
+                    isActive={pagination.currentPage === i + 1}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    setCurrentPage({
+                      page: Math.min(pagination.currentPage + 1, totalPages),
+                    })
+                  }
+                  className={
+                    pagination.currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       </CardContent>
     </Card>
