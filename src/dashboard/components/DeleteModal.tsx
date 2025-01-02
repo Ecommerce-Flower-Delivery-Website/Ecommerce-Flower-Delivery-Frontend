@@ -1,30 +1,38 @@
+import { Trash2, X } from "lucide-react";
+
 interface DeleteModalProps {
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (id : string) => void;
+  id : string;
 }
 
-const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, onConfirm }) => {
+const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, onConfirm , id }) => {
   return (
     <div className="fixed inset-0 px-6 z-50 flex justify-center items-center deleteModale bg-black bg-opacity-50 backdrop-blur-[10px]">
       <div
-        className="bg-gray-500 lg:w-[50%] lg:h-[50%] md:w-[75%] md:h-[50%] w-[100%] h-[50%] px-3 flex justify-center items-center flex-col"
+        className="bg-[#020817] rounded-xl py-5 lg:w-[40%] border md:w-[75%] w-[100%]  px-3 flex flex-col"
         style={{
-          borderRadius: "20px",
           boxShadow: "2px 5px 10px 0px rgba(0, 0, 0, 0.1)",
         }}>
-        <h1 className="font-semibold mb-20" style={{ fontSize: "22px" }}>
-          Are you sure you want to delete the product?
-        </h1>
-        <div className="flex gap-10">
-          <button
-            onClick={onConfirm}
-            className="md:w-[150px] md:h-[50px] w-[90px] h-[50px] bg-primary md:text-[32px] text-[20px] text-white font-medium text-center rounded">
-            YES
+        <div className="flex justify-between ">
+          <h1 className="text-2xl text-white font-semibold mb-3">
+            Delete Product
+          </h1>
+          <button className="self-start" onClick={onClose}>
+            <X />
           </button>
+        </div>
+        <h1 className="mb-5">Are you sure you want to delete the product?</h1>
+        <div className="flex justify-between">
           <button
             onClick={onClose}
-            className="md:w-[150px] md:h-[50px] w-[90px] h-[50px] bg-primary md:text-[32px] text-[20px] text-white font-medium text-center rounded">
-            NO
+            className="px-4 hover:bg-primary transition  h-[50px] text-white font-medium text-center rounded">
+            Cancel
+          </button>
+          <button
+            onClick={() => onConfirm(id)}
+            className="px-4 h-[50px] bg-primary text-white font-medium text-center rounded">
+            Confirm
           </button>
         </div>
       </div>

@@ -55,7 +55,7 @@ const routers = createBrowserRouter([
                 element: <AddProductsPage />,
               },
               {
-                path: "edit",
+                path: "edit/:id",
                 element: <EditProductsPage />,
               },
               {
