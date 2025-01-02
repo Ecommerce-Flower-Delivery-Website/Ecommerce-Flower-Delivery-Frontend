@@ -120,7 +120,6 @@ const dummyProducts = [
   },
 ];
 
-
 const ProductsTable = () => {
   const products = dummyProducts;
   const naviagte = useNavigate();
@@ -134,20 +133,19 @@ const ProductsTable = () => {
   };
 
   const deleteProduct = (e: React.MouseEvent, id: number) => {
-   e.stopPropagation();
-   setshow(true);
+    e.stopPropagation();
+    setshow(true);
   };
   const onConfirm = () => {
-    console.log('hhhh');
-  }
+    console.log("hhhh");
+  };
   const onClose = () => {
     setshow(false);
-  }
-  const editProducts = (e: React.MouseEvent, id: number) => {
-   e.stopPropagation();
-   naviagte("/dashboard/products/edit");
   };
-  
+  const editProducts = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    naviagte("/dashboard/products/edit");
+  };
 
   const columns: ColumnDef<(typeof dummyProducts)[number]>[] = [
     {
@@ -182,12 +180,14 @@ const ProductsTable = () => {
         <div className="flex space-x-2">
           <button
             className="text-blue-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-            onClick={(e) => editProducts(e,row.original.id)}>
+            onClick={(e) => editProducts(e, row.original.id)}
+          >
             <Edit2 size={15} />
           </button>
           <button
             className="text-red-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-            onClick={(e) => deleteProduct(e, row.original.id)}>
+            onClick={(e) => deleteProduct(e, row.original.id)}
+          >
             <Trash2 size={15} />
           </button>
         </div>
@@ -236,7 +236,8 @@ const ProductsTable = () => {
                         header.column.toggleSorting(
                           header.column.getIsSorted() === "asc"
                         )
-                      }>
+                      }
+                    >
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
@@ -256,7 +257,8 @@ const ProductsTable = () => {
                 <tr
                   key={row.id}
                   className="dark:hover:bg-gray-700 cursor-pointer hover:bg-gray-200"
-                  onClick={() => handleRowClick(row.original)}>
+                  onClick={() => handleRowClick(row.original)}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="p-2 border border-gray-600">
                       {flexRender(

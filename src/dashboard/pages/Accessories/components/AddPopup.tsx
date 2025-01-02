@@ -1,7 +1,8 @@
+import axios from "axios";
 import { Button } from "../../../components/button";
 import { Input } from "../../../components/input";
 
-interface Accessory {
+export interface Accessory {
   _id: number;
   title: string;
   image: string;
@@ -23,18 +24,26 @@ const AddPopup: React.FC<AddPopupProps> = ({
   newAccessory,
   setNewAccessory,
 }) => {
-  const handleAddAccessory = () => {
+  const handleAddAccessory = async () => {
     if (newAccessory.title && newAccessory.image) {
-      setAccessories((prev) => [...prev, { ...newAccessory, _id: Date.now() }]);
-      setPopupVisible(false);
-      setNewAccessory({
-        _id: 0,
-        title: "",
-        image: "",
-        stock: 0,
-        description: "",
-        price: 0,
-      });
+      try {
+        const response = await axios.post("http://localhost:3000/api/v1/accessory", newAccessory);
+        const addedAccessory = response.data;
+
+        setAccessories((prev) => [...prev, addedAccessory]);
+        setPopupVisible(false);
+        setNewAccessory({
+          _id: 0,
+          title: "",
+          image: "",
+          stock: 0,
+          description: "",
+          price: 0,
+        });
+      } catch (error) {
+        console.error("Error adding accessory:", error);
+        alert("Failed to add accessory. Please try again.");
+      }
     }
   };
 
