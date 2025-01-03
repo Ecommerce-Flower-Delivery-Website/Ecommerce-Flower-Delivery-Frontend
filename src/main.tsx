@@ -8,6 +8,7 @@ import {
 import App from "./App";
 import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
+import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import CategoryPage from "./dashboard/pages/CategoryPage";
 import { OrderPreviewPage } from "./dashboard/pages/OrderPreviewPage";
 import { CartsPage } from "./dashboard/pages/carts/CartsPage";
@@ -22,7 +23,6 @@ import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
-import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 
 const routers = createBrowserRouter([
   {
@@ -44,7 +44,7 @@ const routers = createBrowserRouter([
           },
           {
             path: "accessories",
-            element: <Accessories />
+            element: <Accessories />,
           },
           {
             path: "products",
@@ -99,6 +99,10 @@ const routers = createBrowserRouter([
       {
         path: "/dashboard/login_dashboard",
         element: <LoginDashboardPage />,
+      },
+      {
+        path: "/accessories",
+        element: <Accessories />,
       },
       {
         path: "/*",
