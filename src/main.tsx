@@ -23,6 +23,7 @@ import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
+import { ContactPage } from "./dashboard/pages/contact/Contact";
 
 const routers = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const routers = createBrowserRouter([
           {
             path: "accessories",
             element: <Accessories />,
+          },
+          {
+            path: "contact",
+            element: <ContactPage />,
           },
           {
             path: "products",
