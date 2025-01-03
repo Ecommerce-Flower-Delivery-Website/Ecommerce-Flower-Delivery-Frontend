@@ -1,172 +1,37 @@
-import {
-  BarChart as BarChartIcon,
-  ChartColumnStacked,
-  Gem,
-  LogOut,
-  MenuIcon,
-  Moon,
-  Phone,
-  ShoppingBag,
-  ShoppingCart,
-  Sun,
-  Users,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
+import { Moon, Sun } from "lucide-react";
 import { useThemeToggle } from "../../contexts/hooks/useThemeToggle";
-import { cn } from "../../lib/utils";
-import { useReduxSelector } from "../../store/store";
 import { Button } from "../components/button";
+import { Sidebar } from "./components/SideBar";
 
-const menuItems = [
-  { id: "overview", label: "Overview", icon: BarChartIcon },
-  { id: "users", label: "User Management", icon: Users },
-  { id: "accessories", label: "Accessories", icon: Gem },
-  { id: "contact", label: "Contact", icon: Phone },
-  { id: "products", label: "Products", icon: ShoppingBag },
-  { id: "category", label: "Categories", icon: Users },
-  { id: "orders", label: "Orders", icon: ChartColumnStacked },
-  { id: "carts", label: "Carts", icon: ShoppingCart },
-];
+export const Dashboard: React.FC = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { theme, toggleTheme } = useThemeToggle();
 
-const SideBar = ({
-  isOpen,
-  setIsOpen,
-}: {
-  setIsOpen: (val: boolean) => void;
-  isOpen: boolean;
-}) => {
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.reload();
-  };
-
-  const isSmallScreen = window.innerWidth < 768;
   return (
-    <>
-      {isSmallScreen && isOpen && (
-        <div
-          onClick={() => setIsOpen(false)}
-          className=" fixed inset-0 z-30 bg-white/10 backdrop-blur"
-        />
-      )}
-      <aside
-        className={cn(
-          "w-64 max-md:absolute z-40 max-md:duration-500 max-md:left-0 h-screen  transition-transform border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900",
-          {
-            "translate-x-0 ": isOpen,
-            "-translate-x-full ": !isOpen,
-          }
-        )}
-      >
-        <div className="flex h-full flex-col">
-          <div className="border-b border-gray-200 p-4 dark:border-gray-700">
-            <h1 className="text-xl font-bold text-gray-800 dark:text-white">
-              {menuItems.find((page) => location.pathname.includes(page.id))
-                ?.label ?? ""}
-            </h1>
-          </div>
-          <nav className="flex-1 overflow-y-auto p-4">
-            {menuItems.map((item) => (
-              <NavLink
-                key={item.id}
-                to={item.id}
-                className={({ isActive }) =>
-                  cn(
-                    "mb-1 w-full flex rounded px-4 py-2 items-center justify-start",
-                    {
-                      "bg-primary text-white hover:bg-primary hover:text-white dark:shadow-[0_0_10px_rgba(176,38,255,0.3)]":
-                        isActive,
-                      "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white":
-                        !isActive,
-                    }
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <item.icon
-                      className={cn("mr-2 h-4 w-4", {
-                        "text-white": isActive,
-                        "text-gray-500 dark:text-gray-400": !isActive,
-                      })}
-                    />
-                    {item.label}
-                  </>
-                )}
-              </NavLink>
-            ))}
-          </nav>
-          <div className="border-t border-gray-200 p-4 dark:border-gray-700">
-            <Button
-              variant="ghost"
-              className="w-full justify-start"
-              onClick={handleLogout}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+      <div className="flex relative flex-col flex-1 overflow-hidden">
+        <header className="flex items-center h-16 justify-between px-6 py-4 bg-muted ">
+          <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
+            Dashboard
+          </h1>
+          <div className="flex items-center space-x-4">
+            <Button variant="outline" onClick={() => toggleTheme()}>
+              {theme === "dark" ? (
+                <Sun className="h-[1.2rem] w-[1.2rem]" />
+              ) : (
+                <Moon className="h-[1.2rem] w-[1.2rem]" />
+              )}
+              <span className="sr-only">Toggle theme</span>
             </Button>
           </div>
-        </div>
-      </aside>
-    </>
-  );
-};
-
-export const Dashboard = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { theme, toggleTheme } = useThemeToggle();
-  const auth = useReduxSelector((state) => state.auth);
-
-  const [menuIsOpen, setMenuIsOpen] = useState(window.innerWidth > 768);
-  // useEffect(() => {
-  //   if (!auth.token || !auth?.user?.isAdmin) {
-  //     navigate("/dashboard/login_dashboard", {
-  //       replace: true,
-  //     });
-  //   }
-  // }, [auth.token, auth?.user?.isAdmin, navigate]);
-  const isSmallScreen = window.innerWidth < 768;
-  return (
-    <>
-      <div className={`flex h-screen`}>
-        <SideBar setIsOpen={setMenuIsOpen} isOpen={menuIsOpen} />
-        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-gray-100 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800">
-          <div className="p-8">
-            <div className="mb-6 flex items-center justify-between">
-              <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                {menuItems.find((item) =>
-                  location.pathname.startsWith("/dashboard/" + item.id)
-                )?.label || "Dashboard"}
-              </h1>
-              <div className="flex items-center space-x-4">
-                <Button
-                  variant="outline"
-                  onClick={toggleTheme}
-                  className="bg-white dark:bg-gray-800"
-                >
-                  {theme === "dark" ? (
-                    <Sun className="h-4 w-4" />
-                  ) : (
-                    <Moon className="h-4 w-4" />
-                  )}
-                </Button>
-                {isSmallScreen && (
-                  <Button
-                    variant="ghost"
-                    onClick={() => setMenuIsOpen((prev) => !prev)}
-                    className="bg-white dark:bg-gray-800"
-                  >
-                    <MenuIcon />
-                  </Button>
-                )}
-              </div>
-            </div>
-            <Outlet />
-          </div>
+        </header>
+        <main className="flex-1  overflow-y-auto bg-background  p-6">
+          <Outlet />
         </main>
       </div>
-    </>
+    </div>
   );
 };

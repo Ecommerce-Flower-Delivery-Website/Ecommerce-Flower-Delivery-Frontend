@@ -43,7 +43,7 @@ const AccessoryPhoto = () => {
           <SwiperSlide key={index}>
             <img
               src={image}
-              className="rounded-lg h-[290px] md:h-[150px] shadow-lg"
+              className="rounded-lg h-[100px] shadow-lg"
               alt={`Gallery ${index + 1}`}
             />
           </SwiperSlide>
