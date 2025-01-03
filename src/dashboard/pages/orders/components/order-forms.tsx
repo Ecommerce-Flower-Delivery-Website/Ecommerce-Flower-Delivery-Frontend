@@ -1,5 +1,5 @@
 import { DialogClose } from "@radix-ui/react-dialog";
-import { Loader2, Trash2 } from "lucide-react";
+import { Eye, Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
   Order,
@@ -47,7 +47,7 @@ export const Remove = ({ orderId }: { orderId: string }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
+        <Button className=" size-8 p-1 " variant="ghost">
           <Trash2 className="h-4 w-4" />
         </Button>
       </DialogTrigger>
@@ -66,6 +66,61 @@ export const Remove = ({ orderId }: { orderId: string }) => {
           >
             Confirm
           </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+export const Show = ({ order }: { order: Order }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button className="size-8 p-1" variant="ghost">
+          <Eye className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Order Details</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <p>
+            <strong>Recipient Name:</strong> {order.recipientName}
+          </p>
+          <p>
+            <strong>Phone:</strong> {order.recipientPhone}
+          </p>
+          <p>
+            <strong>Delivery Date:</strong>{" "}
+            {new Date(order.dateDelivery).toLocaleDateString()}
+          </p>
+          <p>
+            <strong>Delivery Time:</strong> {order.timeDelivery}
+          </p>
+          <p>
+            <strong>Total Amount:</strong> ${order.totalAmount.toFixed(2)}
+          </p>
+          {order.address && (
+            <p>
+              <strong>Address:</strong> {order.address.street}, Apt{" "}
+              {order.address.apartmentNumber}
+            </p>
+          )}
+          <p>
+            <strong>Order Status:</strong>{" "}
+            {order.isDone ? "Completed" : "Pending"}
+          </p>
+          <p>
+            <strong>Payment Info:</strong> Card ending in{" "}
+            {order.cardNumber.slice(-4)}
+          </p>
+        </div>
+        <div className="flex w-full justify-between mt-4">
+          <DialogClose asChild>
+            <Button variant="ghost">Close</Button>
+          </DialogClose>
         </div>
       </DialogContent>
     </Dialog>

@@ -7,6 +7,7 @@ export type Order = typeof validateSchemas.createOrder._input & { _id: string };
 
 type OrderStateType = {
   orders: Order[];
+  orderPreview?: Order;
   isPending: boolean;
   error: string | null;
   pagination: {
@@ -37,6 +38,18 @@ export const getAllOrdersThunk = createAsyncThunk(
       const res = await api.get("/orders", {
         params: values,
       });
+      return res.data; // Assuming the response contains orders in `data`
+    } catch (error) {
+      handleApiError(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Error");
+    }
+  }
+);
+export const getOrderByIdThunk = createAsyncThunk(
+  "orders/getById",
+  async (values: { id: string }, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/orders/${values.id}`);
       return res.data; // Assuming the response contains orders in `data`
     } catch (error) {
       handleApiError(error);
@@ -88,6 +101,19 @@ export const orderSlice = createSlice({
         state.pagination = action.payload.data.pagination;
       })
       .addCase(getAllOrdersThunk.rejected, (state, action) => {
+        state.isPending = false;
+        state.error = action.payload as string;
+      });
+    builder
+      .addCase(getOrderByIdThunk.pending, (state) => {
+        state.isPending = true;
+        state.error = null;
+      })
+      .addCase(getOrderByIdThunk.fulfilled, (state, action) => {
+        state.isPending = false;
+        state.orderPreview = action.payload.data;
+      })
+      .addCase(getOrderByIdThunk.rejected, (state, action) => {
         state.isPending = false;
         state.error = action.payload as string;
       });

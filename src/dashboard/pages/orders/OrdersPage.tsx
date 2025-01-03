@@ -9,7 +9,13 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, ChevronUp, LoaderIcon } from "lucide-react";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  LoaderIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { getAllOrdersThunk, Order } from "../../../store/slices/orderSlice";
 import { useReduxDispatch, useReduxSelector } from "../../../store/store";
@@ -40,12 +46,12 @@ import {
   TableRow,
 } from "../../components/table";
 import * as OrdersForms from "./components/order-forms";
+import { Link } from "react-router-dom";
 
 export const OrdersPage = () => {
   const { orders, isPending, pagination } = useReduxSelector(
     (state) => state.orders
   );
-  console.log("orders", orders);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowsPerPage, setRowsPerPage] = useState(1);
@@ -135,8 +141,11 @@ export const OrdersPage = () => {
         const order = row.original;
         return (
           <div className="flex items-center space-x-2">
-            <OrdersForms.ToggleStatusButton order={order} />
+            <Link to={`${order._id}`}>
+              <Eye className=" size-4" />
+            </Link>
             <OrdersForms.Remove orderId={order._id} />
+            <OrdersForms.ToggleStatusButton order={order} />
           </div>
         );
       },
