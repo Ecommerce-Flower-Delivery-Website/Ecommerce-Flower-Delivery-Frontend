@@ -24,6 +24,9 @@ interface Contact {
   _id: number;
   call: string;
   isChecked: boolean;
+  user_id?: {
+    name?: string;
+  };
 }
 
 export const ContactPage: React.FC = () => {
@@ -31,7 +34,6 @@ export const ContactPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [rowsPerPage] = useState(10);
-  const [isPopupVisible, setPopupVisible] = useState(false);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -39,9 +41,10 @@ export const ContactPage: React.FC = () => {
         const response = await axios.get(
           `http://localhost:8000/api/v1/contact?pageNumber=${currentPage}`
         );
-        setContacts(response.data.data.contacts);
-        console.log(response.data.data.contacts);
-        setTotalPages(response.data.data.pagination.totalPages);
+        const { contacts, pagination } = response.data.data;
+
+        setContacts(contacts);
+        setTotalPages(pagination?.totalPages || 1);
       } catch (error) {
         console.error("Error fetching contacts:", error);
       }
@@ -102,7 +105,7 @@ export const ContactPage: React.FC = () => {
           )}
         </Button>
       ),
-      cell: ({ row }) => row.original.user_id.name,
+      cell: ({ row }) => row.original.user_id?.name || "Unknown",
     },
     {
       accessorKey: "isChecked",
@@ -168,7 +171,7 @@ export const ContactPage: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell>No results found.</TableCell>
+                  <TableCell colSpan={columns.length}>No results found.</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -194,8 +197,6 @@ export const ContactPage: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-      {/* {isPopupVisible && (
-      )} */}
     </>
   );
 };
