@@ -5,6 +5,7 @@ import {
   LogOut,
   MenuIcon,
   Moon,
+  Phone,
   ShoppingBag,
   ShoppingCart,
   Sun,
@@ -21,6 +22,7 @@ const menuItems = [
   { id: "overview", label: "Overview", icon: BarChartIcon },
   { id: "users", label: "User Management", icon: Users },
   { id: "accessories", label: "Accessories", icon: Gem },
+  { id: "contact", label: "Contact", icon: Phone },
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "category", label: "Categories", icon: Users },
   { id: "orders", label: "Orders", icon: ChartColumnStacked },
@@ -118,13 +120,13 @@ export const Dashboard = () => {
   const auth = useReduxSelector((state) => state.auth);
 
   const [menuIsOpen, setMenuIsOpen] = useState(window.innerWidth > 768);
-  useEffect(() => {
-    if (!auth.token || !auth?.user?.isAdmin) {
-      navigate("/dashboard/login_dashboard", {
-        replace: true,
-      });
-    }
-  }, [auth.token, auth?.user?.isAdmin, navigate]);
+  // useEffect(() => {
+  //   if (!auth.token || !auth?.user?.isAdmin) {
+  //     navigate("/dashboard/login_dashboard", {
+  //       replace: true,
+  //     });
+  //   }
+  // }, [auth.token, auth?.user?.isAdmin, navigate]);
   const isSmallScreen = window.innerWidth < 768;
   return (
     <>
