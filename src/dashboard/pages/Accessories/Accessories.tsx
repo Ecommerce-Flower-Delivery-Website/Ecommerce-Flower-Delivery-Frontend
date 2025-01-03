@@ -1,13 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, ChevronUp, Trash, Edit } from "lucide-react";
@@ -22,8 +20,8 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/table";
-import { dummyAccessories } from "./AccessoriesData";
 import AddPopup from "./components/AddPopup";
+import EditPopup from "./components/EditPopup"; // Import the EditPopup component
 
 interface Accessory {
   _id: number;
@@ -35,12 +33,12 @@ interface Accessory {
 }
 
 export const Accessories: React.FC = () => {
-  const [accessories, setAccessories] = useState<Accessory[]>(dummyAccessories);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [accessories, setAccessories] = useState<Accessory[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [rowsPerPage] = useState(10);
-  const [currentPage] = useState(1);
   const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isEditPopupVisible, setEditPopupVisible] = useState(false); // Add state for EditPopup
   const [newAccessory, setNewAccessory] = useState<Accessory>({
     _id: 0,
     title: "",
@@ -49,13 +47,47 @@ export const Accessories: React.FC = () => {
     description: "",
     price: 0,
   });
+  const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(null); // Track selected accessory for editing
+  
+  useEffect(() => {
+    const fetchAccessories = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/v1/accessory?pageNumber=${currentPage}`
+        );
+        setAccessories(response.data.accessories);
+        setTotalPages(response.data.totalPages);
+      } catch (error) {
+        console.error("Error fetching accessories:", error);
+      }
+    };
 
-  const handleDelete = (id: number) => {
-    setAccessories((prev) => prev.filter((item) => item._id !== id));
+    fetchAccessories();
+  }, [currentPage, rowsPerPage]);
+
+  const handleDelete = async (id: number) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/v1/accessory/${id}`);
+      setAccessories((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      console.error("Error deleting accessory:", error);
+    }
   };
 
   const handleEdit = (id: number) => {
-    console.log(`Editing item with ID: ${id}`);
+    const accessoryToEdit = accessories.find((item) => item._id === id);
+    if (accessoryToEdit) {
+      setSelectedAccessory(accessoryToEdit);
+      setEditPopupVisible(true); // Show the EditPopup
+    }
+  };
+
+  const updateAccessory = (updatedAccessory: Accessory) => {
+    setAccessories((prev) =>
+      prev.map((item) =>
+        item._id === updatedAccessory._id ? updatedAccessory : item
+      )
+    );
   };
 
   const columns: ColumnDef<Accessory>[] = [
@@ -111,25 +143,13 @@ export const Accessories: React.FC = () => {
     {
       accessorKey: "description",
       header: "Description",
-      cell: ({ row }) => {
-        const description = row.original.description;
-        const maxLength = 11;
-        const shortDescription = description.length > maxLength ? description.substring(0, maxLength) + '...' : description;
-    
-        return (
-          <div
-            className="relative group"
-            title={description}
-          >
-            <span className="overflow-hidden text-ellipsis whitespace-nowrap">{shortDescription}</span>
-            {description.length > maxLength && (
-              <div className="absolute bottom-6 left-[50%] translate-x-[-50%] px-2 py-1 rounded h-full bg-white bg-opacity-50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {description}
-              </div>
-            )}
-          </div>
-        );
-      },
+      cell: ({ row }) => (
+        <div className="relative group" title={row.original.description}>
+          {row.original.description.length > 11
+            ? `${row.original.description.substring(0, 11)}...`
+            : row.original.description}
+        </div>
+      ),
     },
     {
       accessorKey: "price",
@@ -174,32 +194,14 @@ export const Accessories: React.FC = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-      pagination: {
-        pageSize: rowsPerPage,
-        pageIndex: currentPage - 1,
-      },
-    },
   });
 
   return (
     <>
       <Card>
         <CardHeader className="flex flex-col items-end gap-4 md:flex-row md:justify-between">
-          <Input
-            placeholder="Search by title..."
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-            onChange={(e) =>
-              table.getColumn("title")?.setFilterValue(e.target.value)
-            }
-            className="max-w-md"
-          />
+          <Input placeholder="Search by title..." className="max-w-md" />
           <Button variant="outline" onClick={() => setPopupVisible(true)}>
             Add New Accessory
           </Button>
@@ -223,7 +225,7 @@ export const Accessories: React.FC = () => {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows.length ? (
+              {accessories.length > 0 ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
@@ -238,16 +240,32 @@ export const Accessories: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={columns.length}>
                     No results found.
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
+          <div className="flex items-center justify-between py-4">
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              disabled={currentPage === 1 || totalPages === 1}
+            >
+              Previous
+            </Button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={currentPage === totalPages || totalPages === 1}
+            >
+              Next
+            </Button>
+          </div>
         </CardContent>
       </Card>
       {isPopupVisible && (
@@ -256,6 +274,13 @@ export const Accessories: React.FC = () => {
           setPopupVisible={setPopupVisible}
           newAccessory={newAccessory}
           setNewAccessory={setNewAccessory}
+        />
+      )}
+      {isEditPopupVisible && selectedAccessory && (
+        <EditPopup
+          accessory={selectedAccessory}
+          setPopupVisible={setEditPopupVisible}
+          updateAccessory={updateAccessory}
         />
       )}
     </>

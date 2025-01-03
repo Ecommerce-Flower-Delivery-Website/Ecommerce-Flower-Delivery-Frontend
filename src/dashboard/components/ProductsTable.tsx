@@ -194,6 +194,8 @@ interface Product {
   updated_at: string;
 }
 
+
+
 interface ProductsTableProps {
   productsArray: Product[];
   fetchData: () => void;
@@ -204,7 +206,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   fetchData,
 }) => {
   const products = productsArray?.products || [];
-  // const products = dummyProducts;
   const naviagte = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -233,6 +234,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     setid(id);
     setshow(true);
   };
+
 
   const onConfirm = async (id: string) => {
     await dispatch(deleteProduct(id));
@@ -283,11 +285,13 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         <div className="flex space-x-2">
           <button
             className="text-blue-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
+
             onClick={(e) => editProducts(e, row.original._id)}>
             <Edit2 size={15} />
           </button>
           <button
             className="text-red-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
+
             onClick={(e) => deleteProductfunc(e, row.original._id)}>
             <Trash2 size={15} />
           </button>
@@ -329,6 +333,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
           />
         </div>
         <div className="w-full overflow-auto">
+
           {products.length === 0 ? (
             <div className="text-center text-gray-500 dark:text-gray-300 p-4">
               No Products Found
