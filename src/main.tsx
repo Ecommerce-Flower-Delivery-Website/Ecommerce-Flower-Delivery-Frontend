@@ -9,6 +9,7 @@ import App from "./App";
 import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
 import CategoryPage from "./dashboard/pages/CategoryPage";
+import { OrderPreviewPage } from "./dashboard/pages/OrderPreviewPage";
 import { CartsPage } from "./dashboard/pages/carts/CartsPage";
 import { LoginDashboardPage } from "./dashboard/pages/login/LoginDashboardPage";
 import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
@@ -59,7 +60,7 @@ const routers = createBrowserRouter([
                 element: <AddProductsPage />,
               },
               {
-                path: "edit",
+                path: "edit/:id",
                 element: <EditProductsPage />,
               },
               {
@@ -70,7 +71,16 @@ const routers = createBrowserRouter([
           },
           {
             path: "orders",
-            element: <OrdersPage />,
+            children: [
+              {
+                index: true,
+                element: <OrdersPage />,
+              },
+              {
+                path: ":id",
+                element: <OrderPreviewPage />,
+              },
+            ],
           },
           {
             path: "carts",
