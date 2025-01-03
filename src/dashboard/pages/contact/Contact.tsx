@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import {
   ColumnDef,
@@ -33,7 +33,7 @@ export const ContactPage: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [rowsPerPage] = useState(10);
+  const [filter, setFilter] = useState<"all" | "checked" | "unchecked">("all");
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -52,6 +52,13 @@ export const ContactPage: React.FC = () => {
 
     fetchContacts();
   }, [currentPage]);
+
+  const filteredContacts = useMemo(() => {
+    if (filter === "all") return contacts;
+    return contacts.filter((contact) =>
+      filter === "checked" ? contact.isChecked : !contact.isChecked
+    );
+  }, [contacts, filter]);
 
   const handleToggleChecked = async (id: number) => {
     try {
@@ -122,7 +129,7 @@ export const ContactPage: React.FC = () => {
   ];
 
   const table = useReactTable({
-    data: contacts,
+    data: filteredContacts,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -132,10 +139,27 @@ export const ContactPage: React.FC = () => {
   return (
     <>
       <Card>
-        <CardHeader className="flex flex-col items-end gap-4 md:flex-row md:justify-between">
-          <Button variant="outline" disabled>
-            Add New Contact (Not Implemented)
-          </Button>
+        <CardHeader className="flex justify-between items-center">
+          <div className="flex gap-2">
+            <Button
+              variant={filter === "all" ? "solid" : "outline"}
+              onClick={() => setFilter("all")}
+            >
+              All
+            </Button>
+            <Button
+              variant={filter === "checked" ? "solid" : "outline"}
+              onClick={() => setFilter("checked")}
+            >
+              Checked
+            </Button>
+            <Button
+              variant={filter === "unchecked" ? "solid" : "outline"}
+              onClick={() => setFilter("unchecked")}
+            >
+              Unchecked
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
@@ -156,7 +180,7 @@ export const ContactPage: React.FC = () => {
               ))}
             </TableHeader>
             <TableBody>
-              {contacts?.length > 0 ? (
+              {filteredContacts?.length > 0 ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
@@ -171,12 +195,14 @@ export const ContactPage: React.FC = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length}>No results found.</TableCell>
+                  <TableCell colSpan={columns.length}>
+                    No results found.
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between pt-4">
             <Button
               variant="outline"
               onClick={() => setCurrentPage((prev) => prev - 1)}
