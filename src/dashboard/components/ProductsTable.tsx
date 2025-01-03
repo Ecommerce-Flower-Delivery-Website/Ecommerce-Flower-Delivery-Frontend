@@ -195,17 +195,18 @@ interface Product {
 }
 
 
-
 interface ProductsTableProps {
   productsArray: Product[];
   fetchData: () => void;
 }
+
 
 const ProductsTable: React.FC<ProductsTableProps> = ({
   productsArray,
   fetchData,
 }) => {
   const products = productsArray?.products || [];
+
   const naviagte = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
