@@ -19,6 +19,8 @@ const menuItems = [
   { id: "users", label: "Users", icon: Users },
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "analytics", label: "Analytics", icon: BarChart },
+  { id: "subscribe-plans", label: "Subscribe Plans", icon: BarChart },
+
 ];
 
 interface SidebarProps {

@@ -40,7 +40,6 @@ const AddProductsPage = () => {
   const navigate = useNavigate();
 
 
-
   const handleClick = () => {
     file.current?.click();
   }

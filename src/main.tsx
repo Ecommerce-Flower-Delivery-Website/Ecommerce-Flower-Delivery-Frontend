@@ -23,6 +23,9 @@ import { UserManagementPage } from "./dashboard/pages/user-management/UserManage
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
+import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
+import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
+import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 
 const routers = createBrowserRouter([
   {
@@ -79,6 +82,27 @@ const routers = createBrowserRouter([
               {
                 path: ":id",
                 element: <OrderPreviewPage />,
+              },
+            ],
+          },
+          {
+            path: "subscribe-plans",
+            children: [
+              {
+                index: true,
+                element: <SubscribePlans />,
+              },
+              {
+                path: ":id",
+                element: <SubscribePlansDetails />,
+              },
+              {
+                path: "add",
+                element: <AddEditSubscribePlan />,
+              },
+              {
+                path: "edit/:id",
+                element: <AddEditSubscribePlan />,
               },
             ],
           },
