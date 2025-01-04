@@ -1,43 +1,16 @@
 import { z } from "zod";
 
-const userNameZodSchema = z
-  .string({
-    required_error: "user name is required",
-    invalid_type_error: "user name must be a string",
-  })
-  .min(3, "user name cannot be less than 3 character ")
-  .max(24, "user name cannot be more than 24 character ");
-
 const passwordZodSchema = (name = "password") =>
   z
     .string({
       invalid_type_error: `${name} must be a string`,
       required_error: `${name} is required`,
     })
-    .min(8, `${name} cannot be less than 8 character `)
-    .max(24, `${name} cannot be more than 24 character `);
+    .min(8, `${name} cannot be less then 8 characters`)
+    .max(24, `${name} cannot be more then 24 charecters`);
 // .refine((value) => {
 //   return /(?=.*[A-Z])(?=.*\d)/.test(value);
 // }, `${name} must have at least one capital and one number`);
-
-const userEmailSchema = z
-  .string({
-    required_error: "email is required",
-    invalid_type_error: "wrong email format",
-  })
-  .email("email is required");
-
-const userPhoneZodSchema = z.string().min(6).max(24);
-
-const userAddSchema = z.object({
-  name: userNameZodSchema,
-  email: userEmailSchema,
-  phone: userPhoneZodSchema,
-  isAdmin: z.boolean().default(false),
-  password: passwordZodSchema(),
-});
-
-const userUpdateSchema = userAddSchema.partial();
 
 const UserSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters long."),
@@ -57,7 +30,6 @@ const login = UserSchema.omit({
   name: true,
   password_confirmation: true,
 });
-
 const CartSchema = z.object({
   _id: z.string(),
   discount: z.coerce
@@ -85,6 +57,15 @@ const CartSchema = z.object({
     .min(1),
 });
 
+const CreateUserSchema = UserSchema.refine(
+  (data) => data.password === data.password_confirmation,
+  {
+    message: "Passwords don't match",
+    path: ["password_confirmation"],
+  }
+);
+
+const EditUserSchema = UserSchema.partial();
 const CreateCartSchema = CartSchema.omit({
   _id: true,
 });
@@ -166,8 +147,8 @@ export const validateSchemas = {
   signup,
   login,
   user: UserSchema,
-  createUser: userAddSchema,
-  editUser: userUpdateSchema,
+  createUser: CreateUserSchema,
+  editUser: EditUserSchema,
   cart: CartSchema,
   createCart: CreateCartSchema,
   editCart: EditCartSchema,
