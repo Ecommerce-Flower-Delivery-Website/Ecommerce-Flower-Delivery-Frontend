@@ -100,6 +100,7 @@ const addressSchema = z.object({
 
 // Product schema
 const productSchema = z.object({
+  _id: z.string(),
   title: z.string(),
   image: z.string(),
   priceAfterDiscount: z.number(),

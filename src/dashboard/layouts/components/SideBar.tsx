@@ -1,12 +1,14 @@
 import {
-  BarChart,
+  BarChartIcon,
+  ChartColumnStacked,
   ChevronLeft,
   ChevronRight,
-  LayoutDashboard,
+  Gem,
   LogOut,
-  Receipt,
+  Phone,
   ShoppingBag,
-  Users,
+  ShoppingCart,
+  Users,BarChart
 } from "lucide-react";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
@@ -14,15 +16,18 @@ import { cn } from "../../../lib/utils";
 import { Button } from "../../components/button";
 
 const menuItems = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "orders", label: "Orders", icon: Receipt },
-  { id: "users", label: "Users", icon: Users },
+  { id: "overview", label: "Overview", icon: BarChartIcon },
+  { id: "users", label: "User Management", icon: Users },
+  { id: "accessories", label: "Accessories", icon: Gem },
+  { id: "contact", label: "Contact", icon: Phone },
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "analytics", label: "Analytics", icon: BarChart },
   { id: "subscribe-plans", label: "Subscribe Plans", icon: BarChart },
 
+  { id: "category", label: "Categories", icon: Users },
+  { id: "orders", label: "Orders", icon: ChartColumnStacked },
+  { id: "carts", label: "Carts", icon: ShoppingCart },
 ];
-
 interface SidebarProps {
   open: boolean;
   setOpen: (open: boolean) => void;
