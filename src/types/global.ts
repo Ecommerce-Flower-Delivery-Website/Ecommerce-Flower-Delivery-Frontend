@@ -1,13 +1,17 @@
 declare global {
-  type User = {
+  type TUserFromBackend = {
     _id: string;
     name: string;
     email: string;
-    subscriptions: string;
-    verified: boolean;
+    phone: string;
     isAdmin: boolean;
-    createdAt: Date | string;
+    createdAt?: string;
+    updatedAt?: string;
+    __v?: number;
   };
+
+  type TUsersFromBackend = TUserFromBackend[];
+
   type SubProduct = {
     _id: string;
     price: number;
