@@ -47,8 +47,10 @@ export const Accessories: React.FC = () => {
     description: "",
     price: 0,
   });
-  const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(null); // Track selected accessory for editing
-  
+  const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(
+    null
+  ); // Track selected accessory for editing
+
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
