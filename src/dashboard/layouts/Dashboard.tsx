@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
 import { Moon, Sun } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useThemeToggle } from "../../contexts/hooks/useThemeToggle";
 import { Button } from "../components/button";
 import { Sidebar } from "./components/SideBar";
@@ -8,7 +8,14 @@ import { Sidebar } from "./components/SideBar";
 export const Dashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { theme, toggleTheme } = useThemeToggle();
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    if (!user || !token) {
+      navigate("/dashboard/login_dashboard");
+    }
+  }, [navigate]);
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />

@@ -25,7 +25,7 @@ const ShowProductDetails = () => {
     );
   }
 
-  const { image, title, price, description, stock } = product.product;
+  const { image, title, price, description, stock } = product;
 
   return (
     <div className="min-h-screen p-5">

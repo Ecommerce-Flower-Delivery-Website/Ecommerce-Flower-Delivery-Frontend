@@ -23,7 +23,6 @@ export const LoginDashboardPage = () => {
   });
 
   const onSubmit = async (data: LoginFormType) => {
-    console.log(data);
     const res = await dispatch(loginAdmin(data));
     if (res.meta.requestStatus === "fulfilled") {
       navigate("/dashboard", {
