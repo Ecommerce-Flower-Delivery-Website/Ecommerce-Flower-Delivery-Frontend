@@ -1,44 +1,58 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios, { AxiosError } from "axios";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import { api } from "../../lib/ajax/api";
 import { validateSchemas } from "../../lib/zod";
 
-const BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL;
-
+// Define types
 type TUserAdd = z.infer<typeof validateSchemas.createUser>;
-
-type TUserUpdate = Partial<typeof validateSchemas.editUser>;
+type TUserUpdate = Partial<z.infer<typeof validateSchemas.editUser>>;
 
 type TInitialState = {
   users: TUsersFromBackend;
   loading: boolean;
   error: string | null;
+  pagination: {
+    totalOrders: number;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+  };
 };
 
 const initialState: TInitialState = {
   users: [],
   loading: false,
   error: null,
+  pagination: {
+    totalOrders: 0,
+    totalPages: 0,
+    currentPage: 1,
+    pageSize: 1,
+  },
 };
 
-const getUsers = createAsyncThunk<TUsersFromBackend, void>(
+// Utility function for handling API errors
+const handleError = (error: unknown, defaultMessage: string): string => {
+  if (error instanceof AxiosError && error.response?.data?.message) {
+    return error.response.data.message;
+  }
+  return defaultMessage;
+};
+
+// Async thunks
+const getUsers = createAsyncThunk(
   "user/getUsers",
-  async (_, { rejectWithValue }) => {
+  async (values: { page: number; limit: number }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/v1/users`);
-
-      return response.data.data.users;
+      const response = await api.get(`/users`, {
+        params: values,
+      });
+      return response.data;
     } catch (error) {
-      console.log(error);
-
-      let message = "Failed to fetch users";
-
-      if (error instanceof AxiosError && error.response?.data?.message)
-        message = error.response?.data?.message;
-
+      const message = handleError(error, "Failed to fetch users");
       toast.error(message);
-
       return rejectWithValue(message);
     }
   }
@@ -48,21 +62,12 @@ const deleteUser = createAsyncThunk<string, string>(
   "user/deleteUser",
   async (userId, { rejectWithValue }) => {
     try {
-      await axios.delete(`${BASE_URL}/api/v1/users/${userId}`);
-
+      await api.delete(`/users/${userId}`);
       toast.success("User deleted successfully");
-
-      return userId; // Return the userId for further processing
+      return userId;
     } catch (error) {
-      console.log(error);
-
-      let message = "Failed to delete user";
-
-      if (error instanceof AxiosError && error.response?.data?.message)
-        message = error.response?.data?.message;
-
+      const message = handleError(error, "Failed to delete user");
       toast.error(message);
-
       return rejectWithValue(message);
     }
   }
@@ -72,24 +77,12 @@ const addUser = createAsyncThunk<TUserFromBackend, TUserAdd>(
   "user/addUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/v1/auth/register`,
-        userData
-      );
-
+      const response = await api.post(`/auth/register`, userData);
       toast.success("User added successfully");
-
       return response.data.data.user;
     } catch (error) {
-      console.log(error);
-
-      let message = "Failed to delete user";
-
-      if (error instanceof AxiosError && error.response?.data?.message)
-        message = error.response?.data?.message;
-
+      const message = handleError(error, "Failed to add user");
       toast.error(message);
-
       return rejectWithValue(message);
     }
   }
@@ -100,48 +93,37 @@ const updateUser = createAsyncThunk<
   { userId: string; userData: TUserUpdate }
 >("user/updateUser", async ({ userId, userData }, { rejectWithValue }) => {
   try {
-    const response = await axios.patch(
-      `${BASE_URL}/api/v1/users/${userId}`,
-      userData
-    );
-
+    const response = await api.patch(`/users/${userId}`, userData);
     toast.success("User updated successfully");
-
     return response.data.data.user;
   } catch (error) {
-    console.log(error);
-
-    let message = "Failed to delete user";
-
-    if (error instanceof AxiosError && error.response?.data?.message)
-      message = error.response?.data?.message;
-
+    const message = handleError(error, "Failed to update user");
     toast.error(message);
-
     return rejectWithValue(message);
   }
 });
 
+// Slice
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // Handle getUsers
     builder
+      // Handle getUsers
       .addCase(getUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(getUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.users = action.payload;
+        state.users = action.payload.data.users;
+        state.pagination = action.payload.data.pagination;
       })
       .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-
       // Handle deleteUser
       .addCase(deleteUser.pending, (state) => {
         state.loading = true;
@@ -155,41 +137,33 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-
       // Handle addUser
       .addCase(addUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        addUser.fulfilled,
-        (state, action: PayloadAction<TUserFromBackend>) => {
-          state.loading = false;
-          state.users.push(action.payload); // Add the new user to the users array
-        }
-      )
+      .addCase(addUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users.push(action.payload);
+      })
       .addCase(addUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-
       // Handle updateUser
       .addCase(updateUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        updateUser.fulfilled,
-        (state, action: PayloadAction<TUserFromBackend>) => {
-          state.loading = false;
-          const index = state.users.findIndex(
-            (user) => user._id === action.payload._id
-          );
-          if (index !== -1) {
-            state.users[index] = action.payload;
-          }
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.users.findIndex(
+          (user) => user._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.users[index] = action.payload;
         }
-      )
+      })
       .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -197,6 +171,7 @@ const userSlice = createSlice({
   },
 });
 
-export { getUsers, deleteUser, addUser, updateUser };
-export type { TUserFromBackend };
+// Exports
+export { addUser, deleteUser, getUsers, updateUser };
+export type { TUserFromBackend, TUsersFromBackend };
 export default userSlice.reducer;

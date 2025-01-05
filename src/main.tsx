@@ -8,7 +8,6 @@ import {
 import App from "./App";
 import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
-import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import CategoryPage from "./dashboard/pages/CategoryPage";
 import { OrderPreviewPage } from "./dashboard/pages/OrderPreviewPage";
 import { CartsPage } from "./dashboard/pages/carts/CartsPage";

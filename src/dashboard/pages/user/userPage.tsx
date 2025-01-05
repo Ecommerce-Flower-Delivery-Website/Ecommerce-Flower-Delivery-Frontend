@@ -6,20 +6,19 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  PaginationState,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
+import { getUsers, TUserFromBackend } from "../../../store/slices/userSlice";
+import {
+  RootState,
+  useReduxDispatch,
+  useReduxSelector,
+} from "../../../store/store";
 import { Card, CardContent, CardHeader } from "../../components/card";
 import { Input } from "../../components/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/select";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import {
   Pagination,
   PaginationContent,
@@ -29,6 +28,13 @@ import {
   PaginationPrevious,
 } from "../../components/pagination";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -37,63 +43,53 @@ import {
   TableRow,
 } from "../../components/table";
 import * as UserForms from "./components/user-forms";
-import { useSelector } from "react-redux";
-import { RootState, useReduxDispatch } from "../../../store/store";
-import { getUsers } from "../../../store/slices/userSlice";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import { TUserFromBackend } from "../../../store/slices/userSlice";
-import { Button } from "../../components/button";
 
 export const UserPage = () => {
-  const { users, loading, error } = useSelector(
+  const { users, pagination, loading } = useReduxSelector(
     (state: RootState) => state.user
   );
 
   const dispatch = useReduxDispatch();
 
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
-
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 5,
-  });
+  const [rowsPerPage, setRowsPerPage] = useState(1);
+  const totalPages = pagination.totalPages;
+  const setCurrentPage = ({ page }: { page: number }) => {
+    dispatch(getUsers({ page, limit: rowsPerPage }));
+  };
+  useEffect(() => {
+    dispatch(getUsers({ page: pagination.currentPage, limit: rowsPerPage }));
+  }, [dispatch, pagination.currentPage, rowsPerPage]);
 
   const columns: ColumnDef<TUserFromBackend, unknown>[] = [
     {
-      accessorKey: "name", // Changed "username" to "name"
-      header: () => <span className="p-0 hover:bg-transparent">Name</span>,
+      accessorKey: "_id",
+      header: "Id",
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
     },
     {
       accessorKey: "email",
-      header: () => <span className="p-0 hover:bg-transparent">Email</span>,
+      header: "Email",
     },
+
     {
-      accessorKey: "phone",
-      header: () => <span className="p-0 hover:bg-transparent">Phone</span>,
-    },
-    {
-      accessorKey: "isAdmin", // Field in your data
+      accessorKey: "isAdmin",
       header: "Admin Status",
       filterFn: (row, columnId, filterValue) => {
-        if (filterValue === "") return true; // Show all rows if no filter is applied
-        const cellValue = row.getValue<boolean>(columnId); // Get the actual value
-        return cellValue === (filterValue === "true"); // Compare boolean values
+        if (filterValue === "") return true;
+        const cellValue = row.getValue<boolean>(columnId);
+        return cellValue === (filterValue === "true");
       },
       cell: ({ row }) => {
         const isAdmin = row.getValue("isAdmin") as boolean;
         return (
           <span
             className={`rounded-full px-2 py-1 text-xs ${
-              isAdmin
-                ? "bg-green-500/25 text-green-500" // Style for admin
-                : "" // Style for non-admin
+              isAdmin ? "bg-green-500/25 text-green-500" : ""
             }`}
           >
             {isAdmin ? "Admin" : "User"}
@@ -102,9 +98,13 @@ export const UserPage = () => {
       },
     },
     {
+      accessorKey: "phone",
+      header: "Phone",
+    },
+    {
       header: "Actions",
       cell: ({ row }) => {
-        const user = row.original;
+        const user = row.original as TUserFromBackend;
         return (
           <span>
             <UserForms.Edit user={user} />
@@ -121,14 +121,16 @@ export const UserPage = () => {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
-    onPaginationChange: setPagination,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
       columnFilters,
-      pagination,
+      pagination: {
+        pageSize: rowsPerPage,
+        pageIndex: pagination.currentPage - 1,
+      },
     },
   });
 
@@ -140,41 +142,34 @@ export const UserPage = () => {
     <Card>
       <CardHeader className="flex items-end justify-end gap-4">
         <div className="flex w-full flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm">Show</span>
+            <Select
+              value={rowsPerPage.toString()}
+              onValueChange={(value) => setRowsPerPage(parseInt(value))}
+            >
+              <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
+                <SelectValue placeholder={rowsPerPage} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="25">25</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+              </SelectContent>
+            </Select>
+            <span className="text-sm">entries</span>
+          </div>
           <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
             <Input
-              placeholder="Search by name..."
-              value={
-                (table.getColumn("name")?.getFilterValue() as string) ?? ""
-              }
+              placeholder="Search by order id..."
+              value={(table.getColumn("_id")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
-                table.getColumn("name")?.setFilterValue(event.target.value)
+                table.getColumn("_id")?.setFilterValue(event.target.value)
               }
               className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
             />
-            <Select
-              value={
-                (table.getColumn("isAdmin")?.getFilterValue() as string) ??
-                "all"
-              }
-              onValueChange={(value) =>
-                table
-                  .getColumn("isAdmin")
-                  ?.setFilterValue(value === "all" ? "" : value)
-              }
-            >
-              <SelectTrigger className="w-[200px] bg-white dark:bg-gray-800">
-                <SelectValue
-                  placeholder="Filter by Admin Status"
-                  className="text-black dark:text-white"
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Users</SelectItem>
-                <SelectItem value="true">Admin</SelectItem>
-                <SelectItem value="false">User</SelectItem>
-              </SelectContent>
-            </Select>
-            <UserForms.Create /> {/* Add User button */}
           </div>
         </div>
       </CardHeader>
@@ -198,12 +193,9 @@ export const UserPage = () => {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows?.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+            {users.length > 0 ? (
+              table.getPrePaginationRowModel().rows?.map((row) => (
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -226,35 +218,53 @@ export const UserPage = () => {
             )}
           </TableBody>
         </Table>
-        <div>
+        <div className="flex items-center justify-between py-4">
+          <div className="text-nowrap text-sm text-muted-foreground">
+            Showing{" "}
+            {table.getPrePaginationRowModel().rows?.length +
+              (pagination.currentPage - 1) * rowsPerPage}
+            of {pagination.totalOrders} entries
+          </div>
           <Pagination>
             <PaginationContent>
-              <PaginationPrevious
-                onClick={() => table.previousPage()}
-                className={
-                  !table.getCanPreviousPage()
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
-              />
-              {[...Array.from({ length: table.getPageCount() })].map((_, i) => (
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() =>
+                    setCurrentPage({
+                      page: Math.max(pagination.currentPage - 1, 1),
+                    })
+                  }
+                  className={
+                    pagination.currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }
+                />
+              </PaginationItem>
+              {[...Array.from({ length: totalPages })].map((_, i) => (
                 <PaginationItem key={i}>
                   <PaginationLink
-                    onClick={() => table.setPageIndex(i)} // Use setPageIndex to navigate to the page
-                    isActive={table.getState().pagination.pageIndex === i} // Check if the page is active
+                    onClick={() => setCurrentPage({ page: i + 1 })}
+                    isActive={pagination.currentPage === i + 1}
                   >
                     {i + 1}
                   </PaginationLink>
                 </PaginationItem>
               ))}
-              <PaginationNext
-                onClick={() => table.nextPage()}
-                className={
-                  !table.getCanNextPage()
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
-              />
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    setCurrentPage({
+                      page: Math.min(pagination.currentPage + 1, totalPages),
+                    })
+                  }
+                  className={
+                    pagination.currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }
+                />
+              </PaginationItem>
             </PaginationContent>
           </Pagination>
         </div>
