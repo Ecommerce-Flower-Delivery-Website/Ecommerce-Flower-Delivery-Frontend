@@ -20,9 +20,10 @@ import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
 import ProductsPage from "./dashboard/pages/products/ProductsPage";
 import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
-import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
+import { Accessories } from "./dashboard/pages/Accessories/Accessories";
+import { UserPage } from "./dashboard/pages/user/userPage";
 import { ContactPage } from "./dashboard/pages/contact/Contact";
 
 const routers = createBrowserRouter([
@@ -41,7 +42,7 @@ const routers = createBrowserRouter([
           },
           {
             path: "users",
-            element: <UserManagementPage />,
+            element: <UserPage />,
           },
           {
             path: "accessories",

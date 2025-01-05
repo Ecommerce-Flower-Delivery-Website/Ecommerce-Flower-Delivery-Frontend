@@ -1,4 +1,4 @@
-import { InfoIcon as ExclamationCircle } from "lucide-react"
+import { InfoIcon as ExclamationCircle } from "lucide-react";
 
 export const ErrorMessage = ({ message }: { message: string | undefined }) => {
   return (
@@ -13,5 +13,5 @@ export const ErrorMessage = ({ message }: { message: string | undefined }) => {
         </>
       )}
     </div>
-  )
-}
+  );
+};
