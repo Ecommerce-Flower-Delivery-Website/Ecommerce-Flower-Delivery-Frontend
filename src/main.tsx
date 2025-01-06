@@ -21,6 +21,9 @@ import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
+import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
+import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
+import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import { UserPage } from "./dashboard/pages/user/userPage";
 import { ContactPage } from "./dashboard/pages/contact/Contact";
@@ -86,6 +89,31 @@ const routers = createBrowserRouter([
                 element: <OrderPreviewPage />,
               },
             ],
+          },
+          {
+            path: "subscribe-plans",
+            children: [
+              {
+                index: true,
+                element: <SubscribePlans />,
+              },
+              {
+                path: ":id",
+                element: <SubscribePlansDetails />,
+              },
+              {
+                path: "add",
+                element: <AddEditSubscribePlan />,
+              },
+              {
+                path: "edit/:id",
+                element: <AddEditSubscribePlan />,
+              },
+            ],
+          },
+          {
+            path: "carts",
+            element: <CartsPage />,
           },
           // {
           //   path: "carts",
