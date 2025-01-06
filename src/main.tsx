@@ -115,10 +115,7 @@ const routers = createBrowserRouter([
             path: "carts",
             element: <CartsPage />,
           },
-          // {
-          //   path: "carts",
-          //   element: <CartsPage />,
-          // },
+
           {
             path: "category",
             element: <CategoryPage />,
