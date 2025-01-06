@@ -20,9 +20,12 @@ import {
   TableRow,
 } from "../../components/table";
 
+const baseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
+const apiVersion = import.meta.env.VITE_API_VERSION;
+
 interface Contact {
   _id: number;
-  call: string;
+  name: string;
   isChecked: boolean;
   user_id?: {
     name?: string;
@@ -39,7 +42,7 @@ export const ContactPage: React.FC = () => {
     const fetchContacts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/contact?pageNumber=${currentPage}`
+          `${baseUrl}/api/${apiVersion}/contact?pageNumber=${currentPage}`
         );
         const { contacts, pagination } = response.data.data;
 
@@ -75,7 +78,7 @@ export const ContactPage: React.FC = () => {
         };
 
         await axios.put(
-          `http://localhost:8000/api/v1/contact/${id}`,
+          `${baseUrl}/api/${apiVersion}/contact/${id}`,
           updatedContact,
           {
             headers: {
@@ -83,6 +86,7 @@ export const ContactPage: React.FC = () => {
             },
           }
         );
+        3;
 
         setContacts((prev) =>
           prev.map((item) => (item._id === id ? updatedContact : item))
@@ -95,14 +99,14 @@ export const ContactPage: React.FC = () => {
 
   const columns: ColumnDef<Contact>[] = [
     {
-      accessorKey: "call",
+      accessorKey: "name",
       header: ({ column }) => (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="p-0 hover:bg-transparent"
         >
-          Call
+          name
           {column.getIsSorted() === "asc" ? (
             <ChevronUp className="ml-2 h-4 w-4" />
           ) : column.getIsSorted() === "desc" ? (
@@ -142,19 +146,19 @@ export const ContactPage: React.FC = () => {
         <CardHeader className="flex justify-between items-center">
           <div className="flex gap-2">
             <Button
-              variant={filter === "all" ? "solid" : "outline"}
+              variant={filter === "all" ? "outline" : "solid"}
               onClick={() => setFilter("all")}
             >
               All
             </Button>
             <Button
-              variant={filter === "checked" ? "solid" : "outline"}
+              variant={filter === "checked" ? "outline" : "solid"}
               onClick={() => setFilter("checked")}
             >
               Checked
             </Button>
             <Button
-              variant={filter === "unchecked" ? "solid" : "outline"}
+              variant={filter === "unchecked" ? "outline" : "solid"}
               onClick={() => setFilter("unchecked")}
             >
               Unchecked

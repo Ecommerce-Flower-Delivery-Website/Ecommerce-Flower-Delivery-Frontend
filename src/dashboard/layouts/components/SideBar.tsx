@@ -23,7 +23,7 @@ const menuItems = [
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "category", label: "Categories", icon: Users },
   { id: "orders", label: "Orders", icon: ChartColumnStacked },
-  { id: "carts", label: "Carts", icon: ShoppingCart },
+  // { id: "carts", label: "Carts", icon: ShoppingCart },
 ];
 interface SidebarProps {
   open: boolean;
