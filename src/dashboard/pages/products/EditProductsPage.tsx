@@ -7,16 +7,10 @@ import Loader from "../../components/Loader";
 
 // const categories = [
 //   { id: "1", name: "Electronics" },
-//   { id: "2", name: "Clothing" },
-//   { id: "3", name: "Home Appliances" },
-//   { id: "4", name: "Books" },
-//   { id: "5", name: "Beauty" },
-//   { id: "5", name: "Beauty" },
-//   { id: "5", name: "Beauty" },
-//   { id: "5", name: "Beauty" },
-//   { id: "5", name: "Beauty" },
 // ];
+
 const EditProductsPage = () => {
+
   const { id } = useParams();
   const dispatch = useReduxDispatch();
   const { product, loading } = useReduxSelector((state) => state.product);
@@ -28,9 +22,12 @@ const EditProductsPage = () => {
   const [description, setdescription] = useState<string>("");
   const [stock, setstock] = useState<string>("");
   const [price, setprice] = useState<string>("");
+  const [quantity, setQuantity] = useState<string>("");
+  const [priceAfterDiscount, setPriceAfterDiscount] = useState<string>("");
+  const [categoryId, setCategoryId] = useState<string>("");
   const [image, setimage] = useState<string | File>("");
   const navigate = useNavigate();
-  // const [size, setSize] = useState(1);
+  // const [size, setSize] = useState(1);  
 
   const handleClick = () => {
     file.current?.click();
@@ -57,6 +54,19 @@ const EditProductsPage = () => {
     if(price){
       formData.append("price", price);
     }    
+
+    if(priceAfterDiscount) {
+      formData.append("priceAfterDiscount", priceAfterDiscount);
+    }
+
+    if (quantity) {
+      formData.append("quantity", quantity);
+    }
+
+    if (categoryId) {
+      formData.append("category_id", categoryId);
+    }
+
     if(stock){
       formData.append("stock", stock);
     }    
@@ -73,11 +83,15 @@ const EditProductsPage = () => {
   useEffect(()=> {
     dispatch(getProduct(id)).then((result) => {
       if(result.meta.requestStatus === "fulfilled"){
+        
         settitle(product?.product.title);
         setdescription(product?.product.description);
         setstock(product?.product.stock);
         setprice(product?.product.price);
-        setpreviewImage(`http://localhost:5000${product?.product.image}`);
+        setPriceAfterDiscount(product?.product.priceAfterDiscount);
+        setQuantity(product?.product.quantity);
+        setCategoryId(product.product.category_id);
+        setpreviewImage(`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${product?.product.image}`);
       }
     });
   },[])
@@ -112,6 +126,22 @@ const EditProductsPage = () => {
 
             <div>
               <label htmlFor="quantity" className="block mb-2">
+                quantity :
+              </label>
+              <input
+                type="text"
+                id="quantity"
+                name="quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder="Title"
+                className="w-full p-2  dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="quantity" className="block mb-2">
                 Stock :
               </label>
               <input
@@ -137,6 +167,38 @@ const EditProductsPage = () => {
                 value={price}
                 onChange={(e) => setprice(e.target.value)}
                 placeholder="Price"
+                className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="priceAfterDiscount" className="block mb-2">
+                priceAfterDiscount :
+              </label>
+              <input
+                type="number"
+                id="priceAfterDiscount"
+                name="priceAfterDiscount"
+                value={priceAfterDiscount}
+                onChange={(e) => setPriceAfterDiscount(e.target.value)}
+                placeholder="Price After Discount"
+                className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="category_id" className="block mb-2">
+                category_id :
+              </label>
+              <input
+                type="text"
+                id="category_id"
+                name="category_id"
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+                placeholder="Category Id"
                 className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
                 required
               />

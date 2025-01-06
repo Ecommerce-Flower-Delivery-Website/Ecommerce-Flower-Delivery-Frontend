@@ -51,11 +51,9 @@ const signup = UserSchema.omit({
   subscriptions: true,
   verified: true,
 });
-const login = UserSchema.omit({
-  subscriptions: true,
-  verified: true,
-  name: true,
-  password_confirmation: true,
+const login = z.object({
+  email: userEmailSchema,
+  password: passwordZodSchema(),
 });
 
 const CartSchema = z.object({
