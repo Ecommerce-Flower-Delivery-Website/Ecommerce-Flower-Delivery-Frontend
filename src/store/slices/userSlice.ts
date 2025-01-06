@@ -95,7 +95,7 @@ const updateUser = createAsyncThunk<
   try {
     const response = await api.patch(`/users/${userId}`, userData);
     toast.success("User updated successfully");
-    return response.data.data.user;
+    return response.data.data;
   } catch (error) {
     const message = handleError(error, "Failed to update user");
     toast.error(message);

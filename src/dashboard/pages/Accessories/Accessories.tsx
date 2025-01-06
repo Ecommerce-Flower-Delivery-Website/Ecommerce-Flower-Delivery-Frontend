@@ -22,6 +22,7 @@ import {
 } from "../../components/table";
 import AddPopup from "./components/AddPopup";
 import EditPopup from "./components/EditPopup"; // Import the EditPopup component
+import { toast } from "react-toastify";
 
 interface Accessory {
   _id: number;
@@ -112,17 +113,17 @@ export const Accessories: React.FC = () => {
         </Button>
       ),
     },
-    {
-      accessorKey: "image",
-      header: "Image",
-      cell: ({ row }) => (
-        <img
-          src={row.original.image}
-          alt={row.original.title}
-          className="h-10 w-10 rounded-md object-cover"
-        />
-      ),
-    },
+    // {
+    //   accessorKey: "image",
+    //   header: "Image",
+    //   cell: ({ row }) => (
+    //     <img
+    //       src={row.original.image}
+    //       alt={row.original.title}
+    //       className="h-10 w-10 rounded-md object-cover"
+    //     />
+    //   ),
+    // },
     {
       accessorKey: "stock",
       header: ({ column }) => (
