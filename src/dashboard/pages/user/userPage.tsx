@@ -163,12 +163,10 @@ export const UserPage = () => {
           </div>
           <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
             <Input
-              placeholder="Search by name..."
-              value={
-                (table.getColumn("name")?.getFilterValue() as string) ?? ""
-              }
+              placeholder="Search by order id..."
+              value={(table.getColumn("_id")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
-                table.getColumn("name")?.setFilterValue(event.target.value)
+                table.getColumn("_id")?.setFilterValue(event.target.value)
               }
               className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
             />

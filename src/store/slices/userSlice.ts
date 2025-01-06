@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 import { api } from "../../lib/ajax/api";
 import { validateSchemas } from "../../lib/zod";
-import { handleApiError } from "../../lib/utils";
 
 // Define types
 type TUserAdd = z.infer<typeof validateSchemas.createUser>;
@@ -53,8 +52,7 @@ const getUsers = createAsyncThunk(
       return response.data;
     } catch (error) {
       const message = handleError(error, "Failed to fetch users");
-      handleApiError(error);
-
+      toast.error(message);
       return rejectWithValue(message);
     }
   }
@@ -69,8 +67,7 @@ const deleteUser = createAsyncThunk<string, string>(
       return userId;
     } catch (error) {
       const message = handleError(error, "Failed to delete user");
-      handleApiError(error);
-
+      toast.error(message);
       return rejectWithValue(message);
     }
   }
@@ -85,8 +82,7 @@ const addUser = createAsyncThunk<TUserFromBackend, TUserAdd>(
       return response.data.data.user;
     } catch (error) {
       const message = handleError(error, "Failed to add user");
-      handleApiError(error);
-
+      toast.error(message);
       return rejectWithValue(message);
     }
   }
@@ -102,8 +98,7 @@ const updateUser = createAsyncThunk<
     return response.data.data.user;
   } catch (error) {
     const message = handleError(error, "Failed to update user");
-    handleApiError(error);
-
+    toast.error(message);
     return rejectWithValue(message);
   }
 });
