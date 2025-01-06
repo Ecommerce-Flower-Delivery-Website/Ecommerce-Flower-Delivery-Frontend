@@ -4,13 +4,16 @@ import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 
 interface Product {
+  priceAfterDiscount: string;
+  discount?:string;
+  quantity: string;
   id: string;
   title: string;
   price: number;
   stock: number;
   description: string;
   image?: string;
-  category_id?: number;
+  category_id: number;
   accessory_id: number;
   created_at: string;
   updated_at: string;
@@ -19,6 +22,9 @@ interface Product {
 interface ProductState {
   products: Product[];
   product: {
+    priceAfterDiscount: string;
+    discount?:string;
+    quantity: string;
     id: string;
     title: string;
     price: number;
@@ -47,6 +53,9 @@ const initialState: ProductState = {
     accessory_id: 0,
     created_at: "",
     updated_at: "",
+    priceAfterDiscount: "", // Add this field
+    discount: "", // Add this field (optional)
+    quantity: "", // Add this field
   },
   loading: false,
   error: null,
@@ -77,6 +86,8 @@ export const addProducts = createAsyncThunk(
         return response.data.data;
       }
     } catch (error) {
+      console.log(error);
+      
       handleApiError(error);
       return rejectWithValue(error instanceof Error ? error.message : "Error");
     }
@@ -88,6 +99,7 @@ export const getProduct = createAsyncThunk(
   async (id: string | undefined, { rejectWithValue }) => {
     try {
       const response = await api.get(`/product/${id}`);
+      
       if (response.status === 201 || response.status === 200) {
         return response.data.data;
       }
