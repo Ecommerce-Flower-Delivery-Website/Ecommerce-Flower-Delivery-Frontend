@@ -92,6 +92,24 @@ export const Accessories: React.FC = () => {
     }
   };
 
+  const handleDelete = async (id: number) => {
+    const confirmation = window.confirm("Are you sure you want to delete this accessory?");
+    if (!confirmation) {
+      return; // Exit if the user cancels
+    }
+  
+    try {
+      const response = await axios.delete(`http://localhost:3000/api/v1/accessory/${id}`);
+      if (response.status === 200) {
+        // Remove the deleted accessory from the state
+        setAccessories((prev) => prev.filter((accessory) => accessory._id !== id));
+        console.log("Accessory deleted successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting accessory:", error);
+    }
+  };  
+
   const updateAccessory = (updatedAccessory: Accessory) => {
     setAccessories((prev) =>
       prev.map((item) =>
@@ -164,7 +182,10 @@ export const Accessories: React.FC = () => {
           <Button variant="ghost" onClick={() => handleEdit(row.original._id)}>
             <Edit className="h-5 w-5 text-blue-500" />
           </Button>
-          <Button variant="ghost" onClick={() => console.log("Delete action")}>
+          <Button
+            variant="ghost"
+            onClick={() => handleDelete(row.original._id)}
+          >
             <Trash className="h-5 w-5 text-red-500" />
           </Button>
         </div>
