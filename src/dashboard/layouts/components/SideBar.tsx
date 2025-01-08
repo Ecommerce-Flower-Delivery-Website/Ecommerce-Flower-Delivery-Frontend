@@ -6,8 +6,10 @@ import {
   ChevronRight,
   Gem,
   LogOut,
+  MessageCircle,
   Phone,
   ShoppingBag,
+  ShoppingCart,
   Users,
 } from "lucide-react";
 import React from "react";
@@ -24,7 +26,8 @@ const menuItems = [
   { id: "subscribe-plans", label: "Subscribe Plans", icon: BarChart },
   { id: "category", label: "Categories", icon: Users },
   { id: "orders", label: "Orders", icon: ChartColumnStacked },
-  // { id: "carts", label: "Carts", icon: ShoppingCart },
+  { id: "reminder", label: "Reminedr", icon: MessageCircle },
+  { id: "carts", label: "Carts", icon: ShoppingCart },
 ];
 interface SidebarProps {
   open: boolean;

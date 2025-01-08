@@ -5,12 +5,8 @@ import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 import { getProduct, updateProduct } from "../../../store/slices/productSlice";
 import Loader from "../../components/Loader";
 
-// const categories = [
-//   { id: "1", name: "Electronics" },
-// ];
 
 const EditProductsPage = () => {
-
   const { id } = useParams();
   const dispatch = useReduxDispatch();
   const { product, loading } = useReduxSelector((state) => state.product);
@@ -94,7 +90,7 @@ const EditProductsPage = () => {
         setpreviewImage(`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${product?.product.image}`);
       }
     });
-  },[])
+  },[]);
 
   return (
     <>
@@ -107,177 +103,160 @@ const EditProductsPage = () => {
             <Loader />
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-            <div>
-              <label htmlFor="title" className="block mb-2 mb-2">
-                Title :
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={title}
-                onChange={(e) => settitle(e.target.value)}
-                placeholder="Title"
-                className="w-full p-2  dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="quantity" className="block mb-2">
-                quantity :
-              </label>
-              <input
-                type="text"
-                id="quantity"
-                name="quantity"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                placeholder="Title"
-                className="w-full p-2  dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="quantity" className="block mb-2">
-                Stock :
-              </label>
-              <input
-                type="number"
-                id="stock"
-                name="stock"
-                value={stock}
-                onChange={(e) => setstock(e.target.value)}
-                placeholder="Stock"
-                className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="price" className="block mb-2">
-                Price :
-              </label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                value={price}
-                onChange={(e) => setprice(e.target.value)}
-                placeholder="Price"
-                className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="priceAfterDiscount" className="block mb-2">
-                priceAfterDiscount :
-              </label>
-              <input
-                type="number"
-                id="priceAfterDiscount"
-                name="priceAfterDiscount"
-                value={priceAfterDiscount}
-                onChange={(e) => setPriceAfterDiscount(e.target.value)}
-                placeholder="Price After Discount"
-                className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="category_id" className="block mb-2">
-                category_id :
-              </label>
-              <input
-                type="text"
-                id="category_id"
-                name="category_id"
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                placeholder="Category Id"
-                className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="description" className="block mb-2">
-                Description :
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={description}
-                onChange={(e) => setdescription(e.target.value)}
-                placeholder="Description"
-                className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                rows={4}
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="image" className="block mb-2">
-                Image :
-              </label>
-              <button
-                type="button"
-                className="flex p-5 border bg-white border-dashed dark:border-white border-gray-300 border-2 w-full dark:bg-gray-800 items-center justify-center rounded"
-                onClick={handleClick}>
-                {previewImage ? (
-                  <img
-                    src={previewImage}
-                    alt="Selected Preview"
-                    className="w-[400px] h-[200px] rounded-md"
-                  />
-                ) : (
-                  <img src="/assets/images/UploadIcon.png" alt="Upload Icon" />
-                )}
+          <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+            {/* Row 1: Title, Quantity, Stock */}
+            <div className="flex flex-wrap gap-4">
+              <div className="flex-1 min-w-[200px]">
+                <label htmlFor="title" className="block mb-2">
+                  Title :
+                </label>
                 <input
-                  ref={file}
-                  className="sr-only"
-                  type="file"
-                  name="image"
-                  id="image"
-                  onChange={(e) => handleFile(e)}
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={title}
+                  onChange={(e) => settitle(e.target.value)}
+                  placeholder="Title"
+                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                  required
                 />
-              </button>
+              </div>
+              <div className="flex-1 min-w-[200px]">
+                <label htmlFor="quantity" className="block mb-2">
+                  Quantity :
+                </label>
+                <input
+                  type="text"
+                  id="quantity"
+                  name="quantity"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  placeholder="Quantity"
+                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                  required
+                />
+              </div>
+              <div className="flex-1 min-w-[200px]">
+                <label htmlFor="stock" className="block mb-2">
+                  Stock :
+                </label>
+                <input
+                  type="number"
+                  id="stock"
+                  name="stock"
+                  value={stock}
+                  onChange={(e) => setstock(e.target.value)}
+                  placeholder="Stock"
+                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                  required
+                />
+              </div>
             </div>
 
-            {/* <div className="w-full">
-            <label
-              htmlFor="category"
-              className="block mb-2 text-sm font-medium">
-              Category
-            </label>
-            <select
-              size={size}
-              onFocus={() => setSize(5)}
-              onBlur={() => setSize(1)}
-              onChange={(e) => {
-                setSize(1);
-                e.target.blur();
-              }}
-              id="category"
-              name="category"
-              className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-              required>
-              <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div> */}
+            {/* Row 2: Price, Price After Discount, Category Id */}
+            <div className="flex flex-wrap gap-4">
+              <div className="flex-1 min-w-[200px]">
+                <label htmlFor="price" className="block mb-2">
+                  Price :
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  value={price}
+                  onChange={(e) => setprice(e.target.value)}
+                  placeholder="Price"
+                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                  required
+                />
+              </div>
+              <div className="flex-1 min-w-[200px]">
+                <label htmlFor="priceAfterDiscount" className="block mb-2">
+                  Price After Discount :
+                </label>
+                <input
+                  type="number"
+                  id="priceAfterDiscount"
+                  name="priceAfterDiscount"
+                  value={priceAfterDiscount}
+                  onChange={(e) => setPriceAfterDiscount(e.target.value)}
+                  placeholder="Price After Discount"
+                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                  required
+                />
+              </div>
+              <div className="flex-1 min-w-[200px]">
+                <label htmlFor="category_id" className="block mb-2">
+                  Category Id :
+                </label>
+                <input
+                  type="text"
+                  id="category_id"
+                  name="category_id"
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  placeholder="Category Id"
+                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Row 3: Description and Image */}
+            <div className="flex flex-wrap gap-4">
+              <div className="flex-1 min-w-[300px]">
+                <label htmlFor="description" className="block mb-2">
+                  Description :
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={description}
+                  onChange={(e) => setdescription(e.target.value)}
+                  placeholder="Description"
+                  className="w-full h-48 px-3 py-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded resize-none"
+                  required
+                />
+              </div>
+              <div className="flex-1 min-w-[300px]">
+                <label htmlFor="image" className="block mb-2">
+                  Image :
+                </label>
+                <div
+                  className="w-full h-48 border bg-white border-dashed dark:border-white border-gray-300 border-2 dark:bg-gray-800 rounded overflow-hidden cursor-pointer"
+                  onClick={handleClick}>
+                  {previewImage ? (
+                    <img
+                      src={previewImage}
+                      alt="Selected Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img
+                        src="/assets/images/UploadIcon.png"
+                        alt="Upload Icon"
+                        className="w-12 h-12"
+                      />
+                    </div>
+                  )}
+                  <input
+                    ref={file}
+                    className="hidden"
+                    type="file"
+                    name="image"
+                    id="image"
+                    onChange={(e) => handleFile(e)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
             <div>
               <button
                 type="submit"
-                className="bg-primary text-white py-3 px-16 font-semibold rounded">
+                className="bg-primary text-white py-3 px-16 font-semibold rounded hover:bg-opacity-90 transition-colors">
                 Edit Product
               </button>
             </div>
