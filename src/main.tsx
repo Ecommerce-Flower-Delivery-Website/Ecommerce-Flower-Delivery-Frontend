@@ -27,6 +27,7 @@ import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import { UserPage } from "./dashboard/pages/user/userPage";
 import { ContactPage } from "./dashboard/pages/contact/Contact";
+import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
 
 const routers = createBrowserRouter([
   {
@@ -124,6 +125,10 @@ const routers = createBrowserRouter([
             path: "/dashboard",
             element: <Navigate to={"/dashboard/overview"} replace />,
           },
+          {
+            path: "reminder",
+            element: <ShowRemindersPage />
+          }
         ],
       },
       {

@@ -17,9 +17,9 @@ export const Dashboard: React.FC = () => {
     }
   }, [navigate]);
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex  ">
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-      <div className="flex relative flex-col flex-1 overflow-hidden">
+      <div className="flex relative flex-col flex-1 ">
         <header className="flex items-center h-16 justify-between px-6 py-4 bg-muted ">
           <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
             Dashboard
