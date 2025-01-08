@@ -1,14 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, LockIcon, MailIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { validateSchemas } from "../../../lib/zod";
 import { loginAdmin } from "../../../store/slices/authSlice";
 import { useReduxDispatch, useReduxSelector } from "../../../store/store";
-import { Button } from "../../components/button";
 import { Input } from "../../components/input";
+import { Button } from "../../components/button";
+
 type LoginFormType = z.infer<typeof validateSchemas.login>;
+
 export const LoginDashboardPage = () => {
   const navigate = useNavigate();
   const dispatch = useReduxDispatch();
@@ -17,7 +19,7 @@ export const LoginDashboardPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isLoading },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormType>({
     resolver: zodResolver(validateSchemas.login),
   });
@@ -32,7 +34,7 @@ export const LoginDashboardPage = () => {
   };
 
   return (
-    <main className="min-h-screen  flex items-center  justify-center ">
+    <main className="min-h-screen flex items-center justify-center ">
       <div className="     absolute inset-0 bg-black isolate ">
         <div className=" bg-black w-full  absolute inset-0 " />
         <div className="dark:mix-blend-lighten absolute animate-[spin_3s_linear_infinite]   w-[200vw] -left-[50vw] -top-[50vh] h-[200vh]  from-primary to-secondary bg-gradient-to-tr" />
@@ -44,97 +46,74 @@ export const LoginDashboardPage = () => {
           />
         </div>
       </div>
-      <div className="w-full max-w-md relative  ">
-        <div className="w-full relative py-10  px-8 bg-white/20  backdrop-blur-sm rounded-lg shadow-lg">
-          <h2 className="  text-center pb-10 text-3xl font-bold text-foreground">
-            Login
-          </h2>
-          <form className=" space-y-6 " onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm h-6 font-medium text-foreground"
-              >
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admain@gmail.com"
-                required
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /\S+@\S+\.\S+/,
-                    message: "Invalid email address",
-                  },
-                })}
-                className={errors.email ? "border-destructive" : ""}
-              />
-              {errors.email && (
-                <div
-                  className="flex min-h-6 items-center space-x-2 px-3 text-rose-500"
-                  role="alert"
-                >
-                  {errors.email.message && (
-                    <>
-                      <InfoIcon className="h-4 w-4 flex-shrink-0" />
-                      <p className="pb-1 text-sm font-medium">
-                        {errors.email.message}
-                      </p>
-                    </>
-                  )}
-                </div>
-              )}
+      <div className="w-full max-w-md px-4 sm:px-0 relative z-10">
+        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg shadow-xl overflow-hidden ">
+          <div className="p-8 space-y-6">
+            <div className="flex justify-center">
+              <img src="/vite.svg" alt="Logo" className="h-12 w-auto" />
             </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm h-6 font-medium text-foreground"
-              >
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="password"
-                required
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters",
-                  },
-                })}
-                className={errors.password ? "border-destructive" : ""}
-              />
-              {errors.password && (
-                <div
-                  className="flex min-h-6 items-center space-x-2 px-3 text-rose-500"
-                  role="alert"
-                >
-                  {errors.password.message && (
-                    <>
-                      <InfoIcon className="h-4 w-4 flex-shrink-0" />
-                      <p className="pb-1 text-sm font-medium">
-                        {errors.password.message}
-                      </p>
-                    </>
-                  )}
+            <h2 className="text-2xl font-bold text-center text-white">
+              Welcome back
+            </h2>
+            <p className="text-center text-gray-300">
+              Enter your credentials to access your account
+            </p>
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+              <div className="space-y-2">
+                <label htmlFor="email" className="text-white">
+                  Email
+                </label>
+                <div className="relative">
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="admin@example.com"
+                    {...register("email")}
+                    className={`pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:ring-primary focus:border-primary ${
+                      errors.email ? "border-red-500" : ""
+                    }`}
+                  />
+                  <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 </div>
-              )}
-            </div>
-
-            <div className="">
+                {errors.email && (
+                  <p className="text-sm text-red-500 flex items-center mt-1">
+                    <InfoIcon className="h-4 w-4 mr-1" />
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-white">
+                  Password
+                </label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    {...register("password")}
+                    className={`pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:ring-primary focus:border-primary ${
+                      errors.password ? "border-red-500" : ""
+                    }`}
+                  />
+                  <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                </div>
+                {errors.password && (
+                  <p className="text-sm text-red-500 flex items-center mt-1">
+                    <InfoIcon className="h-4 w-4 mr-1" />
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
               <Button
                 type="submit"
-                className="w-full"
-                disabled={isLoading || isPending}
+                className="w-full bg-primary hover:bg-primary-hover text-white transition-[colors_transform] duration-200"
+                disabled={isSubmitting || isPending}
               >
-                {isLoading ? "Signing in..." : "Sign in"}
+                {isSubmitting ? "Signing in..." : "Sign in"}
               </Button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </main>

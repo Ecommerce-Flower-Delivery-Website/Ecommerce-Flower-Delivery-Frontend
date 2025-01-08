@@ -26,7 +26,7 @@ import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubsc
 import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import { UserPage } from "./dashboard/pages/user/userPage";
-import { ContactPage } from "./dashboard/pages/contact/Contact";
+import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 
 const routers = createBrowserRouter([
   {
@@ -52,7 +52,7 @@ const routers = createBrowserRouter([
           },
           {
             path: "contact",
-            element: <ContactPage />,
+            element: <ContactsPage />,
           },
           {
             path: "products",
@@ -115,6 +115,7 @@ const routers = createBrowserRouter([
             path: "carts",
             element: <CartsPage />,
           },
+
           {
             path: "category",
             element: <CategoryPage />,

@@ -19,6 +19,7 @@ declare global {
     name: string;
     image: string;
   };
+
   type Address = {
     street: string;
     apartmentNumber: number;

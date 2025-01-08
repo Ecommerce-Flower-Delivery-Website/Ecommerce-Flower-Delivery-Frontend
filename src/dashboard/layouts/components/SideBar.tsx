@@ -1,4 +1,5 @@
 import {
+  BarChart,
   BarChartIcon,
   ChartColumnStacked,
   ChevronLeft,
@@ -7,8 +8,7 @@ import {
   LogOut,
   Phone,
   ShoppingBag,
-  ShoppingCart,
-  Users,BarChart
+  Users,
 } from "lucide-react";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
@@ -21,12 +21,10 @@ const menuItems = [
   { id: "accessories", label: "Accessories", icon: Gem },
   { id: "contact", label: "Contact", icon: Phone },
   { id: "products", label: "Products", icon: ShoppingBag },
-  { id: "analytics", label: "Analytics", icon: BarChart },
   { id: "subscribe-plans", label: "Subscribe Plans", icon: BarChart },
-
   { id: "category", label: "Categories", icon: Users },
   { id: "orders", label: "Orders", icon: ChartColumnStacked },
-  { id: "carts", label: "Carts", icon: ShoppingCart },
+  // { id: "carts", label: "Carts", icon: ShoppingCart },
 ];
 interface SidebarProps {
   open: boolean;
