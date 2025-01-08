@@ -42,4 +42,12 @@ declare global {
     user_id: string;
   };
 }
+
+export interface PaginationInfo {
+  totalPlans: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+}
+
 export {};
