@@ -2,6 +2,7 @@ import {
   BarChart,
   ChevronLeft,
   ChevronRight,
+  Gem,
   LayoutDashboard,
   LogOut,
   Receipt,
@@ -15,6 +16,7 @@ import { Button } from "../../components/button";
 
 const menuItems = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "accessories", label: "Accessories", icon: Gem },
   { id: "orders", label: "Orders", icon: Receipt },
   { id: "users", label: "Users", icon: Users },
   { id: "products", label: "Products", icon: ShoppingBag },
