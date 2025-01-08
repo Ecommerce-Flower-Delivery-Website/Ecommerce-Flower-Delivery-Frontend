@@ -107,7 +107,7 @@ export const LoginDashboardPage = () => {
               </div>
               <Button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-white transition-[colors_transform] duration-200"
+                className="w-full bg-primary hover:bg-primary-hover text-white transition-[colors_transform] duration-200"
                 disabled={isSubmitting || isPending}
               >
                 {isSubmitting ? "Signing in..." : "Sign in"}

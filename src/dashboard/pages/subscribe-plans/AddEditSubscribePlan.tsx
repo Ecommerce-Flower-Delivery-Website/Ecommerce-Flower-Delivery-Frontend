@@ -31,7 +31,7 @@ const AddEditSubscribePlan = () => {
   );
 
     const oldDataUpdated = useMemo(() => {
-      const oldDataSubscribe=  subscribePlansData.find(item => item._id === id);
+      const oldDataSubscribe=  subscribePlansData?.subscribePlans.find(item => item._id === id);
       console.log(oldDataSubscribe,"subscribePlansData")
 
       if(oldDataSubscribe){
@@ -118,7 +118,8 @@ const AddEditSubscribePlan = () => {
             <Loader />
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+          <form onSubmit={handleSubmit} className="mt-6  ">
+            <section className="grid sm:grid-cols-3 grid-cols-1 gap-4 ">
             <div>
 
               <label htmlFor="title" className="block mb-2 ">
@@ -185,23 +186,7 @@ const AddEditSubscribePlan = () => {
                 required
               />
             </div>
-            <div>
-              <label htmlFor="isFreeDelivery" className="block mb-2">
-              Is Free Delivery :
-              </label>
-              
-              <Switch
-              id="isFreeDelivery"
-              name="isFreeDelivery"
-              checked={Boolean(isFreeDelivery==="0"?"":"1")}
-              onClick={(e) => {
-                const target = e.target as HTMLElement; // Ensure it's cast as an HTMLElement
-                const ariaChecked = target.getAttribute('aria-checked'); // Use getAttribute
-                setIsFreeDelivery(ariaChecked === 'true' ? "0" : "1");
-              }}            
-              />
-              
-            </div>
+
 
             <div>
               <div className="flex gap-3">
@@ -223,7 +208,23 @@ const AddEditSubscribePlan = () => {
                 required
               />
             </div>
-
+            <div>
+              <label htmlFor="isFreeDelivery" className="block mb-2">
+              Is Free Delivery :
+              </label>
+              
+              <Switch
+              id="isFreeDelivery"
+              name="isFreeDelivery"
+              checked={Boolean(isFreeDelivery==="0"?"":"1")}
+              onClick={(e) => {
+                const target = e.target as HTMLElement; // Ensure it's cast as an HTMLElement
+                const ariaChecked = target.getAttribute('aria-checked'); // Use getAttribute
+                setIsFreeDelivery(ariaChecked === 'true' ? "0" : "1");
+              }}            
+              />
+              
+            </div>
             <div>
               <label htmlFor="image" className="block mb-2">
                 Image :
@@ -251,9 +252,10 @@ const AddEditSubscribePlan = () => {
                 />
               </button>
             </div>
+            </section>
 
 
-            <div>
+            <div className="mt-4 text-center">
               <button
                 type="submit"
                 className="bg-primary text-white py-3 px-16 font-semibold rounded">

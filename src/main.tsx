@@ -29,6 +29,7 @@ import { UserPage } from "./dashboard/pages/user/userPage";
 import { ContactPage } from "./dashboard/pages/contact/Contact";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
 
+
 const routers = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -53,7 +54,7 @@ const routers = createBrowserRouter([
           },
           {
             path: "contact",
-            element: <ContactPage />,
+            element: <ContactsPage />,
           },
           {
             path: "products",

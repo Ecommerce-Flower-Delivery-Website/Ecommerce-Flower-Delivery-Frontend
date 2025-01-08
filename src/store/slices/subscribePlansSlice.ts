@@ -2,28 +2,37 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../lib/ajax/api";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
-import { SubscribePlan } from "../../types/subscribePlansType";
+import { ResponseDataSubscribePlan, SubscribePlan } from "../../types/subscribePlansType";
 
 
 
 
 interface SubscribePlanStates {
-    subscribePlansData: SubscribePlan[];
+    subscribePlansData: ResponseDataSubscribePlan;
     loading: boolean;
     error: null | string;
+    subscribePlanData:SubscribePlan | null;
 }
 
 const initialState : SubscribePlanStates = {
-    subscribePlansData: [],
+    subscribePlansData: {subscribePlans:[],pagination:{
+        totalPlans: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 1,
+    }},
+    subscribePlanData:null,
     loading: false,
     error: null
 };
 
 export const getSubscribePlans = createAsyncThunk(
     'subscribe_plans/getSubscribePlans',
-    async (_, { rejectWithValue }) => {
+    async (values: { page: number; limit: number }, { rejectWithValue }) => {
         try{
-            const response = await api.get('/subscribe');
+            const response = await api.get('/subscribe', {
+                params: values,
+            });
             if (response.status === 201 || response.status === 200) {
                 return response.data.data;
             }
@@ -34,6 +43,18 @@ export const getSubscribePlans = createAsyncThunk(
     }
 );
 
+export const getSubscribePlan = createAsyncThunk(
+    'subscribe_plans/getSubscribePlan',
+    async (values: { id: string }, { rejectWithValue }) => {
+      try {
+        const res = await api.get(`/subscribe/${values.id}`);
+        return res.data; 
+      } catch (error) {
+        handleApiError(error);
+        return rejectWithValue(error instanceof Error ? error.message : "Error");
+      }
+    }
+  );
 
 export const addSubscribePlan = createAsyncThunk(
     'subscribe_plans/addSubscribePlan',
@@ -102,6 +123,19 @@ const SubscribePlanSlice = createSlice({
     initialState,
     reducers : {},
     extraReducers: (builder) => {
+            builder
+              .addCase(getSubscribePlan.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+              })
+              .addCase(getSubscribePlan.fulfilled, (state, action) => {
+                state.loading = false;
+                state.subscribePlanData = action.payload.data;
+              })
+              .addCase(getSubscribePlan.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+              });
         builder
         .addCase(getSubscribePlans.pending, (state) => {
             state.loading = true;
