@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../../../../lib/ajax/api";
 import { Button } from "../../../components/button";
 import { Input } from "../../../components/input";
 
@@ -29,12 +29,15 @@ const AddPopup: React.FC<AddPopupProps> = ({
       try {
         const formData = new FormData();
         formData.append("title", newAccessory.title);
-        formData.append("image", newAccessory.image instanceof File ? newAccessory.image : "");
+        formData.append(
+          "image",
+          newAccessory.image instanceof File ? newAccessory.image : ""
+        );
         formData.append("stock", newAccessory.stock.toString());
         formData.append("description", newAccessory.description);
         formData.append("price", newAccessory.price.toString());
 
-        const response = await axios.post(
+        const response = await api.post(
           "http://localhost:3000/api/v1/accessory",
           formData,
           {

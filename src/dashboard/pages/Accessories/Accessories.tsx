@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   ColumnDef,
   flexRender,
@@ -22,6 +21,7 @@ import {
 } from "../../components/table";
 import AddPopup from "./components/AddPopup";
 import EditPopup from "./components/EditPopup";
+import { api } from "../../../lib/ajax/api";
 
 interface Accessory {
   _id: number;
@@ -64,7 +64,7 @@ export const Accessories: React.FC = () => {
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
-        const response = await axios.get(
+        const response = await api.get(
           `http://localhost:3000/api/v1/accessory?pageNumber=${currentPage}`
         );
         setAccessories(response.data.accessories);
@@ -93,22 +93,28 @@ export const Accessories: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    const confirmation = window.confirm("Are you sure you want to delete this accessory?");
+    const confirmation = window.confirm(
+      "Are you sure you want to delete this accessory?"
+    );
     if (!confirmation) {
       return; // Exit if the user cancels
     }
-  
+
     try {
-      const response = await axios.delete(`http://localhost:3000/api/v1/accessory/${id}`);
+      const response = await api.delete(
+        `http://localhost:3000/api/v1/accessory/${id}`
+      );
       if (response.status === 200) {
         // Remove the deleted accessory from the state
-        setAccessories((prev) => prev.filter((accessory) => accessory._id !== id));
+        setAccessories((prev) =>
+          prev.filter((accessory) => accessory._id !== id)
+        );
         console.log("Accessory deleted successfully");
       }
     } catch (error) {
       console.error("Error deleting accessory:", error);
     }
-  };  
+  };
 
   const updateAccessory = (updatedAccessory: Accessory) => {
     setAccessories((prev) =>
@@ -143,7 +149,7 @@ export const Accessories: React.FC = () => {
       header: "Image",
       cell: ({ row }) => (
         <img
-          src={row.original.image}
+          src={import.meta.env.VITE_PUBLIC_API_BASE_URL + row.original.image}
           alt={row.original.title}
           className="h-10 w-10 rounded-md object-cover"
         />

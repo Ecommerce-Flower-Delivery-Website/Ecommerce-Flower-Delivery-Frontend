@@ -14,7 +14,7 @@ import {
 } from "../../../components/dialog";
 import { ErrorMessage } from "../../../components/error-message";
 import { Input } from "../../../components/input";
-import { removeUser, updateUser } from "../../../../store/slices/userSlice";
+import { deleteUser, updateUser } from "../../../../store/slices/userSlice";
 import { useReduxDispatch } from "../../../../store/store";
 type CreateUserFormType = z.infer<typeof validateSchemas.createUser>;
 
@@ -175,7 +175,7 @@ export const Remove = ({ userId }: { userId: string }) => {
           </Button>
           <Button
             onClick={() => {
-              dispatch(removeUser(userId));
+              dispatch(deleteUser(userId));
               setIsOpen(false);
             }}
           >

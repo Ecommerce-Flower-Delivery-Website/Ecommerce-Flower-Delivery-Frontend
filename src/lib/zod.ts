@@ -24,12 +24,7 @@ const signup = UserSchema.omit({
   subscriptions: true,
   verified: true,
 });
-const login = UserSchema.omit({
-  subscriptions: true,
-  verified: true,
-  name: true,
-  password_confirmation: true,
-});
+const login = UserSchema.pick({ email: true, password: true });
 const CartSchema = z.object({
   _id: z.string(),
   discount: z.coerce

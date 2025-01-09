@@ -15,6 +15,7 @@ declare global {
     name: string;
     image: string;
   };
+
   type Address = {
     street: string;
     apartmentNumber: number;
@@ -38,4 +39,12 @@ declare global {
     user_id: string;
   };
 }
+
+export interface PaginationInfo {
+  totalPlans: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+}
+
 export {};

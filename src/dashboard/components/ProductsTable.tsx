@@ -35,165 +35,23 @@ const dummyProducts =  [
       accessory_id: 1,
       created_at: "2024-01-01T00:00:00.000Z",
       updated_at: "2024-01-01T00:00:00.000Z",
-    },
-    {
-      _id: "2",
-      title: "Wireless Gaming Mouse",
-      price: 79.99,
-      stock: 50,
-      description: "Ultra-responsive wireless gaming mouse with RGB lighting",
-      accessory_id: 2,
-      created_at: "2024-01-02T00:00:00.000Z",
-      updated_at: "2024-01-02T00:00:00.000Z",
-    },
-    {
-      _id: "3",
-      title: "Mechanical Keyboard",
-      price: 149.99,
-      stock: 30,
-      description: "Premium mechanical keyboard with Cherry MX switches",
-      accessory_id: 3,
-      created_at: "2024-01-03T00:00:00.000Z",
-      updated_at: "2024-01-03T00:00:00.000Z",
-    },
-    {
-      _id: "4",
-      title: "4K Gaming Monitor",
-      price: 499.99,
-      stock: 20,
-      description: "27-inch 4K gaming monitor with 144Hz refresh rate",
-      accessory_id: 4,
-      created_at: "2024-01-04T00:00:00.000Z",
-      updated_at: "2024-01-04T00:00:00.000Z",
-    },
-    {
-      _id: "5",
-      title: "Gaming Headset",
-      price: 129.99,
-      stock: 40,
-      description:
-        "Surround sound gaming headset with noise-cancelling microphone",
-      accessory_id: 5,
-      created_at: "2024-01-05T00:00:00.000Z",
-      updated_at: "2024-01-05T00:00:00.000Z",
-    },
-    {
-      _id: "6",
-      title: "Gaming Chair",
-      price: 299.99,
-      stock: 25,
-      description:
-        "Ergonomic gaming chair with lumbar support and adjustable armrests",
-      accessory_id: 6,
-      created_at: "2024-01-06T00:00:00.000Z",
-      updated_at: "2024-01-06T00:00:00.000Z",
-    },
-    {
-      _id: "7",
-      title: "RGB Mousepad",
-      price: 39.99,
-      stock: 60,
-      description: "Extended RGB mousepad with customizable lighting effects",
-      accessory_id: 7,
-      created_at: "2024-01-07T00:00:00.000Z",
-      updated_at: "2024-01-07T00:00:00.000Z",
-    },
-    {
-      _id: "8",
-      title: "Webcam Pro",
-      price: 89.99,
-      stock: 35,
-      description: "1080p webcam with auto-focus and low-light correction",
-      accessory_id: 8,
-      created_at: "2024-01-08T00:00:00.000Z",
-      updated_at: "2024-01-08T00:00:00.000Z",
-    },
-    {
-      _id: "9",
-      title: "USB Microphone",
-      price: 119.99,
-      stock: 45,
-      description: "Professional USB condenser microphone for streaming",
-      accessory_id: 9,
-      created_at: "2024-01-09T00:00:00.000Z",
-      updated_at: "2024-01-09T00:00:00.000Z",
-    },
-    {
-      _id: "10",
-      title: "Graphics Card",
-      price: 699.99,
-      stock: 10,
-      description: "High-end graphics card for ultimate gaming performance",
-      accessory_id: 10,
-      created_at: "2024-01-10T00:00:00.000Z",
-      updated_at: "2024-01-10T00:00:00.000Z",
-    },
-    {
-      _id: "11",
-      title: "SSD Drive",
-      price: 159.99,
-      stock: 55,
-      description: "1TB NVMe SSD for ultra-fast storage solutions",
-      accessory_id: 11,
-      created_at: "2024-01-11T00:00:00.000Z",
-      updated_at: "2024-01-11T00:00:00.000Z",
-    },
-    {
-      _id: "12",
-      title: "Gaming Console",
-      price: 499.99,
-      stock: 18,
-      description: "Next-gen gaming console with 4K gaming capabilities",
-      accessory_id: 12,
-      created_at: "2024-01-12T00:00:00.000Z",
-      updated_at: "2024-01-12T00:00:00.000Z",
-    },
-    {
-      _id: "13",
-      title: "Streaming Deck",
-      price: 149.99,
-      stock: 28,
-      description: "Customizable streaming control deck with LCD keys",
-      accessory_id: 13,
-      created_at: "2024-01-13T00:00:00.000Z",
-      updated_at: "2024-01-13T00:00:00.000Z",
-    },
-    {
-      _id: "14",
-      title: "Cable Management Kit",
-      price: 29.99,
-      stock: 70,
-      description: "Complete cable management solution for clean setup",
-      accessory_id: 14,
-      created_at: "2024-01-14T00:00:00.000Z",
-      updated_at: "2024-01-14T00:00:00.000Z",
-    },
-    {
-      _id: "15",
-      title: "Capture Card",
-      price: 159.99,
-      stock: 22,
-      description: "4K60 capture card for streaming and recording",
-      accessory_id: 15,
-      created_at: "2024-01-15T00:00:00.000Z",
-      updated_at: "2024-01-15T00:00:00.000Z",
-    },
+    }
   ];
-
-
 interface Product {
-  id: string;
+  priceAfterDiscount:string;
+  discount?: string;
+  quantity: string;
+  _id: string;
   title: string;
   price: number;
   stock: number;
   description: string;
   image?: string;
-  category_id?: number;
-  accessory_id: number;
+  category_id: number;
+  accessory_id?: number;
   created_at: string;
   updated_at: string;
 }
-
 
 interface ProductsTableProps {
   productsArray: Product[];
@@ -260,14 +118,20 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
   const columns: ColumnDef<(typeof productsArray)[number]>[] = [
     {
-      accessorKey: "title",
-      header: "Name",
-      cell: ({ row }) => row.getValue("title"),
+      accessorKey: "category_id",
+      header: "category id",
+      cell: ({ row }) => row.getValue("category_id"),
     },
     {
-      accessorKey: "price",
-      header: "Price",
-      cell: ({ row }) => `$${row.getValue("price").toFixed(2)}`,
+      accessorKey: "title",
+      header: "Title",
+      cell: ({ row }) => row.getValue("title"),
+      filterFn: "includesString", 
+    },
+    {
+      accessorKey: "quantity",
+      header: "Quantity",
+      cell: ({ row }) => row.getValue("quantity"),
     },
     {
       accessorKey: "stock",
@@ -278,6 +142,15 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
       accessorKey: "description",
       header: "Description",
       cell: ({ row }) => truncateText(row.getValue("description"), 40),
+    }, {
+      accessorKey: "price",
+      header: "Price",
+      cell: ({ row }) => `$${row.getValue("price")}`,
+    },
+    {
+      accessorKey: "priceAfterDiscount",
+      header: "Price After Discount",
+      cell: ({ row }) => `$${row.getValue("priceAfterDiscount")}`,
     },
     {
       id: "actions",
@@ -286,13 +159,11 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         <div className="flex space-x-2">
           <button
             className="text-blue-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-
             onClick={(e) => editProducts(e, row.original._id)}>
             <Edit2 size={15} />
           </button>
           <button
             className="text-red-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-
             onClick={(e) => deleteProductfunc(e, row.original._id)}>
             <Trash2 size={15} />
           </button>

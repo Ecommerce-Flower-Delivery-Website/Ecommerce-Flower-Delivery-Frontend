@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "../../../components/card";
 import { Input } from "../../../components/input";
 import { Button } from "../../../components/button";
+import { api } from "../../../../lib/ajax/api";
 
 interface EditPopupProps {
   accessory: {
@@ -57,12 +58,15 @@ const EditPopup: React.FC<EditPopupProps> = ({
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/accessory/${updatedAccessory._id}`, {
-        method: "PUT",
-        body: formData,
-      });
+      const response = await api.put(
+        `http://localhost:3000/api/v1/accessory/${updatedAccessory._id}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error("Error updating accessory");
       }
 

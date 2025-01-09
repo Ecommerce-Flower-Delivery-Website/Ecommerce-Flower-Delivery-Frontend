@@ -22,7 +22,13 @@ import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
+import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
+import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
+import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
+
+import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
+import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 
 const routers = createBrowserRouter([
   {
@@ -44,7 +50,11 @@ const routers = createBrowserRouter([
           },
           {
             path: "accessories",
-            element: <Accessories />
+            element: <Accessories />,
+          },
+          {
+            path: "contact",
+            element: <ContactsPage />,
           },
           {
             path: "products",
@@ -83,9 +93,31 @@ const routers = createBrowserRouter([
             ],
           },
           {
+            path: "subscribe-plans",
+            children: [
+              {
+                index: true,
+                element: <SubscribePlans />,
+              },
+              {
+                path: ":id",
+                element: <SubscribePlansDetails />,
+              },
+              {
+                path: "add",
+                element: <AddEditSubscribePlan />,
+              },
+              {
+                path: "edit/:id",
+                element: <AddEditSubscribePlan />,
+              },
+            ],
+          },
+          {
             path: "carts",
             element: <CartsPage />,
           },
+
           {
             path: "category",
             element: <CategoryPage />,
@@ -94,11 +126,19 @@ const routers = createBrowserRouter([
             path: "/dashboard",
             element: <Navigate to={"/dashboard/overview"} replace />,
           },
+          {
+            path: "reminder",
+            element: <ShowRemindersPage />,
+          },
         ],
       },
       {
         path: "/dashboard/login_dashboard",
         element: <LoginDashboardPage />,
+      },
+      {
+        path: "/accessories",
+        element: <Accessories />,
       },
       {
         path: "/*",
