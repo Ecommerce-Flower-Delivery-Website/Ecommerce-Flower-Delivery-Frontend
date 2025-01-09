@@ -56,6 +56,18 @@ const login = z.object({
   password: passwordZodSchema(),
 });
 
+const addReviewSchema = z.object({
+  name: z.string().trim().min(1, "name is required"),
+  text: z.string().trim().min(1, "text is required"),
+  shouldShow: z.string().default("0"),
+});
+
+const validateUpdateReviewSchema = z.object({
+  name: z.string().trim().min(1, "name is required"),
+  text: z.string().trim().min(1, "text is required"),
+  shouldShow: z.string().default("0"),
+});
+
 const CartSchema = z.object({
   _id: z.string(),
   discount: z.coerce
@@ -166,6 +178,8 @@ export const validateSchemas = {
   user: UserSchema,
   createUser: userAddSchema,
   editUser: userUpdateSchema,
+  addReview: addReviewSchema,
+  editReview: validateUpdateReviewSchema,
   cart: CartSchema,
   createCart: CreateCartSchema,
   editCart: EditCartSchema,
