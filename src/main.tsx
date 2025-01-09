@@ -13,6 +13,7 @@ import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
 import ProductsPage from "./dashboard/pages/products/ProductsPage";
 import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
+import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
@@ -40,7 +41,7 @@ const routers = createBrowserRouter([
           },
           {
             path: "users",
-            element: <UserPage />,
+            element: <UserManagementPage />,
           },
           {
             path: "accessories",
