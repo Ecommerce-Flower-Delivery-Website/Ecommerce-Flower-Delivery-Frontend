@@ -1,16 +1,10 @@
 import { StrictMode, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
-import CategoryPage from "./dashboard/pages/CategoryPage";
 import { OrderPreviewPage } from "./dashboard/pages/OrderPreviewPage";
-import { CartsPage } from "./dashboard/pages/carts/CartsPage";
 import { LoginDashboardPage } from "./dashboard/pages/login/LoginDashboardPage";
 import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
 import { OverviewPage } from "./dashboard/pages/overview/OverviewPage";
@@ -26,9 +20,10 @@ import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePl
 import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
 import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
-
-import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
+import { UserPage } from "./dashboard/pages/user/userPage";
 import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
+import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
+import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
 
 const routers = createBrowserRouter([
   {
@@ -113,19 +108,23 @@ const routers = createBrowserRouter([
               },
             ],
           },
+          // {
+          //   path: "carts",
+          //   element: <CartsPage />,
+          // },
           {
-            path: "carts",
-            element: <CartsPage />,
+            path: "reviews",
+            element: <ReviewPage />,
           },
 
-          {
-            path: "category",
-            element: <CategoryPage />,
-          },
-          {
-            path: "/dashboard",
-            element: <Navigate to={"/dashboard/overview"} replace />,
-          },
+          // {
+          //   path: "category",
+          //   element: <CategoryPage />,
+          // },
+          // {
+          //   path: "/dashboard",
+          //   element: <Navigate to={"/dashboard/overview"} replace />,
+          // },
           {
             path: "reminder",
             element: <ShowRemindersPage />,

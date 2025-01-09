@@ -6,7 +6,6 @@ import { api } from "../../lib/ajax/api";
 import { validateSchemas } from "../../lib/zod";
 
 // Define types
-type TUserAdd = z.infer<typeof validateSchemas.createUser>;
 type TUserUpdate = Partial<z.infer<typeof validateSchemas.editUser>>;
 
 type TInitialState = {
@@ -14,7 +13,7 @@ type TInitialState = {
   loading: boolean;
   error: string | null;
   pagination: {
-    totalOrders: number;
+    totalUsers: number;
     totalPages: number;
     currentPage: number;
     pageSize: number;
@@ -26,7 +25,7 @@ const initialState: UserState = {
   loading: false,
   error: null,
   pagination: {
-    totalOrders: 0,
+    totalUsers: 0,
     totalPages: 0,
     currentPage: 1,
     pageSize: 1,
@@ -58,7 +57,7 @@ const getUsers = createAsyncThunk(
   }
 );
 
-const deleteUser = createAsyncThunk<string, string>(
+const deleteUser = createAsyncThunk(
   "user/deleteUser",
   async (userId, { rejectWithValue }) => {
     try {
@@ -73,7 +72,7 @@ const deleteUser = createAsyncThunk<string, string>(
   }
 );
 
-const addUser = createAsyncThunk<TUserFromBackend, TUserAdd>(
+const addUser = createAsyncThunk(
   "user/addUser",
   async (userData, { rejectWithValue }) => {
     try {
@@ -88,20 +87,26 @@ const addUser = createAsyncThunk<TUserFromBackend, TUserAdd>(
   }
 );
 
-const updateUser = createAsyncThunk<
-  TUserFromBackend,
-  { userId: string; userData: TUserUpdate }
->("user/updateUser", async ({ userId, userData }, { rejectWithValue }) => {
-  try {
-    const response = await api.patch(`/users/${userId}`, userData);
-    toast.success("User updated successfully");
-    return response.data.data.user;
-  } catch (error) {
-    const message = handleError(error, "Failed to update user");
-    toast.error(message);
-    return rejectWithValue(message);
+const updateUser = createAsyncThunk(
+  "user/updateUser",
+  async (
+    values: { userId: string; userData: TUserUpdate },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.patch(
+        `/users/${values.userId}`,
+        values.userData
+      );
+      toast.success("User updated successfully");
+      return response.data.data.user;
+    } catch (error) {
+      const message = handleError(error, "Failed to update user");
+      toast.error(message);
+      return rejectWithValue(message);
+    }
   }
-});
+);
 
 // Slice
 const userSlice = createSlice({

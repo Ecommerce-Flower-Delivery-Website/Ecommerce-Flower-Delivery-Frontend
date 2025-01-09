@@ -10,7 +10,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { getUsers, TUserFromBackend } from "../../../store/slices/userSlice";
+import { getUsers } from "../../../store/slices/userSlice";
 import {
   RootState,
   useReduxDispatch,

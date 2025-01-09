@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { orderReducer } from "./slices/orderSlice";
 import productReducer from "./slices/productSlice";
 import subscribePlansReducer from "./slices/subscribePlansSlice";
+import reviewReducer from "./slices/reviewSlice";
 
 import userReducer from "./slices/userSlice";
 import reminderReducer from "./slices/reminderSlice";
@@ -18,6 +19,7 @@ export const store = configureStore({
     subscribePlans: subscribePlansReducer,
     user: userReducer,
     reminder: reminderReducer,
+    review: reviewReducer,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
