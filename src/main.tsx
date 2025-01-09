@@ -19,16 +19,16 @@ import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
 import ProductsPage from "./dashboard/pages/products/ProductsPage";
 import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
+import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
 import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
 import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
-import { UserPage } from "./dashboard/pages/user/userPage";
-import { ContactPage } from "./dashboard/pages/contact/Contact";
-import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
 
+import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
+import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 
 const routers = createBrowserRouter([
   {
@@ -46,7 +46,7 @@ const routers = createBrowserRouter([
           },
           {
             path: "users",
-            element: <UserPage />,
+            element: <UserManagementPage />,
           },
           {
             path: "accessories",
@@ -128,8 +128,8 @@ const routers = createBrowserRouter([
           },
           {
             path: "reminder",
-            element: <ShowRemindersPage />
-          }
+            element: <ShowRemindersPage />,
+          },
         ],
       },
       {

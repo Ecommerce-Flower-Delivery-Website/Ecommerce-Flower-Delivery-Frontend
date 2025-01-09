@@ -21,7 +21,7 @@ type TInitialState = {
   };
 };
 
-const initialState: TInitialState = {
+const initialState: UserState = {
   users: [],
   loading: false,
   error: null,
@@ -105,7 +105,7 @@ const updateUser = createAsyncThunk<
 
 // Slice
 const userSlice = createSlice({
-  name: "user",
+  name: "users",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
