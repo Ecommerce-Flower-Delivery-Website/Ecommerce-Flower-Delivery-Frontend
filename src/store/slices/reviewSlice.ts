@@ -106,7 +106,7 @@ export const editReview = createAsyncThunk(
     try {
       const response = await axios.put(`${API_URL}/review/${id}`, reviewInfo);
       console.log(response.data.data);
-      
+
       return response.data.data;
     } catch (error) {
       handleApiError(error);
@@ -164,7 +164,10 @@ const reviewSlice = createSlice({
 
         // Update the pagination state
         const totalReviews = state.pagination.totalReviews - 1; // Decrement total users
-        const totalPages = Math.max(1, Math.ceil(totalReviews / state.pagination.pageSize)); // Recalculate total pages
+        const totalPages = Math.max(
+          1,
+          Math.ceil(totalReviews / state.pagination.pageSize)
+        ); // Recalculate total pages
 
         // Adjust current page if necessary
         if (state.pagination.currentPage > totalPages) {
@@ -179,7 +182,6 @@ const reviewSlice = createSlice({
         };
 
         toast.success("review deleted successfully");
-
       })
       .addCase(deleteReview.rejected, (state, action) => {
         state.loading = false;

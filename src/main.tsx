@@ -23,6 +23,7 @@ import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
 import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
+import CategoryPage from "./dashboard/pages/category/CategoryPage";
 
 const routers = createBrowserRouter([
   {
@@ -116,10 +117,10 @@ const routers = createBrowserRouter([
             element: <ReviewPage />,
           },
 
-          // {
-          //   path: "category",
-          //   element: <CategoryPage />,
-          // },
+          {
+            path: "category",
+            element: <CategoryPage />,
+          },
           // {
           //   path: "/dashboard",
           //   element: <Navigate to={"/dashboard/overview"} replace />,

@@ -57,7 +57,7 @@ export const Create = () => {
             required
             className="dark:bg-gray-800 mb-5"
           />
-  
+
           <Textarea
             {...register("text")}
             placeholder="Text"
@@ -122,7 +122,6 @@ export const Edit = ({ review }: { review: TReviewFromBackEnd }) => {
             className="dark:bg-gray-800 h-52 mb-5"
           />
 
-
           <div className="flex items-center gap-2 mb-4">
             <label htmlFor="shouldShow">should show </label>
             <Input
@@ -157,9 +156,9 @@ export const Remove = ({ reviewId }: { reviewId: string }) => {
         <Button variant="ghost">Delete</Button>
       </DialogTrigger>
       <DialogContent>
-         <DialogHeader>
+        <DialogHeader>
           <DialogTitle>Delete Review</DialogTitle>
-        </DialogHeader> 
+        </DialogHeader>
         <p>Are you sure you want to delete this review?</p>
         <div className="flex justify-between">
           <Button variant="ghost" onClick={() => setIsOpen(false)}>
