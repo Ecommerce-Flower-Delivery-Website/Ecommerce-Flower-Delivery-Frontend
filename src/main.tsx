@@ -20,7 +20,6 @@ import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePl
 import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
 import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
-import { UserPage } from "./dashboard/pages/user/userPage";
 import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
 import { ReviewPage } from "./dashboard/pages/review/ReviewPage";

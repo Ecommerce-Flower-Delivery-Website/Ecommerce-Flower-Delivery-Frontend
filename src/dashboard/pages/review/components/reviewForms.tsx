@@ -57,12 +57,13 @@ export const Create = () => {
             required
             className="dark:bg-gray-800 mb-5"
           />
-          <textarea
+  
+          <Textarea
             {...register("text")}
             placeholder="Text"
             required
-            className="w-full h-52 p-2 dark:bg-gray-800 border border-gray-300 rounded mb-5 placeholder:text-black placeholder:dark:text-white"
-          ></textarea>
+            className="dark:bg-gray-800 h-52 mb-5"
+          />
 
           <div className="flex items-center gap-2 mb-4">
             <label htmlFor="shouldShow">should show </label>
@@ -116,11 +117,11 @@ export const Edit = ({ review }: { review: TReviewFromBackEnd }) => {
 
           <Textarea
             {...register("text")}
-            defaultValue={review.text}
             placeholder="Text"
             required
-            className="w-full h-52 mb-5"
+            className="dark:bg-gray-800 h-52 mb-5"
           />
+
 
           <div className="flex items-center gap-2 mb-4">
             <label htmlFor="shouldShow">should show </label>

@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
+import { toast } from "react-toastify";
 
 const API_BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL;
 const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
@@ -10,7 +11,7 @@ export type TReviewFromBackEnd = {
   _id: "string";
   name: "string";
   text: "string";
-  shouldShow: "string";
+  shouldShow: boolean;
   createdAt: "string";
   updatedAt: "string";
   __v: "number";
@@ -160,6 +161,25 @@ const reviewSlice = createSlice({
         state.reviews = state.reviews.filter(
           (review) => review._id !== action.payload
         );
+
+        // Update the pagination state
+        const totalReviews = state.pagination.totalReviews - 1; // Decrement total users
+        const totalPages = Math.max(1, Math.ceil(totalReviews / state.pagination.pageSize)); // Recalculate total pages
+
+        // Adjust current page if necessary
+        if (state.pagination.currentPage > totalPages) {
+          state.pagination.currentPage = totalPages; // If current page is greater than the new total pages, set it to the last page
+        }
+
+        // Update pagination state
+        state.pagination = {
+          ...state.pagination,
+          totalReviews,
+          totalPages,
+        };
+
+        toast.success("review deleted successfully");
+
       })
       .addCase(deleteReview.rejected, (state, action) => {
         state.loading = false;
@@ -173,6 +193,8 @@ const reviewSlice = createSlice({
       .addCase(addReview.fulfilled, (state, action) => {
         state.loading = false;
         state.reviews.push(action.payload);
+
+        toast.success("review added successfully");
       })
       .addCase(addReview.rejected, (state, action) => {
         state.loading = false;
@@ -191,6 +213,8 @@ const reviewSlice = createSlice({
         if (index !== -1) {
           state.reviews[index] = action.payload;
         }
+
+        toast.success("review updated successfully");
       })
       .addCase(editReview.rejected, (state, action) => {
         state.loading = false;

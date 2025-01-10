@@ -79,7 +79,7 @@ export const Accessories: React.FC = () => {
 
   useEffect(() => {
     const filtered = accessories.filter((accessory) =>
-      accessory.title.toLowerCase().includes(searchTerm.toLowerCase())
+      accessory.title?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredAccessories(filtered);
   }, [accessories, searchTerm]);
@@ -212,7 +212,6 @@ export const Accessories: React.FC = () => {
       <Card>
         <CardHeader className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
           <div className="flex items-center gap-4">
-            <span className="text-sm">entries</span>
             <Input
               placeholder="Search by title..."
               className="max-w-md"
