@@ -4,12 +4,26 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 import { api } from "../../lib/ajax/api";
 import { validateSchemas } from "../../lib/zod";
+import { handleApiError } from "../../lib/utils";
+
+export type TUserFromBackend = {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  isAdmin: boolean;
+  createdAt: string; 
+  updatedAt: string; 
+  __v: number; 
+  isReminder: boolean;
+  subscribe_id: string;
+}
 
 // Define types
 type TUserUpdate = Partial<z.infer<typeof validateSchemas.editUser>>;
 
 type TInitialState = {
-  users: TUsersFromBackend;
+  users: TUserFromBackend[];
   loading: boolean;
   error: string | null;
   pagination: {
@@ -20,7 +34,7 @@ type TInitialState = {
   };
 };
 
-const initialState: UserState = {
+const initialState: TInitialState = {
   users: [],
   loading: false,
   error: null,
@@ -50,8 +64,8 @@ const getUsers = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
+      handleApiError(error); 
       const message = handleError(error, "Failed to fetch users");
-      toast.error(message);
       return rejectWithValue(message);
     }
   }
@@ -59,14 +73,13 @@ const getUsers = createAsyncThunk(
 
 const deleteUser = createAsyncThunk(
   "user/deleteUser",
-  async (userId, { rejectWithValue }) => {
+  async (userId : string, { rejectWithValue }) => {
     try {
       await api.delete(`/users/${userId}`);
-      toast.success("User deleted successfully");
       return userId;
     } catch (error) {
+      handleApiError(error); 
       const message = handleError(error, "Failed to delete user");
-      toast.error(message);
       return rejectWithValue(message);
     }
   }
@@ -77,11 +90,10 @@ const addUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await api.post(`/auth/register`, userData);
-      toast.success("User added successfully");
       return response.data.data.user;
     } catch (error) {
+      handleApiError(error); 
       const message = handleError(error, "Failed to add user");
-      toast.error(message);
       return rejectWithValue(message);
     }
   }
@@ -98,11 +110,10 @@ const updateUser = createAsyncThunk(
         `/users/${values.userId}`,
         values.userData
       );
-      toast.success("User updated successfully");
       return response.data.data.user;
     } catch (error) {
+      handleApiError(error); 
       const message = handleError(error, "Failed to update user");
-      toast.error(message);
       return rejectWithValue(message);
     }
   }
@@ -124,6 +135,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.users = action.payload.data.users;
         state.pagination = action.payload.data.pagination;
+        
       })
       .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;
@@ -137,10 +149,28 @@ const userSlice = createSlice({
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
         state.users = state.users.filter((user) => user._id !== action.payload);
+
+         // Update the pagination state
+         const totalUsers = state.pagination.totalUsers - 1; // Decrement total users
+         const totalPages = Math.max(1, Math.ceil(totalUsers / state.pagination.pageSize)); // Recalculate total pages
+ 
+         // Adjust current page if necessary
+         if (state.pagination.currentPage > totalPages) {
+           state.pagination.currentPage = totalPages; // If current page is greater than the new total pages, set it to the last page
+         }
+ 
+         // Update pagination state
+         state.pagination = {
+           ...state.pagination,
+           totalUsers,
+           totalPages,
+         };
+
+         toast.success("User deleted successfully");
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.error = action.payload as string; 
       })
       // Handle addUser
       .addCase(addUser.pending, (state) => {
@@ -150,6 +180,8 @@ const userSlice = createSlice({
       .addCase(addUser.fulfilled, (state, action) => {
         state.loading = false;
         state.users.push(action.payload);
+        
+        toast.success("User added successfully");
       })
       .addCase(addUser.rejected, (state, action) => {
         state.loading = false;
@@ -168,6 +200,8 @@ const userSlice = createSlice({
         if (index !== -1) {
           state.users[index] = action.payload;
         }
+
+        toast.success("User updated successfully");
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;
@@ -178,5 +212,4 @@ const userSlice = createSlice({
 
 // Exports
 export { addUser, deleteUser, getUsers, updateUser };
-export type { TUserFromBackend, TUsersFromBackend };
 export default userSlice.reducer;

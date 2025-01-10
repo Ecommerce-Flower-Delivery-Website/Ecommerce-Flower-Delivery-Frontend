@@ -36,6 +36,8 @@ import {
   TableRow,
 } from "../../components/table";
 import { Switch } from "../../components/switch";
+import { toast } from "react-toastify";
+import { handleApiError } from "../../../lib/utils";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
@@ -120,13 +122,13 @@ export const ContactsPage: React.FC = () => {
       })
       .filter(
         (contact) =>
-          contact.user_id.name
+          contact.user_id?.name
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          contact.user_id.email
+          contact.user_id?.email
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          contact.user_id.phone.includes(searchTerm)
+          contact.user_id?.phone.includes(searchTerm)
       );
   }, [contacts, filter, searchTerm]);
 
@@ -182,7 +184,9 @@ export const ContactsPage: React.FC = () => {
 
       setContacts((prev) => prev.filter((contact) => contact._id !== id));
       setDeleteConfirmation({ isOpen: false, id: null });
+      toast.success("contact deleted successfully");
     } catch (error) {
+      handleApiError(error);
       console.error("Error deleting contact:", error);
     } finally {
       setIsDeleting(null);
@@ -208,17 +212,17 @@ export const ContactsPage: React.FC = () => {
           )}
         </Button>
       ),
-      cell: ({ row }) => row.original.user_id.name,
+      cell: ({ row }) => row.original.user_id?.name,
     },
     {
       accessorKey: "email",
       header: "Email",
-      cell: ({ row }) => row.original.user_id.email,
+      cell: ({ row }) => row.original.user_id?.email,
     },
     {
       accessorKey: "phone",
       header: "Phone",
-      cell: ({ row }) => row.original.user_id.phone,
+      cell: ({ row }) => row.original.user_id?.phone,
     },
     {
       accessorKey: "isChecked",
@@ -272,19 +276,19 @@ export const ContactsPage: React.FC = () => {
           <div className="flex justify-between items-center">
             <div className="flex gap-2">
               <Button
-                variant={filter === "all" ? "outline" : "default"}
+                variant={filter === "all" ? "default" : "outline"}
                 onClick={() => setFilter("all")}
               >
                 All
               </Button>
               <Button
-                variant={filter === "checked" ? "outline" : "default"}
+                variant={filter === "checked" ? "default" : "outline"}
                 onClick={() => setFilter("checked")}
               >
                 Checked
               </Button>
               <Button
-                variant={filter === "unchecked" ? "outline" : "default"}
+                variant={filter === "unchecked" ? "default" : "outline"}
                 onClick={() => setFilter("unchecked")}
               >
                 Unchecked

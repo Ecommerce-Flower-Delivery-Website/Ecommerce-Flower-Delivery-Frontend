@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../lib/ajax/api";
 import { handleApiError } from "../../lib/utils";
+import { toast } from "react-toastify";
 
 interface Reminder {
     id: string;
@@ -64,6 +65,7 @@ const ReminderSlice = createSlice({
         .addCase(getReminders.fulfilled,(state,action)=>{
             state.loading = false;
             state.reminders = action.payload;
+            
         })
         .addCase(getReminders.rejected,(state,action)=>{
             state.loading = false;
@@ -75,6 +77,8 @@ const ReminderSlice = createSlice({
         })
         .addCase(sendReminder.fulfilled,(state)=>{
             state.loading = false;
+
+            toast.success("send successfully");
         })
         .addCase(sendReminder.rejected,(state,action)=>{
             state.loading = false;

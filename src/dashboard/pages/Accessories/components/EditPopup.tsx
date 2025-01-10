@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader } from "../../../components/card";
 import { Input } from "../../../components/input";
 import { Button } from "../../../components/button";
 import { api } from "../../../../lib/ajax/api";
+import { handleApiError } from "../../../../lib/utils";
+import { toast } from "react-toastify";
 
 interface EditPopupProps {
   accessory: {
@@ -71,9 +73,11 @@ const EditPopup: React.FC<EditPopupProps> = ({
       }
 
       // If successful, update the accessory in the parent component
+      toast.success("updated successfully");
       updateAccessory(updatedAccessory);
       setPopupVisible(false); // Close the popup
     } catch (error) {
+      handleApiError(error);
       console.error("Error saving accessory:", error);
     }
   };

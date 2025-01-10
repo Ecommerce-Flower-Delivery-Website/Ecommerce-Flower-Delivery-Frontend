@@ -10,7 +10,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { getUsers } from "../../../store/slices/userSlice";
+import { getUsers, TUserFromBackend } from "../../../store/slices/userSlice";
 import {
   RootState,
   useReduxDispatch,
@@ -44,7 +44,7 @@ import {
 } from "../../components/table";
 import * as UserForms from "./components/user-forms";
 
-export const UserPage = () => {
+export const UserManagementPage = () => {
   const { users, pagination, loading } = useReduxSelector(
     (state: RootState) => state.user
   );
@@ -64,10 +64,6 @@ export const UserPage = () => {
 
   const columns: ColumnDef<TUserFromBackend, unknown>[] = [
     {
-      accessorKey: "_id",
-      header: "Id",
-    },
-    {
       accessorKey: "name",
       header: "Name",
     },
@@ -75,7 +71,6 @@ export const UserPage = () => {
       accessorKey: "email",
       header: "Email",
     },
-
     {
       accessorKey: "isAdmin",
       header: "Admin Status",
@@ -107,7 +102,6 @@ export const UserPage = () => {
         const user = row.original as TUserFromBackend;
         return (
           <span>
-            <UserForms.Edit user={user} />
             <UserForms.Remove userId={user._id} />
           </span>
         );
@@ -162,11 +156,11 @@ export const UserPage = () => {
             <span className="text-sm">entries</span>
           </div>
           <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
-            <Input
-              placeholder="Search by order id..."
-              value={(table.getColumn("_id")?.getFilterValue() as string) ?? ""}
+             <Input
+              placeholder="Search by email..."
+              value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
-                table.getColumn("_id")?.setFilterValue(event.target.value)
+                table.getColumn("email")?.setFilterValue(event.target.value)
               }
               className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
             />
@@ -223,7 +217,7 @@ export const UserPage = () => {
             Showing{" "}
             {table.getPrePaginationRowModel().rows?.length +
               (pagination.currentPage - 1) * rowsPerPage}
-            of {pagination.totalOrders} entries
+            of {pagination.totalus} entries
           </div>
           <Pagination>
             <PaginationContent>
@@ -272,3 +266,5 @@ export const UserPage = () => {
     </Card>
   );
 };
+
+

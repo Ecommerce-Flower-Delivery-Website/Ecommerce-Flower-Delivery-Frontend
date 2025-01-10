@@ -45,7 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   return (
     <aside
       className={cn(
-        "bg-muted  dark:bg-gray-800 border-r dark:border-gray-700 h-screen transition-all duration-300 ease-in-out",
+        "bg-muted  dark:bg-gray-800 border-r dark:border-gray-700 min-h-screen transition-all duration-300 ease-in-out",
         open ? "w-64" : "w-16"
       )}
     >

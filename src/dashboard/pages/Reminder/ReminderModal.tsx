@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 import { sendReminder } from "../../../store/slices/reminderSlice";
+import { Textarea } from "../../components/textarea";
 
 interface DeleteModalProps {
   onClose: () => void;
@@ -58,11 +59,12 @@ const ReminderModal: React.FC<DeleteModalProps> = ({
             placeholder="Subject"
             className="border border-gray-600 bg-black text-white rounded w-full p-2 mb-3"
           />
-          <input
-            onChange={(e) => settext(e.target.value)}
-            type="text"
-            placeholder="Text"
-            className="border border-gray-600 bg-black text-white rounded w-full p-2 mb-3"
+          
+          <Textarea
+            onChange={(e) => settext(e.target.value)}     
+           placeholder="Text"
+            required
+            className="h-52 border border-gray-600 bg-black text-white rounded w-full p-2 mb-3"
           />
           <input
             onChange={(e) => setfestivalDate(e.target.value)}

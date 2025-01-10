@@ -1,4 +1,6 @@
 declare global {
+
+  
   type User = {
     _id: string;
     name: string;
