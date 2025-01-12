@@ -23,12 +23,23 @@ import { UserManagementPage } from "./dashboard/pages/user-management/UserManage
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
+import Home from "./pages/Home";
 
 const routers = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: "/", element: <App /> },
+      {
+        path: "/",
+        element: <App />,
+        children: [
+          {
+            index: true,
+            path: "home",
+            element: <Home />,
+          },
+        ],
+      },
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -44,7 +55,7 @@ const routers = createBrowserRouter([
           },
           {
             path: "accessories",
-            element: <Accessories />
+            element: <Accessories />,
           },
           {
             path: "products",
