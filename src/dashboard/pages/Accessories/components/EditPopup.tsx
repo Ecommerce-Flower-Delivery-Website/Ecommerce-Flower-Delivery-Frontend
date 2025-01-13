@@ -25,7 +25,6 @@ const EditPopup: React.FC<EditPopupProps> = ({
   updateAccessory,
 }) => {
   const [updatedAccessory, setUpdatedAccessory] = useState(accessory);
-  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     setUpdatedAccessory(accessory);
@@ -39,26 +38,7 @@ const EditPopup: React.FC<EditPopupProps> = ({
     }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-    }
-  };
-
   const handleSave = async () => {
-    const formData = new FormData();
-    formData.append("title", updatedAccessory.title);
-    formData.append("description", updatedAccessory.description);
-    formData.append("price", updatedAccessory.price.toString());
-    formData.append("stock", updatedAccessory.stock.toString());
-
-    if (imageFile) {
-      formData.append("image", imageFile);
-    } else {
-      formData.append("image", updatedAccessory.image); // Send the existing image if no new one is selected
-    }
-
     try {
       const response = await api.put(
         `http://localhost:3000/api/v1/accessory/${updatedAccessory._id}`,
@@ -67,6 +47,7 @@ const EditPopup: React.FC<EditPopupProps> = ({
           body: formData,
         }
       );
+
 
       if (response.status !== 200) {
         throw new Error("Error updating accessory");
@@ -94,12 +75,11 @@ const EditPopup: React.FC<EditPopupProps> = ({
               onChange={handleChange}
               placeholder="Title"
             />
-            {/* File input for image */}
             <Input
               name="image"
-              type="file"
-              onChange={handleImageChange}
-              placeholder="Select Image"
+              value={updatedAccessory.image}
+              onChange={handleChange}
+              placeholder="Image URL"
             />
             <Input
               name="stock"
@@ -123,10 +103,15 @@ const EditPopup: React.FC<EditPopupProps> = ({
             />
           </div>
           <div className="mt-4 flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setPopupVisible(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setPopupVisible(false)}
+            >
               Cancel
             </Button>
-            <Button onClick={handleSave}>Save</Button>
+            <Button onClick={handleSave}>
+              Save
+            </Button>
           </div>
         </CardContent>
       </Card>

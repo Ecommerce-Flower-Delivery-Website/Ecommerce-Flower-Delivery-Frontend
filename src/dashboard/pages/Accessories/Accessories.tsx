@@ -23,6 +23,7 @@ import AddPopup from "./components/AddPopup";
 import EditPopup from "./components/EditPopup";
 import { api } from "../../../lib/ajax/api";
 
+
 interface Accessory {
   _id: number;
   title: string;
@@ -30,20 +31,15 @@ interface Accessory {
   stock: number;
   description: string;
   price: number;
-  products_array: Product[];
 }
 
 export const Accessories: React.FC = () => {
   const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [filteredAccessories, setFilteredAccessories] = useState<Accessory[]>(
-    []
-  );
-  const [searchTerm, setSearchTerm] = useState(""); // Search term state
-  const [currentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [rowsPerPage] = useState(10);
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [isEditPopupVisible, setEditPopupVisible] = useState(false);
+  const [isEditPopupVisible, setEditPopupVisible] = useState(false); // Add state for EditPopup
   const [newAccessory, setNewAccessory] = useState<Accessory>({
     _id: 0,
     title: "",
@@ -51,16 +47,9 @@ export const Accessories: React.FC = () => {
     stock: 0,
     description: "",
     price: 0,
-    products_array: [],
   });
-  const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(
-    null
-  );
-
-  useEffect(() => {
-    setFilteredAccessories(accessories); // Initialize with all accessories
-  }, [accessories]);
-
+  const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(null); // Track selected accessory for editing
+  
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
@@ -83,12 +72,20 @@ export const Accessories: React.FC = () => {
     );
     setFilteredAccessories(filtered);
   }, [accessories, searchTerm]);
+  const handleDelete = async (id: number) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/v1/accessory/${id}`);
+      setAccessories((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      console.error("Error deleting accessory:", error);
+    }
+  };
 
   const handleEdit = (id: number) => {
     const accessoryToEdit = accessories.find((item) => item._id === id);
     if (accessoryToEdit) {
       setSelectedAccessory(accessoryToEdit);
-      setEditPopupVisible(true);
+      setEditPopupVisible(true); // Show the EditPopup
     }
   };
 
@@ -156,29 +153,53 @@ export const Accessories: React.FC = () => {
       ),
     },
     {
-      accessorKey: "products_array",
-      header: "Products",
-      cell: ({ row }) => (
-        <div>
-          {row.original.products_array.map((product) => (
-            <span key={product._id} className="block">
-              {product.title}
-            </span>
-          ))}
-        </div>
-      ),
-    },
-    {
       accessorKey: "stock",
-      header: "Stock",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0 hover:bg-transparent"
+        >
+          Stock
+          {column.getIsSorted() === "asc" ? (
+            <ChevronUp className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ChevronDown className="ml-2 h-4 w-4" />
+          ) : (
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          )}
+        </Button>
+      ),
     },
     {
       accessorKey: "description",
       header: "Description",
+      cell: ({ row }) => (
+        <div className="relative group" title={row.original.description}>
+          {row.original.description.length > 11
+            ? `${row.original.description.substring(0, 11)}...`
+            : row.original.description}
+        </div>
+      ),
     },
     {
       accessorKey: "price",
-      header: "Price",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0 hover:bg-transparent"
+        >
+          Price
+          {column.getIsSorted() === "asc" ? (
+            <ChevronUp className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ChevronDown className="ml-2 h-4 w-4" />
+          ) : (
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          )}
+        </Button>
+      ),
     },
     {
       accessorKey: "actions",
@@ -200,7 +221,7 @@ export const Accessories: React.FC = () => {
   ];
 
   const table = useReactTable({
-    data: filteredAccessories,
+    data: accessories,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -219,6 +240,7 @@ export const Accessories: React.FC = () => {
               onChange={(e) => setSearchTerm(e.target.value)} // Update search term on change
             />
           </div>
+
           <Button variant="outline" onClick={() => setPopupVisible(true)}>
             Add New Accessory
           </Button>
@@ -242,7 +264,7 @@ export const Accessories: React.FC = () => {
               ))}
             </TableHeader>
             <TableBody>
-              {filteredAccessories.length > 0 ? (
+              {accessories.length > 0 ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
@@ -264,6 +286,25 @@ export const Accessories: React.FC = () => {
               )}
             </TableBody>
           </Table>
+          <div className="flex items-center justify-between py-4">
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              disabled={currentPage === 1 || totalPages === 1}
+            >
+              Previous
+            </Button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={currentPage === totalPages || totalPages === 1}
+            >
+              Next
+            </Button>
+          </div>
         </CardContent>
       </Card>
       {isPopupVisible && (
