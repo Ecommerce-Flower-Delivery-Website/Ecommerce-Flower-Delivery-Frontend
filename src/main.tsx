@@ -24,12 +24,14 @@ import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
 import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
 import CategoryPage from "./dashboard/pages/category/CategoryPage";
+import ProductPage from "./pages/product-info/ProductInfo";
 
 const routers = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
       { path: "/", element: <App /> },
+      { path: "/product", element: <ProductPage /> },
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -108,10 +110,6 @@ const routers = createBrowserRouter([
               },
             ],
           },
-          // {
-          //   path: "carts",
-          //   element: <CartsPage />,
-          // },
           {
             path: "reviews",
             element: <ReviewPage />,
@@ -121,10 +119,6 @@ const routers = createBrowserRouter([
             path: "category",
             element: <CategoryPage />,
           },
-          // {
-          //   path: "/dashboard",
-          //   element: <Navigate to={"/dashboard/overview"} replace />,
-          // },
           {
             path: "reminder",
             element: <ShowRemindersPage />,
