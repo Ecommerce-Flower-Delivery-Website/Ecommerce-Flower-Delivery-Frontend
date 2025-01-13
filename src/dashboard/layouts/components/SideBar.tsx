@@ -8,6 +8,7 @@ import {
   LogOut,
   MessageCircle,
   Phone,
+  Receipt,
   ShoppingBag,
   Star,
   Users,
