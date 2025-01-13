@@ -11,7 +11,7 @@ const ShowProductDetails = () => {
   const dispatch = useReduxDispatch();
   const { product, loading } = useReduxSelector((state) => state.product);
 
-  useEffect(() => {
+  useEffect(() => {    
     if (id) {
       dispatch(getProduct(id));
     }
@@ -25,7 +25,21 @@ const ShowProductDetails = () => {
     );
   }
 
-  const { image, title, price, description, stock } = product.product;
+  const {
+    image,
+    title,
+    price,
+    description,
+    stock,
+    priceAfterDiscount,
+    discount,
+    quantity,
+    category_id,
+    accessory_id,
+    created_at,
+    updated_at,
+  } = product.product || {};  
+
 
   return (
     <div className="min-h-screen p-5">
@@ -36,30 +50,42 @@ const ShowProductDetails = () => {
         <div className="lg:w-1/2 w-full">
           <img
             className="w-full lg:h-full object-cover rounded-lg"
-            src={`http://localhost:5000${image}`}
+            src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${image}`}
             alt={title || "Product"}
           />
         </div>
         <div className="lg:w-1/2 w-full flex flex-col justify-between">
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold mb-4">
+            <h3 className="text-2xl lg:text-3xl font-bold mb-4">
               Product Name: {title}
-            </h1>
+            </h3>
             <div className="flex justify-between mb-4">
-              <h1 className="text-lg lg:text-xl font-bold">Price: {price}$</h1>
-              <h1 className="text-lg lg:text-xl font-bold">
-                Category: Flowers
-              </h1>
+              <h3 className="text-lg lg:text-xl font-bold">Price: {price}$</h3>
+              <h3 className="text-lg lg:text-xl font-bold">
+                Price After Discount: {priceAfterDiscount}$
+              </h3>
             </div>
-            <h1 className="text-lg lg:text-xl font-bold mb-4">
+            {discount && (
+              <h3 className="text-lg lg:text-xl font-bold mb-4">
+                Discount: {discount}
+              </h3>
+            )}
+            <h3 className="text-lg lg:text-xl font-bold mb-4">
+              Quantity: {quantity}
+            </h3>
+            <h3 className="text-lg lg:text-xl font-bold mb-4">
+              Stock: {stock}
+            </h3>
+            <h3 className="text-lg lg:text-xl font-bold mb-4">
               Description: {description}
-            </h1>
-            <h1 className="text-lg lg:text-xl font-bold mb-4">
-              Quantity: {stock}
-            </h1>
+            </h3>
+            <h3 className="text-lg lg:text-xl font-bold mb-4">
+              Category ID: {category_id}
+            </h3>
+
           </div>
           <div>
-            <h1 className="text-lg lg:text-xl font-bold mb-2">Accessory:</h1>
+            <h3 className="text-lg lg:text-xl font-bold mb-2">Accessory:</h3>
             <AccessoryPhoto />
           </div>
         </div>

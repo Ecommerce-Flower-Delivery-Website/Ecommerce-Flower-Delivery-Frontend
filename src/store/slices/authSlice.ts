@@ -13,8 +13,8 @@ type AuthState = {
 };
 
 const initialState: AuthState = {
-  token: localStorage.getItem("token"),
-  user: JSON.parse(localStorage.getItem("user") || "null"),
+  token: null,
+  user: null,
   isPending: false,
   error: null,
 };
@@ -133,10 +133,10 @@ export const authSlice = createSlice({
       })
       .addCase(loginAdmin.fulfilled, (state, action) => {
         state.isPending = false;
-        state.token = action.payload.token;
-        state.user = action.payload.user;
-        localStorage.setItem("token", action.payload.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        state.token = action.payload.data.token;
+        state.user = action.payload.data.user;
+        localStorage.setItem("token", action.payload.data.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.data.user));
       })
       .addCase(loginAdmin.rejected, (state, action) => {
         state.isPending = false;

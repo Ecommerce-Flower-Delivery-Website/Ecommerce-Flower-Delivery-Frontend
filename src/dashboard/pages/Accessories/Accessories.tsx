@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   ColumnDef,
   flexRender,
@@ -21,7 +20,9 @@ import {
   TableRow,
 } from "../../components/table";
 import AddPopup from "./components/AddPopup";
-import EditPopup from "./components/EditPopup"; // Import the EditPopup component
+import EditPopup from "./components/EditPopup";
+import { api } from "../../../lib/ajax/api";
+
 
 interface Accessory {
   _id: number;
@@ -52,7 +53,7 @@ export const Accessories: React.FC = () => {
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
-        const response = await axios.get(
+        const response = await api.get(
           `http://localhost:3000/api/v1/accessory?pageNumber=${currentPage}`
         );
         setAccessories(response.data.accessories);
@@ -65,6 +66,12 @@ export const Accessories: React.FC = () => {
     fetchAccessories();
   }, [currentPage, rowsPerPage]);
 
+  useEffect(() => {
+    const filtered = accessories.filter((accessory) =>
+      accessory.title?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredAccessories(filtered);
+  }, [accessories, searchTerm]);
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://localhost:3000/api/v1/accessory/${id}`);
@@ -79,6 +86,30 @@ export const Accessories: React.FC = () => {
     if (accessoryToEdit) {
       setSelectedAccessory(accessoryToEdit);
       setEditPopupVisible(true); // Show the EditPopup
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    const confirmation = window.confirm(
+      "Are you sure you want to delete this accessory?"
+    );
+    if (!confirmation) {
+      return; // Exit if the user cancels
+    }
+
+    try {
+      const response = await api.delete(
+        `http://localhost:3000/api/v1/accessory/${id}`
+      );
+      if (response.status === 200) {
+        // Remove the deleted accessory from the state
+        setAccessories((prev) =>
+          prev.filter((accessory) => accessory._id !== id)
+        );
+        console.log("Accessory deleted successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting accessory:", error);
     }
   };
 
@@ -115,7 +146,7 @@ export const Accessories: React.FC = () => {
       header: "Image",
       cell: ({ row }) => (
         <img
-          src={row.original.image}
+          src={import.meta.env.VITE_PUBLIC_API_BASE_URL + row.original.image}
           alt={row.original.title}
           className="h-10 w-10 rounded-md object-cover"
         />
@@ -200,8 +231,16 @@ export const Accessories: React.FC = () => {
   return (
     <>
       <Card>
-        <CardHeader className="flex flex-col items-end gap-4 md:flex-row md:justify-between">
-          <Input placeholder="Search by title..." className="max-w-md" />
+        <CardHeader className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+          <div className="flex items-center gap-4">
+            <Input
+              placeholder="Search by title..."
+              className="max-w-md"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)} // Update search term on change
+            />
+          </div>
+
           <Button variant="outline" onClick={() => setPopupVisible(true)}>
             Add New Accessory
           </Button>

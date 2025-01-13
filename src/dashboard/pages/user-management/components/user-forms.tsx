@@ -14,7 +14,7 @@ import {
 } from "../../../components/dialog";
 import { ErrorMessage } from "../../../components/error-message";
 import { Input } from "../../../components/input";
-import { removeUser, updateUser } from "../../../../store/slices/userSlice";
+import { deleteUser, TUserFromBackend, updateUser } from "../../../../store/slices/userSlice";
 import { useReduxDispatch } from "../../../../store/store";
 type CreateUserFormType = z.infer<typeof validateSchemas.createUser>;
 
@@ -101,7 +101,7 @@ export const Create = () => {
 
 type EditUserFormType = z.infer<typeof validateSchemas.editUser>;
 
-export const Edit = ({ user }: { user: User }) => {
+export const Edit = ({ user }: { user: TUserFromBackend }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useReduxDispatch();
 
@@ -125,7 +125,7 @@ export const Edit = ({ user }: { user: User }) => {
         </DialogHeader>
         <form
           onSubmit={handleSubmit((values) =>
-            dispatch(updateUser({ _id: user._id, data: values }))
+            dispatch(updateUser({ userId: user._id, userData: values }))
           )}
           className="grid gap-4 py-4"
         >
@@ -175,7 +175,7 @@ export const Remove = ({ userId }: { userId: string }) => {
           </Button>
           <Button
             onClick={() => {
-              dispatch(removeUser(userId));
+              dispatch(deleteUser(userId));
               setIsOpen(false);
             }}
           >

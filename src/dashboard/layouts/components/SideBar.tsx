@@ -1,12 +1,18 @@
 import {
   BarChart,
+  BarChartIcon,
+  ChartColumnStacked,
   ChevronLeft,
   ChevronRight,
+  Gem,
   LayoutDashboard,
   LogOut,
-  Receipt,
+  MessageCircle,
+  Phone,
   ShoppingBag,
+  ShoppingCart,
   Users,
+  Star
 } from "lucide-react";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
@@ -14,13 +20,18 @@ import { cn } from "../../../lib/utils";
 import { Button } from "../../components/button";
 
 const menuItems = [
+  { id: "users", label: "User Management", icon: Users },
+  { id: "accessories", label: "Accessories", icon: Gem },
+  { id: "contact", label: "Contact", icon: Phone },
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "orders", label: "Orders", icon: Receipt },
-  { id: "users", label: "Users", icon: Users },
   { id: "products", label: "Products", icon: ShoppingBag },
-  { id: "analytics", label: "Analytics", icon: BarChart },
+  { id: "subscribe-plans", label: "Subscribe Plans", icon: BarChart },
+  { id: "category", label: "Categories", icon: Users },
+  { id: "orders", label: "Orders", icon: ChartColumnStacked },
+  { id: "reminder", label: "Reminedr", icon: MessageCircle },
+  { id: "reviews", label: "reviews", icon: Star  },
 ];
-
 interface SidebarProps {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -36,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   return (
     <aside
       className={cn(
-        "bg-muted  dark:bg-gray-800 border-r dark:border-gray-700 h-screen transition-all duration-300 ease-in-out",
+        "bg-muted  dark:bg-gray-800 border-r dark:border-gray-700 min-h-screen transition-all duration-300 ease-in-out",
         open ? "w-64" : "w-16"
       )}
     >

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../../../../lib/ajax/api";
 import { Button } from "../../../components/button";
 import { Input } from "../../../components/input";
 
@@ -27,7 +27,27 @@ const AddPopup: React.FC<AddPopupProps> = ({
   const handleAddAccessory = async () => {
     if (newAccessory.title && newAccessory.image) {
       try {
-        const response = await axios.post("http://localhost:3000/api/v1/accessory", newAccessory);
+        const formData = new FormData();
+        formData.append("title", newAccessory.title);
+        formData.append(
+          "image",
+          newAccessory.image instanceof File ? newAccessory.image : ""
+        );
+        formData.append("stock", newAccessory.stock.toString());
+        formData.append("description", newAccessory.description);
+        formData.append("price", newAccessory.price.toString());
+
+        const response = await api.post(
+          "http://localhost:3000/api/v1/accessory",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+
         const addedAccessory = response.data;
 
         setAccessories((prev) => [...prev, addedAccessory]);
@@ -59,13 +79,14 @@ const AddPopup: React.FC<AddPopupProps> = ({
               setNewAccessory({ ...newAccessory, title: e.target.value })
             }
           />
+
           <Input
-            placeholder="Image URL"
-            value={newAccessory.image}
-            onChange={(e) =>
-              setNewAccessory({ ...newAccessory, image: e.target.value })
-            }
-          />
+            type="file"
+            onChange={handleFileChange}
+            accept="image/*"
+            placeholder="Select Image"
+            />
+
           <Input
             placeholder="Stock"
             type="number"
@@ -77,6 +98,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
               })
             }
           />
+          
           <Input
             placeholder="Description"
             value={newAccessory.description}

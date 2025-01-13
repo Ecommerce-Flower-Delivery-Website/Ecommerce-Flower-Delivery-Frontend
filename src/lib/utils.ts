@@ -7,11 +7,11 @@ export function cn(...inputs: ClassValue[]): string {
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-export const handleApiError = (error: unknown) => {
+export const handleApiError = (error: unknown) => {  
   if (error instanceof AxiosError) {
     console.error("Axios error:", error);
     const message =
-      error.response?.data?.msg ||
+      error.response?.data?.message ||
       error.message ||
       "An unexpected error occurred.";
     toast.error(`Error: ${message}`);
