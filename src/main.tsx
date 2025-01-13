@@ -1,6 +1,10 @@
 import { StrictMode, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import App from "./App";
 import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
@@ -23,6 +27,8 @@ import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import Home from "./pages/Home";
 import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
+import Website from "./dashboard/layouts/Website";
+import CategoryWeb from "./Components/CategoryWeb/CategoryWeb";
 import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
 import CategoryPage from "./dashboard/pages/category/CategoryPage";
 import ProductPage from "./pages/product-info/ProductInfo";
@@ -31,6 +37,11 @@ const routers = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
+      { path: "/", 
+        element: <Website />,
+        children: [
+          {path : 'category', element: <CategoryWeb />}
+        ]
       { path: "/product", element: <ProductPage /> },
       {
         path: "/",
@@ -149,6 +160,7 @@ const routers = createBrowserRouter([
         element: <NotFoundPage />,
       },
     ],
+
   },
 ]);
 

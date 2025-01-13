@@ -57,6 +57,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply h-screen bg-background font-sans
       text-foreground;
