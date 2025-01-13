@@ -4,21 +4,26 @@ import { TypedUseSelectorHook, useSelector } from "react-redux";
 import { authSliceReducer } from "./slices/authSlice";
 import { useDispatch } from "react-redux";
 import { orderReducer } from "./slices/orderSlice";
-import  productReducer  from "./slices/productSlice";
-import  subscribePlansReducer  from "./slices/subscribePlansSlice";
+import productReducer from "./slices/productSlice";
+import subscribePlansReducer from "./slices/subscribePlansSlice";
+import reviewReducer from "./slices/reviewSlice";
+
 import userReducer from "./slices/userSlice";
 import reminderReducer from "./slices/reminderSlice";
 import categoryReducer from "./slices/categorySlice";
+import { userCartReducer } from "./slices/userCartSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authSliceReducer,
     orders: orderReducer,
-    product: productReducer ,
-    subscribePlans:subscribePlansReducer,
+    product: productReducer,
+    subscribePlans: subscribePlansReducer,
     user: userReducer,
-    reminder : reminderReducer,
+    reminder: reminderReducer,
+    review: reviewReducer,
     category: categoryReducer,
+    userCart: userCartReducer,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

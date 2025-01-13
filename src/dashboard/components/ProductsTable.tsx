@@ -24,21 +24,22 @@ import { useNavigate } from "react-router-dom";
 import { useReduxDispatch } from "../../store/store";
 import { deleteProduct } from "../../store/slices/productSlice";
 
-const dummyProducts =  [
-    {
-      _id: "1",
-      title: "Gaming Laptop Pro",
-      price: 1299.99,
-      stock: 15,
-      description:
-        "High-performance gaming laptop with RTX 3080, 32GB RAM, and 1TB SSD",
-      accessory_id: 1,
-      created_at: "2024-01-01T00:00:00.000Z",
-      updated_at: "2024-01-01T00:00:00.000Z",
-    }
-  ];
+const dummyProducts = [
+  {
+    _id: "1",
+    title: "Gaming Laptop Pro",
+    price: 1299.99,
+    stock: 15,
+    description:
+      "High-performance gaming laptop with RTX 3080, 32GB RAM, and 1TB SSD",
+    accessory_id: 1,
+    created_at: "2024-01-01T00:00:00.000Z",
+    updated_at: "2024-01-01T00:00:00.000Z",
+  },
+];
+
 interface Product {
-  priceAfterDiscount:string;
+  priceAfterDiscount: string;
   discount?: string;
   quantity: string;
   _id: string;
@@ -58,56 +59,48 @@ interface ProductsTableProps {
   fetchData: () => void;
 }
 
-
 const ProductsTable: React.FC<ProductsTableProps> = ({
   productsArray,
   fetchData,
 }) => {
-  const products = productsArray?.products || [];
-
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [show, setshow] = useState(false);
-  const [id, setid] = useState<string>("");
+  const [show, setShow] = useState(false);
+  const [id, setId] = useState<string>("");
   const dispatch = useReduxDispatch();
 
   // Pagination state
-   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-     pageIndex: 0,
-     pageSize: 2,
-   });
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
-   const pagination = {
-     pageIndex,
-     pageSize,
-   };
+  const pagination = { pageIndex, pageSize };
 
-  const handleRowClick = (rowData: (typeof productsArray)[0]) => {
-    console.log("Row clicked:", rowData);
-    naviagte(`/dashboard/products/product/${rowData._id}`);
+  const handleRowClick = (rowData: Product) => {
+    navigate(`/dashboard/products/product/${rowData._id}`);
   };
 
-  const deleteProductfunc = (e: React.MouseEvent, id: string) => {
+  const deleteProductFunc = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    setid(id);
-    setshow(true);
+    setId(id);
+    setShow(true);
   };
-
 
   const onConfirm = async (id: string) => {
     await dispatch(deleteProduct(id));
     fetchData();
-    setshow(false);
+    setShow(false);
   };
 
   const onClose = () => {
-    setshow(false);
+    setShow(false);
   };
 
-  const editProducts = (e: React.MouseEvent, id: string) => {
+  const editProduct = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    naviagte(`/dashboard/products/edit/${id}`);
+    navigate(`/dashboard/products/edit/${id}`);
   };
 
   const truncateText = (text: string, maxLength: number): string => {
@@ -116,33 +109,30 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     return truncated.substring(0, truncated.lastIndexOf(" ")) + "...";
   };
 
-  const columns: ColumnDef<(typeof productsArray)[number]>[] = [
+  const columns: ColumnDef<Product>[] = [
     {
       accessorKey: "category_id",
-      header: "category id",
-      cell: ({ row }) => row.getValue("category_id"),
+      header: "Category ID",
     },
     {
       accessorKey: "title",
       header: "Title",
-      cell: ({ row }) => row.getValue("title"),
-      filterFn: "includesString", 
+      filterFn: "includesString",
     },
     {
       accessorKey: "quantity",
       header: "Quantity",
-      cell: ({ row }) => row.getValue("quantity"),
     },
     {
       accessorKey: "stock",
       header: "Stock",
-      cell: ({ row }) => row.getValue("stock"),
     },
     {
       accessorKey: "description",
       header: "Description",
       cell: ({ row }) => truncateText(row.getValue("description"), 40),
-    }, {
+    },
+    {
       accessorKey: "price",
       header: "Price",
       cell: ({ row }) => `$${row.getValue("price")}`,
@@ -159,12 +149,14 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
         <div className="flex space-x-2">
           <button
             className="text-blue-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-            onClick={(e) => editProducts(e, row.original._id)}>
+            onClick={(e) => editProduct(e, row.original._id)}
+          >
             <Edit2 size={15} />
           </button>
           <button
             className="text-red-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-            onClick={(e) => deleteProductfunc(e, row.original._id)}>
+            onClick={(e) => deleteProductFunc(e, row.original._id)}
+          >
             <Trash2 size={15} />
           </button>
         </div>
@@ -173,22 +165,24 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   ];
 
   const table = useReactTable({
-    data: products,
+    data: productsArray,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
       pagination,
     },
-    manualPagination: false,
   });
+
+  console.log(productsArray);
+  
 
   return (
     <>
@@ -205,12 +199,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
           />
         </div>
         <div className="w-full overflow-auto">
-
-          {products.length === 0 ? (
-            <div className="text-center text-gray-500 dark:text-gray-300 p-4">
-              No Products Found
-            </div>
-          ) : table.getRowModel().rows.length === 0 ? (
+          {productsArray.length === 0 ? (
             <div className="text-center text-gray-500 dark:text-gray-300 p-4">
               No Products Found
             </div>
@@ -223,21 +212,19 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                       {headerGroup.headers.map((header) => (
                         <th
                           key={header.id}
-                          className="p-2 border hover:underline border-gray-600 cursor-pointer"
+                          className="p-2 border border-gray-600 cursor-pointer hover:underline"
                           onClick={() =>
                             header.column.toggleSorting(
                               header.column.getIsSorted() === "asc"
                             )
-                          }>
+                          }
+                        >
                           {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                          {header.column.getIsSorted()
-                            ? header.column.getIsSorted() === "asc"
-                              ? " ▲"
-                              : " ▼"
-                            : ""}
+                          {header.column.getIsSorted() &&
+                            (header.column.getIsSorted() === "asc" ? " ▲" : " ▼")}
                         </th>
                       ))}
                     </tr>
@@ -247,16 +234,12 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                   {table.getRowModel().rows.map((row) => (
                     <tr
                       key={row.id}
-                      className="dark:hover:bg-gray-700 cursor-pointer hover:bg-gray-200"
-                      onClick={() => handleRowClick(row.original)}>
+                      className="dark:hover:bg-gray-700 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => handleRowClick(row.original)}
+                    >
                       {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="p-2 border border-gray-600">
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
+                        <td key={cell.id} className="p-2 border border-gray-600">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                       ))}
                     </tr>

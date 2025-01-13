@@ -1,17 +1,15 @@
 declare global {
-  type TUserFromBackend = {
+
+  
+  type User = {
     _id: string;
     name: string;
     email: string;
-    phone: string;
+    subscriptions: string;
+    verified: boolean;
     isAdmin: boolean;
-    createdAt?: string;
-    updatedAt?: string;
-    __v?: number;
+    createdAt: Date | string;
   };
-
-  type TUsersFromBackend = TUserFromBackend[];
-
   type SubProduct = {
     _id: string;
     price: number;
@@ -43,4 +41,12 @@ declare global {
     user_id: string;
   };
 }
+
+export interface PaginationInfo {
+  totalPlans: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+}
+
 export {};

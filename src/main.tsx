@@ -5,11 +5,10 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import App from "./App";
 import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
-import CategoryPage from "./dashboard/pages/CategoryPage";
 import { OrderPreviewPage } from "./dashboard/pages/OrderPreviewPage";
-import { CartsPage } from "./dashboard/pages/carts/CartsPage";
 import { LoginDashboardPage } from "./dashboard/pages/login/LoginDashboardPage";
 import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
 import { OverviewPage } from "./dashboard/pages/overview/OverviewPage";
@@ -18,17 +17,21 @@ import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
 import ProductsPage from "./dashboard/pages/products/ProductsPage";
 import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
+import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
 import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
 import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
-import { UserPage } from "./dashboard/pages/user/userPage";
-import { ContactPage } from "./dashboard/pages/contact/Contact";
+import Home from "./pages/Home";
+import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
 import Website from "./dashboard/layouts/Website";
 import CategoryWeb from "./Components/CategoryWeb/CategoryWeb";
+import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
+import CategoryPage from "./dashboard/pages/category/CategoryPage";
+import ProductPage from "./pages/product-info/ProductInfo";
 
 const routers = createBrowserRouter([
   {
@@ -39,6 +42,17 @@ const routers = createBrowserRouter([
         children: [
           {path : 'category', element: <CategoryWeb />}
         ]
+      { path: "/product", element: <ProductPage /> },
+      {
+        path: "/",
+        element: <App />,
+        children: [
+          {
+            index: true,
+            path: "home",
+            element: <Home />,
+          },
+        ],
       },
       {
         path: "/dashboard",
@@ -51,7 +65,7 @@ const routers = createBrowserRouter([
           },
           {
             path: "users",
-            element: <UserPage />,
+            element: <UserManagementPage />,
           },
           {
             path: "accessories",
@@ -59,7 +73,7 @@ const routers = createBrowserRouter([
           },
           {
             path: "contact",
-            element: <ContactPage />,
+            element: <ContactsPage />,
           },
           {
             path: "products",
@@ -119,8 +133,8 @@ const routers = createBrowserRouter([
             ],
           },
           {
-            path: "carts",
-            element: <CartsPage />,
+            path: "reviews",
+            element: <ReviewPage />,
           },
 
           {
@@ -128,13 +142,9 @@ const routers = createBrowserRouter([
             element: <CategoryPage />,
           },
           {
-            path: "/dashboard",
-            element: <Navigate to={"/dashboard/overview"} replace />,
-          },
-          {
             path: "reminder",
-            element: <ShowRemindersPage />
-          }
+            element: <ShowRemindersPage />,
+          },
         ],
       },
       {

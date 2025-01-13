@@ -17,7 +17,7 @@ export const Dashboard: React.FC = () => {
     }
   }, [navigate]);
   return (
-    <div className="flex  ">
+    <div className="flex">
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
       <div className="flex relative flex-col flex-1 ">
         <header className="flex items-center h-16 justify-between px-6 py-4 bg-muted ">

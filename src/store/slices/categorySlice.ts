@@ -3,8 +3,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 import { api } from "../../lib/ajax/api";
-
-const API_BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL;
 const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
 const API_URL = `${API_BASE_URL}/api/${API_VERSION}`;
 
@@ -39,6 +37,7 @@ export type TCategoryFromBackEnd = {
 export type TCatergoryAdd = Omit<
     TCategoryFromBackEnd,
     "_id" | "createdAt" | "updatedAt" | "__v" | "image"
+
 > & { image: File };
 
 export type TCatergoryUpdate = Partial<TCatergoryAdd>;
@@ -76,6 +75,7 @@ const initialState: TInitialState = {
         currentPage: 1,
         pageSize: 1,
     },
+
 };
 
 // Utility function for handling API errors
@@ -284,4 +284,4 @@ const categorySlice = createSlice({
 });
 
 const categoryReducer = categorySlice.reducer;
-export default categoryReducer;
+export default categoryReducer; 
