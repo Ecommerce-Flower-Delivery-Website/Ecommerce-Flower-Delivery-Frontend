@@ -1,5 +1,6 @@
 import { Facebook, Instagram, PaintRoller, Send, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
+import { contactImgs } from "../../components/ContactUs/data/contact.imgs";
 
 export function Footer() {
   return (
@@ -53,22 +54,19 @@ export function Footer() {
             Follow Us
           </h2>
           <div className="flex gap-6">
-            <Link to="#" className=" hover:text-foreground transition-colors">
-              <Instagram className="h-5 w-5" />
-              <span className="sr-only">Instagram</span>
-            </Link>
-            <Link to="#" className=" hover:text-foreground transition-colors">
-              <PaintRoller className="h-5 w-5" />
-              <span className="sr-only">Pinterest</span>
-            </Link>
-            <Link to="#" className=" hover:text-foreground transition-colors">
-              <Facebook className="h-5 w-5" />
-              <span className="sr-only">Facebook</span>
-            </Link>
-            <Link to="#" className=" hover:text-foreground transition-colors">
-              <Twitter className="h-5 w-5" />
-              <span className="sr-only">Twitter</span>
-            </Link>
+            {contactImgs.map((icon, index) => {
+              return (
+                <Link
+                  key={index}
+                  to="#"
+                  className=" hover:text-foreground transition-colors"
+                >
+                  <img src={icon} className="h-5 w-5" />
+                  <span className="sr-only">Instagram</span>
+                </Link>
+              );
+            })}
+
             <Link to="#" className=" hover:text-foreground transition-colors">
               <Send className="h-5 w-5" />
               <span className="sr-only">Telegram</span>

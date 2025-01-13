@@ -58,8 +58,7 @@
     @apply border-border;
   }
   body {
-    overflow: unset;
-    @apply h-screen overflow-hidden bg-background font-sans
+    @apply h-screen bg-background font-sans
       text-foreground;
   }
 }
