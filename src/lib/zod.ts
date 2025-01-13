@@ -24,12 +24,21 @@ const signup = UserSchema.omit({
   subscriptions: true,
   verified: true,
 });
-const login = UserSchema.omit({
-  subscriptions: true,
-  verified: true,
-  name: true,
-  password_confirmation: true,
+
+const login = UserSchema.pick({ email: true, password: true });
+
+const addReviewSchema = z.object({
+  name: z.string().trim().min(1, "name is required"),
+  text: z.string().trim().min(1, "text is required"),
+  shouldShow: z.string().default("0"),
 });
+
+const validateUpdateReviewSchema = z.object({
+  name: z.string().trim().min(1, "name is required"),
+  text: z.string().trim().min(1, "text is required"),
+  shouldShow: z.string().default("0"),
+});
+
 const CartSchema = z.object({
   _id: z.string(),
   discount: z.coerce
@@ -147,6 +156,8 @@ export const validateSchemas = {
   signup,
   login,
   user: UserSchema,
+  addReview: addReviewSchema,
+  editReview: validateUpdateReviewSchema,
   createUser: CreateUserSchema,
   editUser: EditUserSchema,
   cart: CartSchema,
