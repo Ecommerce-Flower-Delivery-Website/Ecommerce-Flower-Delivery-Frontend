@@ -5,7 +5,6 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import App from "./App";
 import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
 import CategoryPage from "./dashboard/pages/CategoryPage";
@@ -28,12 +27,19 @@ import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import { UserPage } from "./dashboard/pages/user/userPage";
 import { ContactPage } from "./dashboard/pages/contact/Contact";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
+import Website from "./dashboard/layouts/Website";
+import CategoryWeb from "./Components/CategoryWeb/CategoryWeb";
 
 const routers = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: "/", element: <App /> },
+      { path: "/", 
+        element: <Website />,
+        children: [
+          {path : 'category', element: <CategoryWeb />}
+        ]
+      },
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -144,6 +150,7 @@ const routers = createBrowserRouter([
         element: <NotFoundPage />,
       },
     ],
+
   },
 ]);
 

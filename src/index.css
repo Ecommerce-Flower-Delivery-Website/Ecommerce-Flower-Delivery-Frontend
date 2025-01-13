@@ -57,7 +57,7 @@
   * {
     @apply border-border;
   }
-  body {
+  /* body {
     @apply h-screen overflow-hidden bg-background font-sans text-foreground;
-  }
+  } */
 }

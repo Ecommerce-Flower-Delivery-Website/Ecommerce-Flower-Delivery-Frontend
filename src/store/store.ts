@@ -8,6 +8,7 @@ import  productReducer  from "./slices/productSlice";
 import  subscribePlansReducer  from "./slices/subscribePlansSlice";
 import userReducer from "./slices/userSlice";
 import reminderReducer from "./slices/reminderSlice";
+import categoryReducer from "./slices/categorySlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +17,8 @@ export const store = configureStore({
     product: productReducer ,
     subscribePlans:subscribePlansReducer,
     user: userReducer,
-    reminder : reminderReducer
+    reminder : reminderReducer,
+    category: categoryReducer,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
