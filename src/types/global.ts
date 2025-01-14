@@ -49,4 +49,16 @@ export interface PaginationInfo {
   pageSize: number;
 }
 
+export enum EnumsDialogShow {
+  Login = "login",
+  SignUp = "sign-up", 
+  ForgotPassowrd = "forgot-password",
+  Verify = "verify-code",
+  Hide="hide"
+}
+
+export enum EnumsSearchParams {
+  dialog = "dialog",
+}
+
 export {};

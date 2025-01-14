@@ -26,6 +26,8 @@ const signup = UserSchema.omit({
 });
 
 const login = UserSchema.pick({ email: true, password: true });
+const Forgot_Password = UserSchema.pick({ email: true });
+const ResendVerifyCode = UserSchema.pick({ email: true });
 
 const addReviewSchema = z.object({
   name: z.string().trim().min(1, "name is required"),
@@ -152,9 +154,18 @@ const editOrderSchema = z
     isDone: z.boolean(),
   })
   .partial();
+
+  const CompareVerification = z.object({
+    emailConfirmToken: z.string().min(1, "Verify Code is required"),
+    email: z.string().email("Invalid email address."),
+  });
+  
 export const validateSchemas = {
   signup,
   login,
+  Forgot_Password,
+  ResendVerifyCode,
+  CompareVerification,
   user: UserSchema,
   addReview: addReviewSchema,
   editReview: validateUpdateReviewSchema,
