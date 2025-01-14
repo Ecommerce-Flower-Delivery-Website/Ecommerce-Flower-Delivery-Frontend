@@ -57,7 +57,12 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply  bg-background font-sans text-foreground;
+    @apply h-screen bg-background font-sans
+      text-foreground;
   }
+}
+.swiper {
+  height: 150px;
 }

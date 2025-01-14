@@ -5,7 +5,7 @@ import { Input } from "../../../components/input";
 export interface Accessory {
   _id: number;
   title: string;
-  image: File | string;
+  image: string;
   stock: number;
   description: string;
   price: number;
@@ -47,7 +47,9 @@ const AddPopup: React.FC<AddPopupProps> = ({
           }
         );
 
+
         const addedAccessory = response.data;
+
         setAccessories((prev) => [...prev, addedAccessory]);
         setPopupVisible(false);
         setNewAccessory({
@@ -62,13 +64,6 @@ const AddPopup: React.FC<AddPopupProps> = ({
         console.error("Error adding accessory:", error);
         alert("Failed to add accessory. Please try again.");
       }
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setNewAccessory({ ...newAccessory, image: file });
     }
   };
 
@@ -91,7 +86,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
             accept="image/*"
             placeholder="Select Image"
             />
-         
+
           <Input
             placeholder="Stock"
             type="number"

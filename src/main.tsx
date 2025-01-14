@@ -1,6 +1,10 @@
 import { StrictMode, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import App from "./App";
 import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
@@ -20,16 +24,36 @@ import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePl
 import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
 import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
+import Home from "./pages/Home";
 import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
+import Website from "./dashboard/layouts/Website";
+import CategoryWeb from "./Components/CategoryWeb/CategoryWeb";
 import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
 import CategoryPage from "./dashboard/pages/category/CategoryPage";
+import ProductPage from "./pages/product-info/ProductInfo";
 
 const routers = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: "/", element: <App /> },
+      { path: "/", 
+        element: <Website />,
+        children: [
+          {path : 'category', element: <CategoryWeb />}
+        ]
+      { path: "/product", element: <ProductPage /> },
+      {
+        path: "/",
+        element: <App />,
+        children: [
+          {
+            index: true,
+            path: "home",
+            element: <Home />,
+          },
+        ],
+      },
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -108,10 +132,6 @@ const routers = createBrowserRouter([
               },
             ],
           },
-          // {
-          //   path: "carts",
-          //   element: <CartsPage />,
-          // },
           {
             path: "reviews",
             element: <ReviewPage />,
@@ -121,10 +141,6 @@ const routers = createBrowserRouter([
             path: "category",
             element: <CategoryPage />,
           },
-          // {
-          //   path: "/dashboard",
-          //   element: <Navigate to={"/dashboard/overview"} replace />,
-          // },
           {
             path: "reminder",
             element: <ShowRemindersPage />,
@@ -144,6 +160,7 @@ const routers = createBrowserRouter([
         element: <NotFoundPage />,
       },
     ],
+
   },
 ]);
 
