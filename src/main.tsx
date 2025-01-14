@@ -1,13 +1,8 @@
 import { StrictMode, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
-import App from "./App";
-import CategoryWeb from "./Components/CategoryWeb/CategoryWeb";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { RootLayout } from "./RootLayout";
+import CategoryWeb from "./components/category/CategoryWeb";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
 import Website from "./dashboard/layouts/Website";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
@@ -30,12 +25,6 @@ import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePl
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
 import Home from "./pages/Home";
-import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
-import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
-import Website from "./dashboard/layouts/Website";
-import CategoryWeb from "./components/CategoryWeb/CategoryWeb";
-import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
-import CategoryPage from "./dashboard/pages/category/CategoryPage";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import ProductPage from "./pages/product-info/ProductInfo";
 
@@ -43,24 +32,15 @@ const routers = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: "/", 
-        element: <Website />,
-        children: [
-          {path : 'category', element: <CategoryWeb />}
-        ]
-      },
-      { path: "/product", element: <ProductPage /> },
-
       {
         path: "/",
         element: <Website />,
         children: [
           { index: true, element: <Home /> },
           { path: "category", element: <CategoryWeb /> },
-          { path: "product", element: <ProductPage /> },
+          { path: "/product", element: <ProductPage /> },
         ],
       },
-
       {
         path: "/dashboard",
         element: <Dashboard />,

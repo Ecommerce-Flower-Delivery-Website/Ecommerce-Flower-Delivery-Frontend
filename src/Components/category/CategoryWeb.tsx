@@ -5,17 +5,15 @@ import LoadingSpinner from "../../dashboard/components/LoadingSpinner";
 // import { useParams } from "react-router-dom";
 
 const CategoryWeb = () => {
-    const dispatch = useReduxDispatch();
-    const { category, loading } = useReduxSelector(
-      (state) => state.category
-    );
-    // const { id } = useParams();
+  const dispatch = useReduxDispatch();
+  const { category, loading } = useReduxSelector((state) => state.category);
+  // const { id } = useParams();
 
-    useEffect(()=>{
-        dispatch(getCategory("67816bc4d306a7ea6d0d3239"));
-    },[]);
+  useEffect(() => {
+    dispatch(getCategory("67816bc4d306a7ea6d0d3239"));
+  }, [dispatch]);
 
-    const { image , title , products } = category;
+  const { image, title, products } = category;
 
   return (
     <>

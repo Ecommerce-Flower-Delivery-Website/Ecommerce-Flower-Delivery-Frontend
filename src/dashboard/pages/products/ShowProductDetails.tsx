@@ -1,17 +1,17 @@
 import { ArrowBigLeft } from "lucide-react";
-import { NavLink, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { useReduxDispatch, useReduxSelector } from "../../../store/store";
+import { NavLink, useParams } from "react-router-dom";
 import { getProduct } from "../../../store/slices/productSlice";
-import Loader from "../../components/Loader";
+import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 import AccessoryPhoto from "../../components/AccessoryPhoto";
+import Loader from "../../components/Loader";
 
 const ShowProductDetails = () => {
   const { id } = useParams();
   const dispatch = useReduxDispatch();
   const { product, loading } = useReduxSelector((state) => state.product);
 
-  useEffect(() => {    
+  useEffect(() => {
     if (id) {
       dispatch(getProduct(id));
     }
@@ -35,11 +35,7 @@ const ShowProductDetails = () => {
     discount,
     quantity,
     category_id,
-    accessory_id,
-    created_at,
-    updated_at,
-  } = product.product || {};  
-
+  } = product.product || {};
 
   return (
     <div className="min-h-screen p-5">
@@ -82,7 +78,6 @@ const ShowProductDetails = () => {
             <h3 className="text-lg lg:text-xl font-bold mb-4">
               Category ID: {category_id}
             </h3>
-
           </div>
           <div>
             <h3 className="text-lg lg:text-xl font-bold mb-2">Accessory:</h3>
