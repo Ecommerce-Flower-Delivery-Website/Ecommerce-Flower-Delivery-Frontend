@@ -3,8 +3,11 @@ import { FaInstagram } from "react-icons/fa6";
 import { ImPinterest2 } from "react-icons/im";
 import { PiTelegramLogo } from "react-icons/pi";
 import { SlSocialFacebook, SlSocialTwitter } from "react-icons/sl";
-import { addReminder, removeReminder } from "../../store/slices/reminderSlice";
-import { useReduxDispatch } from "../../store/store";
+import {
+  addReminder,
+  removeReminder,
+} from "../../../store/slices/reminderSlice";
+import { useReduxDispatch } from "../../../store/store";
 
 const Footer = () => {
   const [email, setemail] = useState<string>("");

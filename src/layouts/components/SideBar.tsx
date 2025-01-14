@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { cn } from "../../../lib/utils";
-import { Button } from "../../components/button";
+import { cn } from "../../lib/utils";
+import { Button } from "../../dashboard/components/button";
 
 const menuItems = [
   { id: "users", label: "User Management", icon: Users },

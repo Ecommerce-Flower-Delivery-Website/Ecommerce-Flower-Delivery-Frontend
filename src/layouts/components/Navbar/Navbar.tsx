@@ -7,7 +7,7 @@ import { SlSocialTwitter } from "react-icons/sl";
 import { PiTelegramLogo } from "react-icons/pi";
 import { RiShoppingBagLine } from "react-icons/ri";
 import { useClickOutside } from "@mantine/hooks";
-import { useReduxSelector } from "../../store/store";
+import { useReduxSelector } from "../../../store/store";
 import { Portal } from "@radix-ui/react-portal";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";

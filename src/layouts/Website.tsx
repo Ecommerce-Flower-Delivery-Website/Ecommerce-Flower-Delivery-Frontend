@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Footer from "../../components/Footer/Footer";
-import Navbar from "../../components/Navbar/Navbar";
-
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
 const Website = () => {
   return (
     <main className=" bg-white text-black">
