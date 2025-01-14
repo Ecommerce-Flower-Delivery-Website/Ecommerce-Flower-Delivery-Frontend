@@ -9,6 +9,7 @@ type AuthState = {
   token: string | null;
   user: User | null;
   isPending: boolean;
+  isPendingResend?:boolean;
   error: string | null;
 };
 
@@ -16,21 +17,26 @@ const initialState: AuthState = {
   token: null,
   user: null,
   isPending: false,
+  isPendingResend:false,
   error: null,
 };
 
-export type SignUpFormType = z.infer<typeof validateSchemas.signup>;
+export type CreateUserType = z.infer<typeof validateSchemas.createUser>;
 export type LoginFormType = z.infer<typeof validateSchemas.login>;
+export type ForgotPasswordType = z.infer<typeof validateSchemas.Forgot_Password>;
+export type resendVerifyCodeType = z.infer<typeof validateSchemas.ResendVerifyCode>;
+export type CompareVerificationType = z.infer<typeof validateSchemas.CompareVerification>;
 
 export const signUpUser = createAsyncThunk(
   "auth/signUpUser",
-  async (values: SignUpFormType, { rejectWithValue }) => {
+  async (values: CreateUserType, { rejectWithValue }) => {
+    console.log(values,"sdsadfafdsfs")
     try {
       const result = await validateSchemas.signup.safeParseAsync(values);
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
       }
-      const res = await api.post("/register", {
+      const res = await api.post("/auth/register", {
         ...result.data,
       });
       toast.success("Signed up successfully");
@@ -49,7 +55,7 @@ export const loginUser = createAsyncThunk(
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
       }
-      const res = await api.post("/login", result.data);
+      const res = await api.post("/auth/login", result.data);
       toast.success("login successfully");
       return res.data;
     } catch (error) {
@@ -89,6 +95,61 @@ export const logOutUser = createAsyncThunk(
   }
 );
 
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (values: ForgotPasswordType, { rejectWithValue }) => {
+    try {
+      const result = await validateSchemas.Forgot_Password.safeParseAsync(values);
+      if (!result.success) {
+        throw new Error(result.error.errors[0].message);
+      }
+      const res = await api.post("/auth/forgot_password", result.data);
+      toast.success("your password was sent to your email successfully");
+      return res.data;
+    } catch (error) {
+      handleApiError(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Error");
+    }
+  }
+);
+
+export const compareVeificationCode = createAsyncThunk(
+  "auth/compareVeificationCode",
+  async (values:CompareVerificationType  , { rejectWithValue }) => {
+    try {
+      const result = await validateSchemas.CompareVerification.safeParseAsync(values);
+      if (!result.success) {
+        throw new Error(result.error.errors[0].message);
+      }
+      const res = await api.post("/auth/verify_compare", result.data);
+      toast.success("your email is confirmed successfully");
+      return res.data;
+    } catch (error) {
+      handleApiError(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Error");
+    }
+  }
+);
+
+export const resendVerifyCode = createAsyncThunk(
+  "auth/resendVerifyCode",
+  async (values: resendVerifyCodeType, { rejectWithValue }) => {
+    try {
+      const result = await validateSchemas.ResendVerifyCode.safeParseAsync(values);
+      if (!result.success) {
+        throw new Error(result.error.errors[0].message);
+        
+      }
+      const res = await api.post("/auth/resend_verify_code", result.data);
+      toast.success("your password was sent to your email successfully");
+      return res.data;
+    } catch (error) {
+      handleApiError(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Error");
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -101,9 +162,9 @@ export const authSlice = createSlice({
       })
       .addCase(signUpUser.fulfilled, (state, action) => {
         state.isPending = false;
-        state.token = action.payload.token;
+        // state.token = action.payload.token;
         state.user = action.payload.user;
-        localStorage.setItem("token", action.payload.token);
+        // localStorage.setItem("token", action.payload.token);
         localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(signUpUser.rejected, (state, action) => {
@@ -140,6 +201,47 @@ export const authSlice = createSlice({
       })
       .addCase(loginAdmin.rejected, (state, action) => {
         state.isPending = false;
+        state.error = action.payload as string;
+      });
+      builder
+      .addCase(forgotPassword.pending, (state) => {
+        state.isPending = true;
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isPending = false;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isPending = false;
+        state.error = action.payload as string;
+      });
+      builder
+      .addCase(compareVeificationCode.pending, (state) => {
+        state.isPending = true;
+        state.error = null;
+      })
+      .addCase(compareVeificationCode.fulfilled, (state,action) => {
+        state.isPending = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        
+      })
+      .addCase(compareVeificationCode.rejected, (state, action) => {
+        state.isPending = false;
+        state.error = action.payload as string;
+      });
+      builder
+      .addCase(resendVerifyCode.pending, (state) => {
+        state.isPendingResend = true;
+        state.error = null;
+      })
+      .addCase(resendVerifyCode.fulfilled, (state) => {
+        state.isPendingResend = false;
+      })
+      .addCase(resendVerifyCode.rejected, (state, action) => {
+        state.isPendingResend = false;
         state.error = action.payload as string;
       });
     builder
