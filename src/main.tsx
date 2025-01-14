@@ -4,10 +4,17 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+
 import App from "./App";
+import CategoryWeb from "./Components/CategoryWeb/CategoryWeb";
 import { RootLayout } from "./RootLayout";
 import { Dashboard } from "./dashboard/layouts/Dashboard";
+import Website from "./dashboard/layouts/Website";
+import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import { OrderPreviewPage } from "./dashboard/pages/OrderPreviewPage";
+import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
+import CategoryPage from "./dashboard/pages/category/CategoryPage";
+import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 import { LoginDashboardPage } from "./dashboard/pages/login/LoginDashboardPage";
 import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
 import { OverviewPage } from "./dashboard/pages/overview/OverviewPage";
@@ -16,13 +23,12 @@ import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
 import ProductsPage from "./dashboard/pages/products/ProductsPage";
 import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
-import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
-import "./index.css";
-import { NotFoundPage } from "./pages/not-found/NotFoundPage";
-import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
+import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
 import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
 import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
-import { Accessories } from "./dashboard/pages/Accessories/Accessories";
+import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
+import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
+import "./index.css";
 import Home from "./pages/Home";
 import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
@@ -30,6 +36,7 @@ import Website from "./dashboard/layouts/Website";
 import CategoryWeb from "./components/CategoryWeb/CategoryWeb";
 import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
 import CategoryPage from "./dashboard/pages/category/CategoryPage";
+import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import ProductPage from "./pages/product-info/ProductInfo";
 
 const routers = createBrowserRouter([
@@ -43,17 +50,17 @@ const routers = createBrowserRouter([
         ]
       },
       { path: "/product", element: <ProductPage /> },
+
       {
         path: "/",
-        element: <App />,
+        element: <Website />,
         children: [
-          {
-            index: true,
-            path: "home",
-            element: <Home />,
-          },
+          { index: true, element: <Home /> },
+          { path: "category", element: <CategoryWeb /> },
+          { path: "product", element: <ProductPage /> },
         ],
       },
+
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -160,7 +167,6 @@ const routers = createBrowserRouter([
         element: <NotFoundPage />,
       },
     ],
-
   },
 ]);
 
