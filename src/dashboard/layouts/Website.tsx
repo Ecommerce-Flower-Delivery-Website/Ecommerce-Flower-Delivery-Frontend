@@ -4,12 +4,12 @@ import Navbar from "../../Components/Navbar/Navbar";
 
 const Website = () => {
   return (
-    <>
+    <main className=" bg-white text-black">
       <Navbar />
-        <Outlet />
+      <Outlet />
       <Footer />
-    </>
+    </main>
   );
-}
+};
 
-export default Website
+export default Website;
