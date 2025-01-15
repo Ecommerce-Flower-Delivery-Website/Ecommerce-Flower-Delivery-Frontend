@@ -9,12 +9,12 @@ const ShowProductsPage = () => {
   const dispatch = useReduxDispatch();
   const { products, loading } = useReduxSelector((state) => state.product);
 
+  const fetchData = () => {
+    dispatch(getProducts());
+  };
   useEffect(() => {
-    const fetchData = () => {
-      dispatch(getProducts());
-    };
     fetchData();
-  }, [dispatch]);
+  }, []);
 
   return (
     <>

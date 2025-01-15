@@ -35,8 +35,7 @@ const ShowProductDetails = () => {
     discount,
     quantity,
     category_id,
-  } = product.product || {};
-
+  } = product;
   return (
     <div className="min-h-screen p-5">
       <NavLink to="/dashboard/products" className="mb-5 inline-block">
@@ -46,7 +45,7 @@ const ShowProductDetails = () => {
         <div className="lg:w-1/2 w-full">
           <img
             className="w-full lg:h-full object-cover rounded-lg"
-            src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${image}`}
+            src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}/${image}`}
             alt={title || "Product"}
           />
         </div>
@@ -76,7 +75,7 @@ const ShowProductDetails = () => {
               Description: {description}
             </h3>
             <h3 className="text-lg lg:text-xl font-bold mb-4">
-              Category ID: {category_id}
+              Category ID: {category_id._id}
             </h3>
           </div>
           <div>

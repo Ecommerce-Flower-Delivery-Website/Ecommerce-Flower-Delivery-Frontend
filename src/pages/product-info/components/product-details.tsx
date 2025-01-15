@@ -1,5 +1,30 @@
+import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { api } from "../../../lib/ajax/api";
+type Category = {
+  _id: string;
+  title: string;
+  image: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
+type Product = {
+  _id: string;
+  priceAfterDiscount: string;
+  quantity: string;
+  title: string;
+  image: string;
+  stock: string;
+  price: string;
+  category_id: Category;
+  description: string;
+  accessory_id: string[];
+  __v: number;
+};
 
 const vaseOptions = [
   {
@@ -34,16 +59,26 @@ const vaseOptions = [
   },
 ];
 
-export function ProductDetails() {
+export function ProductDetails({ productId }: { productId: string }) {
+  const { data: product } = useQuery({
+    queryKey: [`product/${productId}`],
+    queryFn: async () => {
+      const res = await api.get(`/product/${productId}`);
+      return res.data?.data?.product as Product & { _id: string };
+    },
+  });
+
+  console.log(JSON.stringify(product));
   const [quantity, setQuantity] = useState(1);
   const [selectedVase, setSelectedVase] = useState<string | undefined>(
     undefined
   );
+  const backendBaseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
   return (
     <div className="grid grid-cols-1 border border-y-0  divide-x-[1px] divide-black xl:grid-cols-2">
       <div className="relative  aspect-[420/375] md:h-full w-full ">
         <img
-          src="https://images.unsplash.com/photo-1454262041357-5d96f50a2f27?w=800&q=80"
+          src={backendBaseUrl + product?.image}
           alt="Rosy Delight Bouquet"
           className=" absolute inset-0 size-full object-cover"
         />
@@ -51,16 +86,17 @@ export function ProductDetails() {
       <div className="p-4 md:p-8 space-y-6 md:space-y-8">
         <div>
           <div className="text-sm mb-4">
-            <span className="text-gray-600">FRESH FLOWERS</span>
+            <span className="text-gray-600 uppercase">
+              {product?.category_id?.title}
+            </span>
             <span className="mx-2">/</span>
-            <span>ROSY DELIGHT</span>
+            <span className=" uppercase">{product?.title}</span>
           </div>
-          <h1 className="text-xl md:text-2xl mb-4">Rosy Delight - $100</h1>
+          <h1 className="text-xl md:text-2xl mb-4 uppercase">
+            {product?.title} - ${product?.price}
+          </h1>
           <p className="text-gray-600 leading-relaxed">
-            Large exceptional bouquet composed of a selection of David Austin
-            roses, known for their beauty and subtle fragrance. The bouquet is
-            accompanied by seasonal foliage which will enhance these sublime
-            flowers even
+            {product?.description}
           </p>
         </div>
 
