@@ -1,14 +1,29 @@
 import { Outlet } from "react-router-dom";
+// import Footer from "../../components/Footer/Footer";
 import Navbar from "./components/Navbar/Navbar";
-import Footer from "./components/Footer/Footer";
-const Website = () => {
-  return (
-    <main className=" bg-white text-black">
-      <Navbar />
-      <Outlet />
-      <Footer />
-    </main>
-  );
-};
+import { useDialogRenderer } from "../hooks/useDialogRender";
 
-export default Website;
+import { RootState, useReduxSelector } from "../store/store";
+
+const Website = () => {
+
+
+    const { user} = useReduxSelector(
+      (state: RootState) => state.auth
+    );
+    const { renderDialog } = useDialogRenderer(user);
+
+
+  return (
+    <>
+      <Navbar />
+        <Outlet />
+      {/* <Footer /> */}
+      {renderDialog()}
+
+
+    </>
+  );
+}
+
+export default Website

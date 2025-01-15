@@ -11,6 +11,8 @@ import { useReduxSelector } from "../../../store/store";
 import { Portal } from "@radix-ui/react-portal";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { EnumsDialogShow, EnumsSearchParams } from "../../../types/global";
 interface CartItemType {
   id: number;
   name: string;
@@ -23,6 +25,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useReduxSelector((state) => state.auth);
   console.log("user", user);
+  const [, setSearchParams] = useSearchParams();
+
   const [cartItems, setCartItems] = useState<CartItemType[]>([
     {
       id: 1,
@@ -53,6 +57,11 @@ const Navbar = () => {
     }
   }, [navMenu]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
   return (
     <>
       <div className="border border-textPrimaryColor flex justify-between items-center">
@@ -71,9 +80,27 @@ const Navbar = () => {
           </button>
         </div>
         <div className="lg:w-1/4 ">
-          <button className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base ">
+        {
+          localStorage.getItem("token") ?
+          <button 
+          className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+          onClick={handleLogout}>
+            Sign out
+          </button>
+          :
+          <button 
+          className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+          onClick={
+            ()=>{
+              setSearchParams((prevParams) => {
+              prevParams.set(EnumsSearchParams.dialog,EnumsDialogShow.Login)
+              return prevParams
+              })
+            }
+          }>
             Sign in
           </button>
+        }
           <button
             onClick={() => setIsOpen(true)}
             className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
@@ -98,12 +125,27 @@ const Navbar = () => {
             >
               <IoMdClose size={"18px"} />
             </button>
-            <button
-              className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
-              style={{ fontSize: "21px" }}
-            >
-              Sign in
-            </button>
+            {
+          localStorage.getItem("token") ?
+          <button 
+          className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+          onClick={handleLogout}>
+            Sign out
+          </button>
+          :
+          <button 
+          className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+          onClick={
+            ()=>{
+              setSearchParams((prevParams) => {
+              prevParams.set(EnumsSearchParams.dialog,EnumsDialogShow.Login)
+              return prevParams
+              })
+            }
+          }>
+            Sign in
+          </button>
+        }
             <button
               className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
               style={{ fontSize: "21px" }}

@@ -30,7 +30,6 @@ export type CompareVerificationType = z.infer<typeof validateSchemas.CompareVeri
 export const signUpUser = createAsyncThunk(
   "auth/signUpUser",
   async (values: CreateUserType, { rejectWithValue }) => {
-    console.log(values,"sdsadfafdsfs")
     try {
       const result = await validateSchemas.signup.safeParseAsync(values);
       if (!result.success) {
@@ -39,8 +38,10 @@ export const signUpUser = createAsyncThunk(
       const res = await api.post("/auth/register", {
         ...result.data,
       });
-      toast.success("Signed up successfully");
-      return res.data.data;
+      toast.success("Signed up successfully , Verification code was sent to your email");
+      console.log(res,"rrrRegister")
+
+      return res.data;
     } catch (error) {
       handleApiError(error);
       return rejectWithValue(error instanceof Error ? error.message : "Error");
@@ -56,7 +57,8 @@ export const loginUser = createAsyncThunk(
         throw new Error(result.error.errors[0].message);
       }
       const res = await api.post("/auth/login", result.data);
-      toast.success("login successfully");
+      console.log(res,"resresresre")
+      toast.success(`login successfully ${res.data.data?.token ? "":"sent the verfication code to your email"}`);
       return res.data;
     } catch (error) {
       handleApiError(error);
@@ -74,7 +76,7 @@ export const loginAdmin = createAsyncThunk(
         throw new Error(result.error.errors[0].message);
       }
       const res = await api.post("/auth/login_admin", result.data);
-      toast.success("login successfully");
+      toast.success(`login successfully ${res.data.data?.token ? "":"sent the verfication code to your email"}`);
       return res.data;
     } catch (error) {
       handleApiError(error);
@@ -162,10 +164,10 @@ export const authSlice = createSlice({
       })
       .addCase(signUpUser.fulfilled, (state, action) => {
         state.isPending = false;
-        // state.token = action.payload.token;
-        state.user = action.payload.user;
-        // localStorage.setItem("token", action.payload.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        // state.token = action.payload.data.token;
+        state.user = action.payload.data.user;
+        // localStorage.setItem("token", action.payload.data.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.data.user));
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.isPending = false;
@@ -178,10 +180,12 @@ export const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isPending = false;
-        state.token = action.payload.token;
-        state.user = action.payload.user;
-        localStorage.setItem("token", action.payload.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        console.log(action.payload,"action.payload")
+        state.token = action.payload.data?.token;
+        state.user = action.payload.data.user;
+        localStorage.setItem("token", action.payload.data?.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.data.user));
+
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isPending = false;
@@ -194,9 +198,9 @@ export const authSlice = createSlice({
       })
       .addCase(loginAdmin.fulfilled, (state, action) => {
         state.isPending = false;
-        state.token = action.payload.data.token;
+        state.token = action.payload.data?.token;
         state.user = action.payload.data.user;
-        localStorage.setItem("token", action.payload.data.token);
+        localStorage.setItem("token", action.payload.data?.token);
         localStorage.setItem("user", JSON.stringify(action.payload.data.user));
       })
       .addCase(loginAdmin.rejected, (state, action) => {
@@ -222,10 +226,10 @@ export const authSlice = createSlice({
       })
       .addCase(compareVeificationCode.fulfilled, (state,action) => {
         state.isPending = false;
-        state.token = action.payload.token;
-        state.user = action.payload.user;
-        localStorage.setItem("token", action.payload.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        state.token = action.payload.data.token;
+        state.user = action.payload.data.user;
+        localStorage.setItem("token", action.payload.data.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.data.user));
         
       })
       .addCase(compareVeificationCode.rejected, (state, action) => {
