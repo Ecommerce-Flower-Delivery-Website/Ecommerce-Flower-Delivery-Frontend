@@ -152,7 +152,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     removeItemMutation.mutate(productId);
   const updateQuantity = (payload: UpdateQuantityPayload) =>
     updateQuantityMutation.mutate(payload);
-
+  console.log(data);
   return (
     <CartContext.Provider
       value={{

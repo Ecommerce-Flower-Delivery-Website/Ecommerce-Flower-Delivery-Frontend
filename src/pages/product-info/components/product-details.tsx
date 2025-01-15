@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { api } from "../../../lib/ajax/api";
+import { useCart } from "../../../contexts/CartContext";
 type Category = {
   _id: string;
   title: string;
@@ -68,12 +69,15 @@ export function ProductDetails({ productId }: { productId: string }) {
     },
   });
 
-  console.log(JSON.stringify(product));
   const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
   const [selectedVase, setSelectedVase] = useState<string | undefined>(
     undefined
   );
   const backendBaseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
+  if (!product) {
+    return null;
+  }
   return (
     <div className="grid grid-cols-1 border border-y-0  divide-x-[1px] divide-black xl:grid-cols-2">
       <div className="relative  aspect-[420/375] md:h-full w-full ">
@@ -187,7 +191,16 @@ export function ProductDetails({ productId }: { productId: string }) {
           </div>
         </div>
 
-        <button className="w-full bg-black text-white py-4 hover:bg-gray-900">
+        <button
+          onClick={() =>
+            addItem({
+              productId: product._id,
+              quantity: 1,
+              accessoriesId: [],
+            })
+          }
+          className="w-full bg-black text-white py-4 hover:bg-gray-900"
+        >
           ADD TO BASKET
         </button>
       </div>

@@ -9,7 +9,10 @@ declare global {
     verified: boolean;
     isAdmin: boolean;
     createdAt: Date | string;
-  };
+    emailConfirmToken?: string;
+    isAccountVerified?: boolean;
+  }
+
   type SubProduct = {
     _id: string;
     price: number;

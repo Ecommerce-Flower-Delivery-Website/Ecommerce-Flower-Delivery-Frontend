@@ -5,6 +5,7 @@ import OurService from "./components/OurService/OurService"
 const Home = () => {
   return (
     <div className="home">
+      
       <ContactUs />
       <OurService />
       <OurClientsSay />

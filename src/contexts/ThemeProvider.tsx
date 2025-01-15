@@ -33,7 +33,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
       document.documentElement.classList.toggle("dark", isDark);
       setIsDarkMode(isDark);
     }
-  }, []);
+  }, [setIsDarkMode]);
 
   const theme = isDarkMode ? "dark" : "light";
 

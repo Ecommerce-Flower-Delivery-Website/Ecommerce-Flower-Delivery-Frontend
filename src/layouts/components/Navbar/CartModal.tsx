@@ -58,21 +58,19 @@ const CartModal = ({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            ref={ref}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black bg-opacity-50 z-50"
           >
             <motion.div
-              ref={ref}
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed right-0 top-0 h-full w-full max-w-[450px] bg-white text-black shadow-xl"
             >
-              <div className="grid grid-rows-[auto_1fr_auto] h-full">
+              <div ref={ref} className="grid grid-rows-[auto_1fr_auto] h-full">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-black">
                   <h2 className="text-xl font-semibold">Shopping Cart</h2>
