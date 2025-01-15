@@ -4,6 +4,8 @@ import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 import { api } from "../../lib/ajax/api";
 const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
+const API_BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL;
+
 const API_URL = `${API_BASE_URL}/api/${API_VERSION}`;
 
 interface Product {

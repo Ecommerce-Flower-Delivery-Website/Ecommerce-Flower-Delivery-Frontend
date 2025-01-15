@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
-import { useState } from "react";
+// import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -9,7 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  // DialogTrigger,
 } from "../ui/Dialog";
 import { Button } from "../../dashboard/components/button";
 import { Input } from "../../dashboard/components/input";
@@ -23,8 +22,7 @@ import { useSearchParams } from "react-router-dom";
 
 type Forgot_PasswordType = z.infer<typeof validateSchemas.Forgot_Password>;
 
- const ForgotPasswordDialog = () => {
-  const [isOpen, setIsOpen] = useState(false);
+ const ForgotPasswordDialog = ({isOpen,handleClose}:{isOpen:boolean,handleClose:React.Dispatch<React.SetStateAction<boolean>>}) => {
   const [, setSearchParams] = useSearchParams();
 
   const {
@@ -40,22 +38,20 @@ type Forgot_PasswordType = z.infer<typeof validateSchemas.Forgot_Password>;
   
 
     const onSubmit = async (data: Forgot_PasswordType) => {
-      const res = await dispatch(forgotPassword(data));
-      if (res.meta.requestStatus === "fulfilled") {
-        // navigate("/dashboard", {
-        //   replace: true,
-        // });
-      }
+      await dispatch(forgotPassword(data));
+      // if (res.meta.requestStatus === "fulfilled") {
+
+      // }
     };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen} >
-      <DialogTrigger asChild>
+    <Dialog open={isOpen} onOpenChange={handleClose} >
+      {/* <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" /> Forgot
         </Button>
-      </DialogTrigger>
-      <DialogContent className="flex flex-col h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full md:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10">
+      </DialogTrigger> */}
+      <DialogContent aria-describedby={"Forgot your password"} className="flex flex-col h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full md:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10">
         <DialogHeader>
         <DialogTitle className="text-start font-semibold text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
         Forgot your password
@@ -100,7 +96,7 @@ type Forgot_PasswordType = z.infer<typeof validateSchemas.Forgot_Password>;
           })
       }}
       >
-          Sign Up
+          Sign In
         </span>
         </p>
 

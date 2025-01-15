@@ -6,10 +6,13 @@ import { SlSocialFacebook } from "react-icons/sl";
 import { SlSocialTwitter } from "react-icons/sl";
 import { PiTelegramLogo } from "react-icons/pi";
 import { RiShoppingBagLine } from "react-icons/ri";
+import { EnumsDialogShow, EnumsSearchParams } from "../../types/global";
+import { useSearchParams } from "react-router-dom";
 
 const Navbar = () => {
   const [navMenu, setnavMenu] = useState(false);
   const [shipping, setshipping] = useState(false);
+  const [, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     if (navMenu) {
@@ -19,6 +22,11 @@ const Navbar = () => {
     }
   }, [navMenu]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+  
   return (
     <>
       <div className="border border-textPrimaryColor flex justify-between items-center">
@@ -36,9 +44,28 @@ const Navbar = () => {
           </button>
         </div>
         <div className="lg:w-1/4 ">
-          <button className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base ">
+        {
+          localStorage.getItem("token") ?
+          <button 
+          className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+          onClick={handleLogout}>
+            Sign out
+          </button>
+          :
+          <button 
+          className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+          onClick={
+            ()=>{
+              setSearchParams((prevParams) => {
+              prevParams.set(EnumsSearchParams.dialog,EnumsDialogShow.Login)
+              return prevParams
+              })
+            }
+          }>
             Sign in
           </button>
+        }
+
           <button className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base ">
             Cart
           </button>
@@ -58,11 +85,27 @@ const Navbar = () => {
               className="w-full text-start p-3 font-medium border-b border-textPrimaryColor">
               <IoMdClose size={'18px'} />
             </button>
-            <button
-              className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
-              style={{ fontSize: "21px" }}>
-              Sign in
-            </button>
+            {
+          localStorage.getItem("token") ?
+          <button 
+          className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+          onClick={handleLogout}>
+            Sign out
+          </button>
+          :
+          <button 
+          className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+          onClick={
+            ()=>{
+              setSearchParams((prevParams) => {
+              prevParams.set(EnumsSearchParams.dialog,EnumsDialogShow.Login)
+              return prevParams
+              })
+            }
+          }>
+            Sign in
+          </button>
+        }
             <button
               className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
               style={{ fontSize: "21px" }}>

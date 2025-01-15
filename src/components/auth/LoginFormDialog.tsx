@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
-import { useState } from "react";
+// import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 // import Google from "../../assets/Google.png";
@@ -10,7 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  // DialogTrigger,
 } from "../ui/Dialog";
 import { Button } from "../../dashboard/components/button";
 import { Input } from "../../dashboard/components/input";
@@ -19,13 +18,14 @@ import { validateSchemas } from "../../lib/zod";
 import { loginUser } from "../../store/slices/authSlice";
 import { useReduxDispatch, useReduxSelector } from "../../store/store";
 import { EnumsDialogShow, EnumsSearchParams } from "../../types/global";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type LoginFormType = z.infer<typeof validateSchemas.login>;
 
- const LoginFormDialog = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const LoginFormDialog = ({isOpen,handleClose}:{isOpen:boolean,handleClose:() => void}) => {
+
   const [, setSearchParams] = useSearchParams();
+
 
   const {
     register,
@@ -37,25 +37,45 @@ type LoginFormType = z.infer<typeof validateSchemas.login>;
 
     const dispatch = useReduxDispatch();
     const { isPending } = useReduxSelector((state) => state.auth);
+    const navigate = useNavigate();
   
 
     const onSubmit = async (data: LoginFormType) => {
-      console.log(data,"datatata")
       const res = await dispatch(loginUser(data));
       if (res.meta.requestStatus === "fulfilled") {
-        // navigate("/dashboard", {
-        //   replace: true,
-        // });
+
+        if(res.payload?.data?.user?.isAccountVerified===false){
+          setSearchParams((prevParams) => {
+            prevParams.set(EnumsSearchParams.dialog,EnumsDialogShow.Verify)
+            return prevParams
+          })
+
+        }else if(res.payload?.data?.user?.isAdmin===true && res.payload?.data?.user?.isAccountVerified===true){
+
+          handleClose()
+          navigate("/dashboard", {
+              replace: true,
+            });
+
+        }else if(res.payload?.data?.user?.isAdmin===false && res.payload?.data?.user?.isAccountVerified===true ){
+          handleClose()
+          navigate("/", {
+              replace: true,
+            });
+        }
+
       }
+
+      console.log(res,"resresresres")
     };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen} >
-      <DialogTrigger asChild>
+    <Dialog open={isOpen} onOpenChange={handleClose} >
+      {/* <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" /> Create New User
         </Button>
-      </DialogTrigger>
+      </DialogTrigger> */}
       <DialogContent className="flex flex-col h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full md:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10">
         <DialogHeader>
         <DialogTitle className="text-start font-semibold text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
@@ -111,6 +131,7 @@ type LoginFormType = z.infer<typeof validateSchemas.login>;
       >
           Sign Up
         </span>
+        
         </p>
 
         <p className="mt-6 w-full text-[#808080] text-[16px] leading-5 font-medium">

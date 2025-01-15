@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
-import { useState } from "react";
+// import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -9,55 +8,62 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  // DialogTrigger,
 } from "../ui/Dialog";
 import { Button } from "../../dashboard/components/button";
 import { Input } from "../../dashboard/components/input";
 import { ErrorMessage } from "../../dashboard/components/error-message";
 import { validateSchemas } from "../../lib/zod";
-import { useReduxDispatch, useReduxSelector } from "../../store/store";
+import { RootState, useReduxDispatch, useReduxSelector } from "../../store/store";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import {resendVerifyCode, compareVeificationCode } from "../../store/slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 type CompareVerificationType = z.infer<typeof validateSchemas.CompareVerification>;
 
-const VerificationDialog = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
+const VerificationDialog = ({isOpen,handleClose}:{isOpen:boolean,handleClose:()=>void}) => {
+  const { user} = useReduxSelector(
+    (state: RootState) => state.auth
+  );
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     getValues,
   } = useForm<CompareVerificationType>({
-    resolver: zodResolver(validateSchemas.Forgot_Password),
+    resolver: zodResolver(validateSchemas.CompareVerification),
     defaultValues:{
-      email:"omarrayes1998@gmail.com",
+      email: user?.email || (localStorage.getItem("user")!== null ? JSON.parse(localStorage.getItem('user') || '{}')?.email : "") || "",
       emailConfirmToken:""
     }
   });
 
     const dispatch = useReduxDispatch();
     const { isPending,isPendingResend } = useReduxSelector((state) => state.auth);
-
+    const navigate = useNavigate();
 
     const onSubmit = async (data: CompareVerificationType) => {
       const res = await dispatch(compareVeificationCode(data));
       if (res.meta.requestStatus === "fulfilled") {
-        // navigate("/dashboard", {
-        //   replace: true,
-        // });
+
+        handleClose()
+        if(res.payload?.data?.user?.isAdmin===true){
+          navigate("/dashboard", {
+              replace: true,
+            });
+        }
+
       }
     };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen} >
-      <DialogTrigger asChild>
+    <Dialog open={isOpen} onOpenChange={handleClose} >
+      {/* <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" /> Verify
         </Button>
-      </DialogTrigger>
-      <DialogContent className="flex flex-col h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full md:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10">
+      </DialogTrigger> */}
+      <DialogContent aria-describedby={"Verify your email"} className="flex flex-col h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full md:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10">
         <DialogHeader>
         <DialogTitle className="text-start font-semibold text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
         Verify your email
@@ -91,7 +97,6 @@ const VerificationDialog = () => {
             </label>
             <Input
               id="emailConfirmToken"
-              type="emailConfirmToken"
               {...register("emailConfirmToken")}
               className="h-[56px] rounded-none text-base font-medium "
             />
