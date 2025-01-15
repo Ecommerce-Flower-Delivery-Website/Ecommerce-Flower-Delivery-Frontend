@@ -1,4 +1,4 @@
-import { Facebook, Instagram, PaintRoller, Send, Twitter } from "lucide-react";
+import { Send } from "lucide-react";
 import { Link } from "react-router-dom";
 import { contactImgs } from "../../components/ContactUs/data/contact.imgs";
 

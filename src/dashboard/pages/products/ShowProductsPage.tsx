@@ -7,17 +7,14 @@ import Loader from "../../components/Loader";
 
 const ShowProductsPage = () => {
   const dispatch = useReduxDispatch();
-  const { products, loading } = useReduxSelector(
-    (state) => state.product
-  );
-
-  const fetchData = () => {
-    dispatch(getProducts());
-  }
+  const { products, loading } = useReduxSelector((state) => state.product);
 
   useEffect(() => {
+    const fetchData = () => {
+      dispatch(getProducts());
+    };
     fetchData();
-  }, []); 
+  }, [dispatch]);
 
   return (
     <>
@@ -30,7 +27,8 @@ const ShowProductsPage = () => {
           <div className="flex justify-end">
             <NavLink
               to={"/dashboard/products/add"}
-              className="bg-primary rounded p-4 font-bold mb-6">
+              className="bg-primary rounded p-4 font-bold mb-6"
+            >
               Add Products
             </NavLink>
           </div>

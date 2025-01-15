@@ -1,8 +1,8 @@
 import { Moon, Sun } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useThemeToggle } from "../../contexts/hooks/useThemeToggle";
-import { Button } from "../components/button";
+import { useThemeToggle } from "../contexts/hooks/useThemeToggle";
+import { Button } from "../dashboard/components/button";
 import { Sidebar } from "./components/SideBar";
 
 export const Dashboard: React.FC = () => {

@@ -4,39 +4,25 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getSortedRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
+  PaginationState,
   SortingState,
   useReactTable,
-  PaginationState,
 } from "@tanstack/react-table";
 import {
-  Edit2,
-  Trash2,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Edit2,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import DeleteModal from "./DeleteModal";
 import { useNavigate } from "react-router-dom";
-import { useReduxDispatch } from "../../store/store";
 import { deleteProduct } from "../../store/slices/productSlice";
-
-const dummyProducts = [
-  {
-    _id: "1",
-    title: "Gaming Laptop Pro",
-    price: 1299.99,
-    stock: 15,
-    description:
-      "High-performance gaming laptop with RTX 3080, 32GB RAM, and 1TB SSD",
-    accessory_id: 1,
-    created_at: "2024-01-01T00:00:00.000Z",
-    updated_at: "2024-01-01T00:00:00.000Z",
-  },
-];
+import { useReduxDispatch } from "../../store/store";
+import DeleteModal from "./DeleteModal";
 
 interface Product {
   priceAfterDiscount: string;
@@ -182,7 +168,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   });
 
   console.log(productsArray);
-  
 
   return (
     <>
@@ -224,7 +209,9 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                             header.getContext()
                           )}
                           {header.column.getIsSorted() &&
-                            (header.column.getIsSorted() === "asc" ? " ▲" : " ▼")}
+                            (header.column.getIsSorted() === "asc"
+                              ? " ▲"
+                              : " ▼")}
                         </th>
                       ))}
                     </tr>
@@ -238,8 +225,14 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                       onClick={() => handleRowClick(row.original)}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id} className="p-2 border border-gray-600">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <td
+                          key={cell.id}
+                          className="p-2 border border-gray-600"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
                         </td>
                       ))}
                     </tr>
@@ -270,25 +263,29 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                   <button
                     className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
                     onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}>
+                    disabled={!table.getCanPreviousPage()}
+                  >
                     <ChevronsLeft size={20} />
                   </button>
                   <button
                     className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
                     onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}>
+                    disabled={!table.getCanPreviousPage()}
+                  >
                     <ChevronLeft size={20} />
                   </button>
                   <button
                     className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
                     onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}>
+                    disabled={!table.getCanNextPage()}
+                  >
                     <ChevronRight size={20} />
                   </button>
                   <button
                     className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
                     onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}>
+                    disabled={!table.getCanNextPage()}
+                  >
                     <ChevronsRight size={20} />
                   </button>
                 </div>

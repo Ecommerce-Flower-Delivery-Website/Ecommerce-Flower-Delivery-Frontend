@@ -1,25 +1,27 @@
+import { useState } from "react";
 import { FaInstagram } from "react-icons/fa6";
 import { ImPinterest2 } from "react-icons/im";
-import { SlSocialFacebook } from "react-icons/sl";
-import { SlSocialTwitter } from "react-icons/sl";
 import { PiTelegramLogo } from "react-icons/pi";
-import { useState } from "react";
-import { useReduxDispatch } from "../../store/store";
-import { addReminder, removeReminder } from "../../store/slices/reminderSlice";
+import { SlSocialFacebook, SlSocialTwitter } from "react-icons/sl";
+import {
+  addReminder,
+  removeReminder,
+} from "../../../store/slices/reminderSlice";
+import { useReduxDispatch } from "../../../store/store";
 
 const Footer = () => {
-  const [email, setemail] = useState<string>('');
-  const storedUser = localStorage.getItem('user');
+  const [email, setemail] = useState<string>("");
+  const storedUser = localStorage.getItem("user");
   const user = JSON.parse(storedUser);
   const { isReminder } = user;
   console.log(isReminder);
   const dispatch = useReduxDispatch();
   const handleOnReminderClick = () => {
     dispatch(addReminder());
-  }
+  };
   const handleOnRemoveReminder = () => {
     dispatch(removeReminder());
-  }
+  };
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-y border-textPrimaryColor">
       <div className="space-y-6 border-b md:border-r lg:border-r p-6 md:p-10 border-textPrimaryColor">
@@ -38,13 +40,15 @@ const Footer = () => {
           {isReminder ? (
             <button
               onClick={handleOnRemoveReminder}
-              className="w-full bg-textPrimaryColor font-medium text-white py-3 md:py-5 px-4">
+              className="w-full bg-textPrimaryColor font-medium text-white py-3 md:py-5 px-4"
+            >
               Remove Reminder
             </button>
           ) : (
             <button
               onClick={handleOnReminderClick}
-              className="w-full bg-textPrimaryColor font-medium text-white py-3 md:py-5 px-4">
+              className="w-full bg-textPrimaryColor font-medium text-white py-3 md:py-5 px-4"
+            >
               REMIND
             </button>
           )}
@@ -101,7 +105,8 @@ const Footer = () => {
           ].map((item) => (
             <li
               key={item}
-              className="hover:underline text-textPrimaryColor mb-2 cursor-pointer">
+              className="hover:underline text-textPrimaryColor mb-2 cursor-pointer"
+            >
               {item}
             </li>
           ))}
@@ -113,7 +118,8 @@ const Footer = () => {
           {["Flower Subcription", "Wedding & Event Decor"].map((item) => (
             <li
               key={item}
-              className="hover:underline text-textPrimaryColor mb-2 cursor-pointer">
+              className="hover:underline text-textPrimaryColor mb-2 cursor-pointer"
+            >
               {item}
             </li>
           ))}
@@ -127,7 +133,8 @@ const Footer = () => {
           {["Our story", "Blog"].map((item) => (
             <li
               key={item}
-              className="hover:underline text-textPrimaryColor mb-2 cursor-pointer">
+              className="hover:underline text-textPrimaryColor mb-2 cursor-pointer"
+            >
               {item}
             </li>
           ))}
@@ -137,7 +144,8 @@ const Footer = () => {
             (item) => (
               <li
                 key={item}
-                className="hover:underline text-textPrimaryColor mb-2 cursor-pointer">
+                className="hover:underline text-textPrimaryColor mb-2 cursor-pointer"
+              >
                 {item}
               </li>
             )
@@ -146,6 +154,6 @@ const Footer = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Footer
+export default Footer;

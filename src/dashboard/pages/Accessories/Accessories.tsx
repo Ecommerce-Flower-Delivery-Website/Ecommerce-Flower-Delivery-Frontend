@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -7,7 +6,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, ChevronUp, Trash, Edit } from "lucide-react";
+import { ArrowUpDown, ChevronDown, ChevronUp, Edit, Trash } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { api } from "../../../lib/ajax/api";
 import { Button } from "../../components/button";
 import { Card, CardContent, CardHeader } from "../../components/card";
 import { Input } from "../../components/input";
@@ -21,7 +22,6 @@ import {
 } from "../../components/table";
 import AddPopup from "./components/AddPopup";
 import EditPopup from "./components/EditPopup";
-import { api } from "../../../lib/ajax/api";
 
 interface Accessory {
   _id: number;
