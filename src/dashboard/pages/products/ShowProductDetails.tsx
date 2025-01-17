@@ -37,7 +37,7 @@ const ShowProductDetails = () => {
     category_id,
   } = product;
   return (
-    <div className="min-h-screen p-5">
+    <div className="min-h-screen text-white p-5">
       <NavLink to="/dashboard/products" className="mb-5 inline-block">
         <ArrowBigLeft size={40} className="cursor-pointer" />
       </NavLink>

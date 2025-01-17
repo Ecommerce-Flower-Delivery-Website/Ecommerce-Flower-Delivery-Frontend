@@ -3,24 +3,6 @@ import { useReduxDispatch, useReduxSelector } from "../../store/store";
 import { getRelatedProduct } from "../../store/slices/productSlice";
 import LoadingSpinner from "../../dashboard/components/LoadingSpinner";
 
-const related = [
-  {
-    id: 1,
-    image: "/public/assets/images/211d295bca21b1784c81e8cb90f83cfc.jfif",
-  },
-  {
-    id: 2,
-    image: "/public/assets/images/211d295bca21b1784c81e8cb90f83cfc.jfif",
-  },
-  {
-    id: 3,
-    image: "/public/assets/images/211d295bca21b1784c81e8cb90f83cfc.jfif",
-  },
-  {
-    id: 4,
-    image: "/public/assets/images/211d295bca21b1784c81e8cb90f83cfc.jfif",
-  },
-];
 const RelatedProducts = () => {
   const dispatch = useReduxDispatch();
   const { products, loading, error } = useReduxSelector(

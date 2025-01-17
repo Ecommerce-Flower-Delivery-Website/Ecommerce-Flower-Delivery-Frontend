@@ -97,10 +97,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
   const columns: ColumnDef<Product>[] = [
     {
-      accessorKey: "category_id",
-      header: "Category ID",
-    },
-    {
       accessorKey: "title",
       header: "Title",
       filterFn: "includesString",

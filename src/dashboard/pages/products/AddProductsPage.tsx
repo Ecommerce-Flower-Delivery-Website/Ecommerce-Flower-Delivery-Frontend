@@ -1,14 +1,24 @@
 import { ArrowBigLeft } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
-import { useReduxDispatch } from "../../../store/store";
+import {
+  RootState,
+  useReduxDispatch,
+  useReduxSelector,
+} from "../../../store/store";
 import { addProducts } from "../../../store/slices/productSlice";
+import SelectSearch from "react-select-search";
+import "react-select-search/style.css";
+import { getAllCategories } from "../../../store/slices/categorySlice";
 
 const AddProductsPage = () => {
   const file = useRef<HTMLInputElement | null>(null);
+  const { categories, loading } = useReduxSelector(
+    (state: RootState) => state.category
+  );
   const [previewImage, setPreviewImage] = useState<string>("");
-  const [loading, setLoading] = useState(false);
+  const [loadingProducts, setLoadingProducts] = useState(false);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [stock, setStock] = useState<string>("");
@@ -32,10 +42,18 @@ const AddProductsPage = () => {
       setPreviewImage(imageUrl);
     }
   };
+  useEffect(() => {
+    dispatch(getAllCategories()).then((result) => {
+      if (result.meta.requestStatus === "fulfilled") {
+        console.log(categories);
+      }
+    });
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+    console.log(categoryId);
+    setLoadingProducts(true);
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -48,21 +66,27 @@ const AddProductsPage = () => {
 
     dispatch(addProducts(formData)).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
-        setLoading(false);
+        setLoadingProducts(false);
         navigate("/dashboard/products");
       } else {
-        setLoading(false);
+        setLoadingProducts(false);
       }
     });
+  };
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(event.target.value);
+    setCategoryId(event.target.value);
   };
 
   return (
     <>
-      <div>
-        <NavLink to={"/dashboard/products"}>
-          <ArrowBigLeft size={40} />
-        </NavLink>
-        {loading ? (
+      <div className="text-white">
+        <div className="w-[50px]">
+          <NavLink to={"/dashboard/products"}>
+            <ArrowBigLeft size={40} />
+          </NavLink>
+        </div>
+        {loadingProducts ? (
           <div className="w-full flex justify-center items-center h-full">
             <Loader />
           </div>
@@ -103,15 +127,20 @@ const AddProductsPage = () => {
                 <label htmlFor="category_id" className="block mb-2">
                   Category Id :
                 </label>
-                <input
-                  type="text"
-                  id="category_id"
-                  name="category_id"
-                  onChange={(e) => setCategoryId(e.target.value)}
-                  placeholder="Category Id"
-                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                  required
-                />
+                <select
+                  className="w-full h-12 px-3 text-white dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                  id="category-select"
+                  value={categoryId}
+                  onChange={handleChange}>
+                    <option value="" disabled>
+                      Select Category
+                    </option>
+                  {categories.map((category) => (
+                    <option key={category._id} value={category._id}>
+                      {category.title}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

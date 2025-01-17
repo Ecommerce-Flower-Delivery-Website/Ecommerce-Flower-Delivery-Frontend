@@ -106,6 +106,23 @@ export const getCategories = createAsyncThunk(
     }
   }
 );
+export const getAllCategories = createAsyncThunk(
+  "category/getAllCategories",
+  async (
+    _,
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.get(`/category/withoutPagination`);
+
+      return response.data.data;
+    } catch (error) {
+      handleApiError(error);
+      const generalMessage = "failed to get categories";
+      return rejectWithValue(handleError(error, generalMessage));
+    }
+  }
+);
 
 export const addCategory = createAsyncThunk(
   "category/addCategory",
@@ -185,6 +202,19 @@ const categorySlice = createSlice({
         state.pagination = action.payload.pagination;
       })
       .addCase(getCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // get category without pagination
+      .addCase(getAllCategories.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllCategories.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = action.payload.categories;
+      })
+      .addCase(getAllCategories.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
