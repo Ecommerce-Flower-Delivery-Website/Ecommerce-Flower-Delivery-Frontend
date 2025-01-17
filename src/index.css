@@ -58,11 +58,21 @@
     @apply border-border;
   }
   body {
-    overflow: unset @apply h-screen overflow-hidden bg-background font-sans
-      text-foreground;
+    @apply bg-background font-sans text-foreground;
   }
 }
 
 .swiper {
   height: 150px;
+}
+.swiper-pagination-bullet {
+  background-color: #808080 !important;
+}
+.swiper-button-prev, .swiper-button-next {
+  color: #121212 !important;
+}
+@media screen and (width < 1200) {
+  .swiper-button-prev, .swiper-button-next {
+    display: none !important;
+  }    
 }

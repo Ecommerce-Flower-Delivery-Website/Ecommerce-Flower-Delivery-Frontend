@@ -1,0 +1,27 @@
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const DetailPart = ({
+  title,
+  dir,
+}: {
+  title: string;
+  dir: "left" | "right";
+}) => {
+  return (
+    <div className="aj-detail flex flex-col h-full items-center justify-center">
+      <h2 className="font-medium text-[38px] leading-[45.6px]">{title}</h2>
+      <Link to={""} className="absolute bottom-6 flex items-center gap-[7px] font-semibold leading-[19.2px] tracking-[0.025em] text-[#121212]">
+        {dir == "right" ? (
+          <>
+            Shop now <ArrowRight />
+          </>
+        ) : (
+          <><ArrowLeft /> Shop now</>
+        )}
+      </Link>
+    </div>
+  );
+};
+
+export default DetailPart;

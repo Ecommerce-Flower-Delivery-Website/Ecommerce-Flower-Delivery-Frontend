@@ -6,9 +6,9 @@ interface TextContentProps {
   button: string;
 }
 
-const TextContent = ({ subTitle, title, text, button, color }: TextContentProps) => {
+const TextContent = ({ subTitle, title, text, button }: TextContentProps) => {
   return (
-    <div className="flower-container w-[77.78%] flex flex-col justify-center items-center">
+    <div className="flower-container py-[80px] w-[77.78%] flex flex-col justify-center items-center">
       <h4 className="text-sm leading-[16.8px] mb-6">{subTitle}</h4>
       <h2 className="text-[50px] leading-[60px] font-semibold mb-4">
         {title}

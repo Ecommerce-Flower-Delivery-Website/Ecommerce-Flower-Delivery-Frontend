@@ -10,7 +10,7 @@ const ContactUs: React.FC = () => {
     <div className="aj-contact-us grid grid-cols-1 lg:grid-cols-2">
       <div className="aj-left-part flex flex-col order-2 lg:order-none">
         <CallBack />
-        <div className="grid grid-cols-2 flex-grow">
+        <div className="grid grid-cols-2 flex-grow min-h-[207px]">
           <Phone />
           <Address />
         </div>
