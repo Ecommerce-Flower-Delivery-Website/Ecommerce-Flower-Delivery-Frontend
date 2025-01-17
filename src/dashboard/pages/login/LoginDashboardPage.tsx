@@ -34,8 +34,8 @@ export const LoginDashboardPage = () => {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center ">
-      <div className="     absolute inset-0 bg-black isolate ">
+    <main className="min-h-screen  flex items-center justify-center ">
+      <div className=" overflow-hidden     absolute inset-0 bg-black isolate ">
         <div className=" bg-black w-full  absolute inset-0 " />
         <div className="dark:mix-blend-lighten absolute animate-[spin_3s_linear_infinite]   w-[200vw] -left-[50vw] -top-[50vh] h-[200vh]  from-primary to-secondary bg-gradient-to-tr" />
         <div className=" bg-white size-full dark:invert  dark:mix-blend-color-burn mix-blend-lighten dark:filter w-full absolute inset-0">
@@ -107,7 +107,7 @@ export const LoginDashboardPage = () => {
               </div>
               <Button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-white transition-[colors_transform] duration-200"
+                className="w-full bg-primary hover:bg-primary-hover text-white transition-[colors_transform] duration-200"
                 disabled={isSubmitting || isPending}
               >
                 {isSubmitting ? "Signing in..." : "Sign in"}

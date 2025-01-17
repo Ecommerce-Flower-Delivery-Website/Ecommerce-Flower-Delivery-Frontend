@@ -14,36 +14,20 @@ import {
 } from "../../../components/dialog";
 import { ErrorMessage } from "../../../components/error-message";
 import { Input } from "../../../components/input";
-import {
-  deleteUser,
-  updateUser,
-  addUser,
-} from "../../../../store/slices/userSlice";
+import { deleteUser, TUserFromBackend, updateUser } from "../../../../store/slices/userSlice";
 import { useReduxDispatch } from "../../../../store/store";
-
-// Types for forms
 type CreateUserFormType = z.infer<typeof validateSchemas.createUser>;
-type EditUserFormType = z.infer<typeof validateSchemas.editUser>;
 
-// Create Component
 export const Create = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useReduxDispatch();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isLoading },
   } = useForm<CreateUserFormType>({
     resolver: zodResolver(validateSchemas.createUser),
-    mode: "onBlur", // Added mode on blur
   });
-
-  const onSubmit = (data: CreateUserFormType) => {
-    dispatch(addUser(data));
-    setIsOpen(false);
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -55,45 +39,58 @@ export const Create = () => {
         <DialogHeader>
           <DialogTitle>Create New User</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
-          <InputField
-            label="Name"
-            id="name"
-            register={register}
-            errors={errors}
-          />
-          <InputField
-            label="Email"
-            id="email"
-            type="email"
-            register={register}
-            errors={errors}
-          />
-          <InputField
-            label="Phone"
-            id="phone"
-            type="tel"
-            register={register}
-            errors={errors}
-          />
-
-          <InputField
-            label="Password"
-            id="password"
-            type="password"
-            register={register}
-            errors={errors}
-          />
-          <div className="flex items-center gap-2 mb-4">
-            <label htmlFor="isAdmin">Is Admin</label>
+        <form
+          onSubmit={handleSubmit((values) => console.log(values))}
+          className="grid gap-4 py-4"
+        >
+          <div className="grid grid-cols-4 items-center gap-4">
+            <label htmlFor="name" className="text-right">
+              User Name
+            </label>
+            <Input id="name" {...register("name")} className="col-span-3" />
+          </div>
+          <ErrorMessage message={errors.name?.message} />
+          <div className="grid grid-cols-4 items-center gap-4">
+            <label htmlFor="email" className="text-right">
+              Email
+            </label>
             <Input
-              id="isAdmin"
-              type="checkbox"
-              {...register("isAdmin")}
-              className="h-4 w-4"
+              id="email"
+              type="email"
+              {...register("email")}
+              className="col-span-3"
             />
           </div>
-          <Button type="submit" disabled={isSubmitting}>
+          <ErrorMessage message={errors.email?.message} />
+          <div className="grid grid-cols-4 items-center gap-4">
+            <label htmlFor="password" className="text-right">
+              Password
+            </label>
+            <Input
+              id="password"
+              type="password"
+              {...register("password")}
+              className="col-span-3"
+            />
+          </div>
+          <ErrorMessage message={errors.password?.message} />
+          <div className="grid grid-cols-4 items-center gap-4">
+            <label htmlFor="password_confirmation" className="text-right">
+              Password confirmation
+            </label>
+            <Input
+              id="password_confirmation"
+              {...register("password_confirmation")}
+              className="col-span-3"
+            />
+          </div>
+          <ErrorMessage message={errors.password_confirmation?.message} />
+
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="hover:bg-primary-hover bg-primary text-white"
+          >
             Create User
           </Button>
         </form>
@@ -102,7 +99,8 @@ export const Create = () => {
   );
 };
 
-// Edit Component
+type EditUserFormType = z.infer<typeof validateSchemas.editUser>;
+
 export const Edit = ({ user }: { user: TUserFromBackend }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useReduxDispatch();
@@ -110,17 +108,11 @@ export const Edit = ({ user }: { user: TUserFromBackend }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isLoading },
   } = useForm<EditUserFormType>({
     resolver: zodResolver(validateSchemas.editUser),
     defaultValues: user,
-    mode: "onBlur", // Added mode on blur
   });
-
-  const onSubmit = (data: EditUserFormType) => {
-    dispatch(updateUser({ userId: user._id, userData: data }));
-    setIsOpen(false);
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -131,37 +123,30 @@ export const Edit = ({ user }: { user: TUserFromBackend }) => {
         <DialogHeader>
           <DialogTitle>Edit User</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
-          <InputField
-            label="Name"
-            id="name"
-            register={register}
-            errors={errors}
-          />
-          <InputField
-            label="Email"
-            id="email"
-            type="email"
-            register={register}
-            errors={errors}
-          />
-          <InputField
-            label="Phone"
-            id="phone"
-            type="tel"
-            register={register}
-            errors={errors}
-          />
-          <div className="flex items-center gap-2 mb-4">
-            <label htmlFor="isAdmin">Is Admin</label>
-            <Input
-              id="isAdmin"
-              type="checkbox"
-              {...register("isAdmin")}
-              className="h-4 w-4"
-            />
+        <form
+          onSubmit={handleSubmit((values) =>
+            dispatch(updateUser({ userId: user._id, userData: values }))
+          )}
+          className="grid gap-4 py-4"
+        >
+          <div>
+            <label htmlFor="name">Name</label>
+            <Input id="name" {...register("name")} />
+            <ErrorMessage message={errors.name?.message} />
           </div>
-          <Button type="submit" disabled={isSubmitting}>
+
+          <div>
+            <label htmlFor="email">Email</label>
+            <Input id="email" {...register("email")} />
+            <ErrorMessage message={errors.email?.message} />
+          </div>
+
+          <div>
+            <label htmlFor="verified">Verified</label>
+            <Input type="checkbox" id="verified" {...register("verified")} />
+          </div>
+
+          <Button type="submit" disabled={isLoading}>
             Save Changes
           </Button>
         </form>
@@ -170,15 +155,9 @@ export const Edit = ({ user }: { user: TUserFromBackend }) => {
   );
 };
 
-// Remove Component
 export const Remove = ({ userId }: { userId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useReduxDispatch();
-
-  const onConfirm = () => {
-    dispatch(deleteUser(userId));
-    setIsOpen(false);
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -194,30 +173,16 @@ export const Remove = ({ userId }: { userId: string }) => {
           <Button variant="ghost" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={onConfirm}>Confirm</Button>
+          <Button
+            onClick={() => {
+              dispatch(deleteUser(userId));
+              setIsOpen(false);
+            }}
+          >
+            Confirm
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
   );
 };
-
-// Helper Component for Input Fields
-const InputField = ({
-  label,
-  id,
-  type = "text",
-  register,
-  errors,
-}: {
-  label: string;
-  id: string;
-  type?: string;
-  register: any;
-  errors: any;
-}) => (
-  <div>
-    <label htmlFor={id}>{label}</label>
-    <Input id={id} type={type} {...register(id)} />
-    <ErrorMessage message={errors[id]?.message} />
-  </div>
-);

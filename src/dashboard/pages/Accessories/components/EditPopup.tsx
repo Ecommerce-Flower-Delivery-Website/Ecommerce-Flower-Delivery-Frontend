@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Button } from "../../../components/button";
 import { Card, CardContent, CardHeader } from "../../../components/card";
 import { Input } from "../../../components/input";
-import { Button } from "../../../components/button";
 
 interface EditPopupProps {
   accessory: {
@@ -33,28 +33,6 @@ const EditPopup: React.FC<EditPopupProps> = ({
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleSave = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/v1/accessory/${updatedAccessory._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedAccessory),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error updating accessory");
-      }
-
-      // If successful, update the accessory in the parent component
-      updateAccessory(updatedAccessory);
-      setPopupVisible(false); // Close the popup
-    } catch (error) {
-      console.error("Error saving accessory:", error);
-    }
   };
 
   return (
@@ -97,15 +75,10 @@ const EditPopup: React.FC<EditPopupProps> = ({
             />
           </div>
           <div className="mt-4 flex justify-end gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setPopupVisible(false)}
-            >
+            <Button variant="outline" onClick={() => setPopupVisible(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>
-              Save
-            </Button>
+            <Button onClick={updateAccessory}>Save</Button>
           </div>
         </CardContent>
       </Card>

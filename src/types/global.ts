@@ -1,16 +1,17 @@
 declare global {
-  type TUserFromBackend = {
+
+  
+  type User = {
     _id: string;
     name: string;
     email: string;
-    phone: string;
+    subscriptions: string;
+    verified: boolean;
     isAdmin: boolean;
-    createdAt?: string;
-    updatedAt?: string;
-    __v?: number;
-  };
-
-  type TUsersFromBackend = TUserFromBackend[];
+    createdAt: Date | string;
+    emailConfirmToken?: string;
+    isAccountVerified?: boolean;
+  }
 
   type SubProduct = {
     _id: string;
@@ -43,4 +44,24 @@ declare global {
     user_id: string;
   };
 }
+
+export interface PaginationInfo {
+  totalPlans: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+}
+
+export enum EnumsDialogShow {
+  Login = "login",
+  SignUp = "sign-up", 
+  ForgotPassowrd = "forgot-password",
+  Verify = "verify-code",
+  Hide="hide"
+}
+
+export enum EnumsSearchParams {
+  dialog = "dialog",
+}
+
 export {};
