@@ -58,8 +58,14 @@
     @apply border-border;
   }
   body {
+<<<<<<< HEAD
     @apply bg-background font-sans text-foreground;
   }
+=======
+    overflow: unset 
+  @apply h-screen overflow-hidden bg-background font-sans
+      text-foreground;
+>>>>>>> 8d04db71a949fe9ac8a98e06a96f97a45b3a4382
 }
 
 .swiper {
