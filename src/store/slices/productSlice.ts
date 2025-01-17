@@ -109,6 +109,22 @@ export const getProduct = createAsyncThunk(
     }
   }
 );
+export const getRelatedProduct = createAsyncThunk(
+  "product/getRelatedProduct",
+  async (id: string | undefined, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/product/${id}/relate`);
+      
+      if (response.status === 201 || response.status === 200) {
+        console.log(response.data.data.relatedProducts);
+        return response.data.data.relatedProducts;
+      }
+    } catch (error) {
+      handleApiError(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Error");
+    }
+  }
+);
 
 export const deleteProduct = createAsyncThunk(
   "product/deleteProduct",
@@ -183,6 +199,16 @@ const ProductSlice = createSlice({
         state.product = action.payload;
       })
       .addCase(getProduct.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(getRelatedProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getRelatedProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = action.payload;
+      })
+      .addCase(getRelatedProduct.rejected, (state, action) => {
         state.error = action.payload as string;
       })
       .addCase(updateProduct.pending, (state) => {
