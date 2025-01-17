@@ -17,7 +17,7 @@ const BusinessOverview = ({title, pargraph, imgPath, reverse = false} : Business
             className="h-[500px] md:h-[720px] w-full object-cover"
           />
         </div>
-        <div className="md:w-1/2 h-[332px] md:h-[720px] px-20 pt-20 text-left text-[#121212]">
+        <div className="md:w-1/2 md:h-[720px] px-20 py-20 text-left text-[#121212]">
           <h3 className="font-medium text-[38px] leading-[45.6px] pb-4">{title}</h3>
           <p className="leading-[22.4px] text-[#121212E5]">{pargraph}</p>
         </div>
