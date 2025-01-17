@@ -27,6 +27,7 @@ import "./index.css";
 import Home from "./pages/Home";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import ProductPage from "./pages/product-info/ProductInfo";
+import AboutUsPage from "./pages/AboutUs/AboutUs";
 
 const routers = createBrowserRouter([
   {
@@ -39,6 +40,7 @@ const routers = createBrowserRouter([
           { index: true, element: <Home /> },
           { path: "category", element: <CategoryWeb /> },
           { path: "/product/:id", element: <ProductPage /> },
+          { path: "/about-us", element: <AboutUsPage /> },
         ],
       },
       {
