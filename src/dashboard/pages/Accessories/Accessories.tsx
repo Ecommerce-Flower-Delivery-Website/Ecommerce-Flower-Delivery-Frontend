@@ -48,7 +48,9 @@ export const Accessories: React.FC = () => {
     description: "",
     price: 0,
   });
-  const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(null);
+  const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -171,7 +173,7 @@ export const Accessories: React.FC = () => {
       header: "Description",
       cell: ({ row }) => (
         <div className="relative group" title={row.original.description}>
-          {row.original.description.length > 50
+          {row.original.description?.length > 50
             ? `${row.original.description.substring(0, 50)}...`
             : row.original.description}
         </div>

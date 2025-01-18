@@ -1,14 +1,21 @@
+import { useEffect, useState } from "react";
 import { api } from "../../../../lib/ajax/api";
 import { Button } from "../../../components/button";
 import { Input } from "../../../components/input";
 
+export interface Product {
+  _id: number;
+  title: string;
+}
+
 export interface Accessory {
   _id: number;
   title: string;
-  image: string;
+  image: string | File;
   stock: number;
   description: string;
   price: number;
+  products: number[]; // Array of selected product IDs
 }
 
 interface AddPopupProps {
@@ -24,47 +31,76 @@ const AddPopup: React.FC<AddPopupProps> = ({
   newAccessory,
   setNewAccessory,
 }) => {
-  const handleAddAccessory = async () => {
-    if (newAccessory.title && newAccessory.image) {
+  const [products, setProducts] = useState<Product[]>([]); // List of products
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([]); // Selected product IDs
+
+  // Fetch products from the API
+  useEffect(() => {
+    const fetchProducts = async () => {
       try {
-        const formData = new FormData();
-        formData.append("title", newAccessory.title);
-        formData.append(
-          "image",
-          newAccessory.image instanceof File ? newAccessory.image : ""
-        );
-        formData.append("stock", newAccessory.stock.toString());
-        formData.append("description", newAccessory.description);
-        formData.append("price", newAccessory.price.toString());
-
-        const response = await api.post(
-          "http://localhost:3000/api/v1/accessory",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-
-        const addedAccessory = response.data;
-
-        setAccessories((prev) => [...prev, addedAccessory]);
-        setPopupVisible(false);
-        setNewAccessory({
-          _id: 0,
-          title: "",
-          image: "",
-          stock: 0,
-          description: "",
-          price: 0,
-        });
+        const response = await api.get("http://localhost:3000/api/v1/product");
+        setProducts(response.data.data.products);
       } catch (error) {
-        console.error("Error adding accessory:", error);
-        alert("Failed to add accessory. Please try again.");
+        console.error("Error fetching products:", error);
+        alert("Failed to fetch products. Please try again.");
       }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleAddAccessory = async () => {
+    if (!newAccessory.title || !newAccessory.image) {
+      alert("Title and Image are required fields.");
+      return;
     }
+
+    try {
+      const formData = new FormData();
+      formData.append("title", newAccessory.title);
+      formData.append(
+        "image",
+        newAccessory.image instanceof File ? newAccessory.image : ""
+      );
+      formData.append("stock", newAccessory.stock.toString());
+      formData.append("description", newAccessory.description);
+      formData.append("price", newAccessory.price.toString());
+      formData.append("products", JSON.stringify(selectedProducts)); // Add selected products
+
+      const response = await api.post(
+        "http://localhost:3000/api/v1/accessory",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const addedAccessory = response.data;
+
+      setAccessories((prev) => [...prev, addedAccessory]);
+      setPopupVisible(false);
+      setNewAccessory({
+        _id: 0,
+        title: "",
+        image: "",
+        stock: 0,
+        description: "",
+        price: 0,
+        products: [],
+      });
+      setSelectedProducts([]); // Clear selected products
+    } catch (error) {
+      console.error("Error adding accessory:", error);
+      alert("Failed to add accessory. Please try again.");
+    }
+  };
+
+  const toggleProductSelection = (id: number) => {
+    setSelectedProducts((prev) =>
+      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
+    );
   };
 
   return (
@@ -82,10 +118,15 @@ const AddPopup: React.FC<AddPopupProps> = ({
 
           <Input
             type="file"
-            onChange={handleFileChange}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setNewAccessory({ ...newAccessory, image: file });
+              }
+            }}
             accept="image/*"
             placeholder="Select Image"
-            />
+          />
 
           <Input
             placeholder="Stock"
@@ -98,7 +139,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
               })
             }
           />
-          
+
           <Input
             placeholder="Description"
             value={newAccessory.description}
@@ -106,6 +147,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
               setNewAccessory({ ...newAccessory, description: e.target.value })
             }
           />
+
           <Input
             placeholder="Price"
             type="number"
@@ -117,8 +159,44 @@ const AddPopup: React.FC<AddPopupProps> = ({
               })
             }
           />
+
+          {/* Multi-select dropdown */}
+          <div>
+            <label className="block font-medium mb-2">Select Products</label>
+            <div className="border rounded-md p-2 max-h-40 overflow-y-auto">
+              {products?.map((product) => (
+                <label
+                  key={product._id}
+                  className="flex items-center gap-2 mb-2"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedProducts.includes(product._id)}
+                    onChange={() => toggleProductSelection(product._id)}
+                  />
+                  {product.title}
+                </label>
+              ))}
+            </div>
+          </div>
+
           <div className="flex justify-end gap-4">
-            <Button variant="outline" onClick={() => setPopupVisible(false)}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setPopupVisible(false);
+                setNewAccessory({
+                  _id: 0,
+                  title: "",
+                  image: "",
+                  stock: 0,
+                  description: "",
+                  price: 0,
+                  products: [],
+                });
+                setSelectedProducts([]);
+              }}
+            >
               Cancel
             </Button>
             <Button onClick={handleAddAccessory}>Add</Button>
