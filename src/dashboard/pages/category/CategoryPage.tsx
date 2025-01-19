@@ -65,7 +65,7 @@ const CategoryPage = () => {
     {
       accessorKey: "title",
       header: "Title",
-      filterFn: "includesString", // Ensure the column supports filtering
+      filterFn: "includesString", 
     },
     {
       accessorKey: "image",

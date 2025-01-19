@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -6,23 +8,40 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  PaginationState,
   SortingState,
   useReactTable,
+  PaginationState,
 } from "@tanstack/react-table";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  Edit2,
-  Trash2,
-} from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { deleteProduct } from "../../store/slices/productSlice";
+import { Edit2, Trash2 } from "lucide-react";
 import { useReduxDispatch } from "../../store/store";
+import { deleteProduct } from "../../store/slices/productSlice";
+
 import DeleteModal from "./DeleteModal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
+import { Input } from "./input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./pagination";
+import { Card, CardContent, CardHeader } from "./card";
 
 interface Product {
   priceAfterDiscount: string;
@@ -50,19 +69,17 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   fetchData,
 }) => {
   const navigate = useNavigate();
+  const dispatch = useReduxDispatch();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [show, setShow] = useState(false);
   const [id, setId] = useState<string>("");
-  const dispatch = useReduxDispatch();
 
   // Pagination state
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 5,
   });
-
-  const pagination = { pageIndex, pageSize };
 
   const handleRowClick = (rowData: Product) => {
     navigate(`/dashboard/products/product/${rowData._id}`);
@@ -77,10 +94,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   const onConfirm = async (id: string) => {
     await dispatch(deleteProduct(id));
     fetchData();
-    setShow(false);
-  };
-
-  const onClose = () => {
     setShow(false);
   };
 
@@ -128,23 +141,26 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
       id: "actions",
       header: "Actions",
       cell: ({ row }) => (
-        <div className="flex space-x-2">
+        <div className="flex gap-2">
           <button
-            className="text-blue-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-            onClick={(e) => editProduct(e, row.original._id)}
-          >
-            <Edit2 size={15} />
+            className="p-2 rounded-full text-blue-500 hover:bg-primary"
+            onClick={(e) => editProduct(e, row.original._id)}>
+            <Edit2 className="h-4 w-4" />
           </button>
           <button
-            className="text-red-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-            onClick={(e) => deleteProductFunc(e, row.original._id)}
-          >
-            <Trash2 size={15} />
+            className="p-2 rounded-full text-red-500 hover:bg-primary"
+            onClick={(e) => deleteProductFunc(e, row.original._id)}>
+            <Trash2 className="h-4 w-4" />
           </button>
         </div>
       ),
     },
   ];
+
+  const pagination = {
+    pageIndex,
+    pageSize,
+  };
 
   const table = useReactTable({
     data: productsArray,
@@ -161,137 +177,153 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
       columnFilters,
       pagination,
     },
+    pageCount: Math.ceil(productsArray.length / pageSize),
   });
 
-  console.log(productsArray);
-
   return (
-    <>
-      <div className="p-4 dark:bg-[#020817] shadow-lg dark:text-white rounded-lg">
-        <div className="flex justify-between items-center mb-4">
-          <input
-            type="text"
+    <Card className="w-full">
+      <CardHeader className="space-y-4">
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm">Show</span>
+            <Select
+              value={pageSize.toString()}
+              onValueChange={(value) =>
+                setPagination((prev) => ({
+                  ...prev,
+                  pageSize: Number(value),
+                  pageIndex: 0,
+                }))
+              }>
+              <SelectTrigger className="w-20">
+                <SelectValue placeholder={pageSize} />
+              </SelectTrigger>
+              <SelectContent>
+                {[5, 10, 15, 20, 25].map((size) => (
+                  <SelectItem key={size} value={size.toString()}>
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span className="text-sm">entries</span>
+          </div>
+
+          <Input
             placeholder="Search by title..."
-            className="p-2 w-full rounded dark:bg-gray-800 border border-gray-600"
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
             onChange={(e) =>
               table.getColumn("title")?.setFilterValue(e.target.value)
             }
+            className="max-w-sm"
           />
         </div>
-        <div className="w-full overflow-auto">
-          {productsArray.length === 0 ? (
-            <div className="text-center text-gray-500 dark:text-gray-300 p-4">
-              No Products Found
-            </div>
-          ) : (
-            <>
-              <table className="w-full border-collapse border border-gray-600 text-left">
-                <thead className="dark:bg-gray-800">
+      </CardHeader>
+
+      <CardContent>
+        {productsArray.length === 0 ? (
+          <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+            No Products Found
+          </div>
+        ) : (
+          <>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
+                    <TableRow key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
-                        <th
+                        <TableHead
                           key={header.id}
-                          className="p-2 border border-gray-600 cursor-pointer hover:underline"
+                          className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
                           onClick={() =>
                             header.column.toggleSorting(
                               header.column.getIsSorted() === "asc"
                             )
-                          }
-                        >
+                          }>
                           {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                          {header.column.getIsSorted() &&
-                            (header.column.getIsSorted() === "asc"
-                              ? " ▲"
-                              : " ▼")}
-                        </th>
+                          {header.column.getIsSorted() && (
+                            <span className="ml-1">
+                              {header.column.getIsSorted() === "asc"
+                                ? "▲"
+                                : "▼"}
+                            </span>
+                          )}
+                        </TableHead>
                       ))}
-                    </tr>
+                    </TableRow>
                   ))}
-                </thead>
-                <tbody>
+                </TableHeader>
+                <TableBody>
                   {table.getRowModel().rows.map((row) => (
-                    <tr
+                    <TableRow
                       key={row.id}
-                      className="dark:hover:bg-gray-700 hover:bg-gray-200 cursor-pointer"
-                      onClick={() => handleRowClick(row.original)}
-                    >
+                      className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
+                      onClick={() => handleRowClick(row.original)}>
                       {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="p-2 border border-gray-600"
-                        >
+                        <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
                           )}
-                        </td>
+                        </TableCell>
                       ))}
-                    </tr>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
+            </div>
 
-              {/* Pagination Controls */}
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-2">
-                  {/* <select
-                    value={table.getState().pagination.pageSize}
-                    onChange={(e) => table.setPageSize(Number(e.target.value))}
-                    className="p-2 bg-transparent border border-gray-600 rounded dark:bg-gray-800">
-                    {[10, 20, 30, 40, 50].map((size) => (
-                      <option key={size} value={size}>
-                        Show {size}
-                      </option>
-                    ))}
-                  </select> */}
-                  <span className="text-sm">
-                    Page {table.getState().pagination.pageIndex + 1} of{" "}
-                    {table.getPageCount()}
-                  </span>
-                </div>
+            <div className="mt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => table.previousPage()}
+                      className={
+                        !table.getCanPreviousPage()
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: table.getPageCount() }, (_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        onClick={() => table.setPageIndex(i)}
+                        isActive={table.getState().pagination.pageIndex === i}>
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => table.nextPage()}
+                      className={
+                        !table.getCanNextPage()
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </>
+        )}
+      </CardContent>
 
-                <div className="flex gap-2">
-                  <button
-                    className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
-                    onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}
-                  >
-                    <ChevronsLeft size={20} />
-                  </button>
-                  <button
-                    className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-                  <button
-                    className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                  <button
-                    className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}
-                  >
-                    <ChevronsRight size={20} />
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-      {show && <DeleteModal onClose={onClose} onConfirm={onConfirm} id={id} />}
-    </>
+      {show && (
+        <DeleteModal
+          onClose={() => setShow(false)}
+          onConfirm={onConfirm}
+          id={id}
+        />
+      )}
+    </Card>
   );
 };
 

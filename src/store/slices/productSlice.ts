@@ -156,7 +156,8 @@ export const updateProduct = createAsyncThunk<
     const response = await api.put(`/product/${id}`, data);
     if (response.status === 201 || response.status === 200) {
       toast.success("Product updated successfully");
-      return response.data;
+      return response.data.data.product
+;
     }
   } catch (error) {
     handleApiError(error);
