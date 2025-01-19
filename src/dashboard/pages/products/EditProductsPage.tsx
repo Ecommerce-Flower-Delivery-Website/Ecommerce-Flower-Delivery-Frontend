@@ -4,7 +4,7 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 import { getProduct, updateProduct } from "../../../store/slices/productSlice";
 import Loader from "../../components/Loader";
-import { getAllCategories } from "../../../store/slices/categorySlice";
+import { getCategories } from "../../../store/slices/categorySlice";
 
 
 const EditProductsPage = () => {
@@ -94,7 +94,7 @@ const EditProductsPage = () => {
     });
   },[]);
    useEffect(() => {
-      dispatch(getAllCategories()).then((result) => {
+      dispatch(getCategories({})).then((result) => {
         if (result.meta.requestStatus === "fulfilled") {
           console.log(categories);
         }

@@ -8,9 +8,8 @@ import {
   useReduxSelector,
 } from "../../../store/store";
 import { addProducts } from "../../../store/slices/productSlice";
-import SelectSearch from "react-select-search";
 import "react-select-search/style.css";
-import { getAllCategories } from "../../../store/slices/categorySlice";
+import { getCategories } from "../../../store/slices/categorySlice";
 
 const AddProductsPage = () => {
   const file = useRef<HTMLInputElement | null>(null);
@@ -43,7 +42,7 @@ const AddProductsPage = () => {
     }
   };
   useEffect(() => {
-    dispatch(getAllCategories()).then((result) => {
+    dispatch(getCategories({})).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
         console.log(categories);
       }
