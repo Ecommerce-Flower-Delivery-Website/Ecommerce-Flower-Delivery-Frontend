@@ -28,6 +28,7 @@ import Home from "./pages/Home";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import ProductPage from "./pages/product-info/ProductInfo";
 import AboutUsPage from "./pages/AboutUs/AboutUs";
+import SubscribeHero from "./Components/SubscribeHero";
 
 const routers = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ const routers = createBrowserRouter([
           { path: "category", element: <CategoryWeb /> },
           { path: "/product/:id", element: <ProductPage /> },
           { path: "/about-us", element: <AboutUsPage /> },
+          // { path: "/subscribe-hero", element: <SubscribeHero /> },
         ],
       },
       {
