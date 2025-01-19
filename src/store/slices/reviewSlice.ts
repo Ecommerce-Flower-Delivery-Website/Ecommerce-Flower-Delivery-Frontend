@@ -1,7 +1,8 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
+import { parseErrorMessage } from "../../utils/helper";
 
 const API_BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL;
 const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
@@ -41,14 +42,6 @@ const initialState: TInitialState = {
   },
 };
 
-// Utility function for handling API errors
-const handleError = (error: unknown, defaultMessage: string): string => {
-  if (error instanceof AxiosError && error.response?.data?.message) {
-    return error.response.data.message;
-  }
-  return defaultMessage;
-};
-
 export const getReviews = createAsyncThunk(
   "review/getReviews",
   async (
@@ -68,7 +61,7 @@ export const getReviews = createAsyncThunk(
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to get review";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -86,7 +79,7 @@ export const addReview = createAsyncThunk(
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to add review";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -111,7 +104,7 @@ export const editReview = createAsyncThunk(
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to edit review";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -125,7 +118,7 @@ export const deleteReview = createAsyncThunk(
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to delete review";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
-  addReview,
-  deleteReview,
-  editReview,
-  TReviewFromBackEnd,
-} from "../../../../store/slices/reviewSlice";
+  addGiftDiscount,
+  deleteGiftDiscount,
+  updateGiftDiscount,
+  TGiftDiscount,
+} from "../../../../store/slices/giftDiscountSlice";
 import { useReduxDispatch } from "../../../../store/store";
 import { Button } from "../../../components/button";
 import {
@@ -16,19 +16,17 @@ import {
   DialogTrigger,
 } from "../../../components/dialog";
 import { Input } from "../../../components/input";
-import { Textarea } from "../../../components/textarea";
-
 
 // Create Component
-export const Create = () => {
+export const CreateGiftDiscount = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useReduxDispatch();
 
   const { register, handleSubmit, reset, formState } =
-    useForm<TReviewFromBackEnd>();
+    useForm<TGiftDiscount>();
 
-  const onSubmit = (data: TReviewFromBackEnd) => {
-    dispatch(addReview(data));
+  const onSubmit = (data: TGiftDiscount) => {    
+    dispatch(addGiftDiscount(data));
     reset();
     setIsOpen(false);
   };
@@ -37,37 +35,29 @@ export const Create = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <div className="flex justify-end">
-          <Button>Create Review</Button>
+          <Button>Create Gift Discount</Button>
         </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="mb-5">
-          <DialogTitle>Create Review</DialogTitle>
+          <DialogTitle>Create Gift Discount</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Input
-            {...register("name")}
-            placeholder="Name"
+            {...register("codeGift")}
+            placeholder="Gift Code"
             required
             className="dark:bg-gray-800 mb-5"
           />
 
-          <Textarea
-            {...register("text")}
-            placeholder="Text"
+          <Input
+            {...register("discountGift", {valueAsNumber: true})}
+            placeholder="Discount Percentage"
+            type="number"
             required
-            className="dark:bg-gray-800 h-52 mb-5"
+            className="dark:bg-gray-800 mb-5"
           />
 
-          <div className="flex items-center gap-2 mb-4">
-            <label htmlFor="shouldShow">should show </label>
-            <Input
-              id="shouldShow"
-              type="checkbox"
-              {...register("shouldShow")}
-              className="h-4 w-4"
-            />
-          </div>
           <Button type="submit" disabled={formState.isSubmitting}>
             Submit
           </Button>
@@ -78,15 +68,15 @@ export const Create = () => {
 };
 
 // Edit Component
-export const Edit = ({ review }: { review: TReviewFromBackEnd }) => {
+export const EditGiftDiscount = ({ giftDiscount }: { giftDiscount: TGiftDiscount }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useReduxDispatch();
 
   const { register, handleSubmit, reset, formState } =
-    useForm<TReviewFromBackEnd>();
+    useForm<TGiftDiscount>();
 
-  const onSubmit = (data: TReviewFromBackEnd) => {
-    dispatch(editReview({ reviewInfo: { ...data }, id: review._id }));
+  const onSubmit = (data: TGiftDiscount) => {
+    dispatch(updateGiftDiscount({ id: giftDiscount._id, values: data }));
     reset();
     setIsOpen(false);
   };
@@ -98,34 +88,26 @@ export const Edit = ({ review }: { review: TReviewFromBackEnd }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Review</DialogTitle>
+          <DialogTitle>Edit Gift Discount</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Input
-            {...register("name")}
-            defaultValue={review.name}
-            placeholder="Name"
+            {...register("codeGift")}
+            defaultValue={giftDiscount.codeGift}
+            placeholder="Gift Code"
             className="dark:bg-gray-800 mb-5"
             required
           />
 
-          <Textarea
-            {...register("text")}
-            placeholder="Text"
+          <Input
+            {...register("discountGift", {valueAsNumber: true})}
+            defaultValue={giftDiscount.discountGift}
+            placeholder="Discount Percentage"
+            type="number"
+            className="dark:bg-gray-800 mb-5"
             required
-            className="dark:bg-gray-800 h-52 mb-5"
           />
 
-          <div className="flex items-center gap-2 mb-4">
-            <label htmlFor="shouldShow">should show </label>
-            <Input
-              id="shouldShow"
-              type="checkbox"
-              {...register("shouldShow")}
-              className="h-4 w-4"
-              defaultChecked={review.shouldShow ? true : false}
-            />
-          </div>
           <Button type="submit" disabled={formState.isSubmitting}>
             Submit
           </Button>
@@ -135,12 +117,12 @@ export const Edit = ({ review }: { review: TReviewFromBackEnd }) => {
   );
 };
 
-export const Remove = ({ reviewId }: { reviewId: string }) => {
+export const RemoveGiftDiscount = ({ giftDiscountId }: { giftDiscountId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useReduxDispatch();
 
   const onConfirm = () => {
-    dispatch(deleteReview(reviewId));
+    dispatch(deleteGiftDiscount(giftDiscountId));
     setIsOpen(false);
   };
 
@@ -151,14 +133,14 @@ export const Remove = ({ reviewId }: { reviewId: string }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Review</DialogTitle>
+          <DialogTitle>Delete Gift Discount</DialogTitle>
         </DialogHeader>
-        <p>Are you sure you want to delete this review?</p>
+        <p>Are you sure you want to delete this gift discount?</p>
         <div className="flex justify-between">
           <Button variant="ghost" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} className=" text-white">
+          <Button onClick={onConfirm} className="text-white">
             Confirm
           </Button>
         </div>

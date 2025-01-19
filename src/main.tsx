@@ -28,7 +28,8 @@ import Home from "./pages/Home";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import ProductPage from "./pages/product-info/ProductInfo";
 import AboutUsPage from "./pages/AboutUs/AboutUs";
-import SubscribeHero from "./Components/SubscribeHero";
+import GiftDiscount from "./dashboard/pages/giftDiscount/GiftDiscount";
+// import SubscribeHero from "./Components/SubscribeHero";
 
 const routers = createBrowserRouter([
   {
@@ -135,6 +136,10 @@ const routers = createBrowserRouter([
           {
             path: "reminder",
             element: <ShowRemindersPage />,
+          },
+          {
+            path: "gift-discount",
+            element: <GiftDiscount />,
           },
         ],
       },
