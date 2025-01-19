@@ -43,12 +43,22 @@ export const CreateGiftDiscount = () => {
           <DialogTitle>Create Gift Discount</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
+          
+
+        <label htmlFor="codeGift" className="block mb-2">
+           Code Gift :
+        </label>
+
           <Input
             {...register("codeGift")}
             placeholder="Gift Code"
             required
             className="dark:bg-gray-800 mb-5"
           />
+
+          <label htmlFor="discountGift" className="block mb-2">
+             Discount Gift :
+          </label>
 
           <Input
             {...register("discountGift", {valueAsNumber: true})}
@@ -91,6 +101,11 @@ export const EditGiftDiscount = ({ giftDiscount }: { giftDiscount: TGiftDiscount
           <DialogTitle>Edit Gift Discount</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
+
+        <label htmlFor="codeGift" className="block mb-2">
+           Code Gift :
+        </label>
+
           <Input
             {...register("codeGift")}
             defaultValue={giftDiscount.codeGift}
@@ -98,6 +113,10 @@ export const EditGiftDiscount = ({ giftDiscount }: { giftDiscount: TGiftDiscount
             className="dark:bg-gray-800 mb-5"
             required
           />
+
+          <label htmlFor="discountGift" className="block mb-2">
+             Discount Gift :
+          </label>
 
           <Input
             {...register("discountGift", {valueAsNumber: true})}
