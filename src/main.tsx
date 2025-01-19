@@ -42,7 +42,7 @@ const routers = createBrowserRouter([
           { path: "category", element: <CategoryWeb /> },
           { path: "/product/:id", element: <ProductPage /> },
           { path: "/about-us", element: <AboutUsPage /> },
-          { path: "/subscribe-hero", element: <SubscribeHero /> },
+          // { path: "/subscribe-hero", element: <SubscribeHero /> },
         ],
       },
       {
