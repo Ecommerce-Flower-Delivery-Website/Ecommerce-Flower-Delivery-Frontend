@@ -5,6 +5,7 @@ import { z } from "zod";
 import { api } from "../../lib/ajax/api";
 import { validateSchemas } from "../../lib/zod";
 import { handleApiError } from "../../lib/utils";
+import { parseErrorMessage } from "../../utils/helper";
 
 export type TUserFromBackend = {
   _id: string;
@@ -46,14 +47,6 @@ const initialState: TInitialState = {
   },
 };
 
-// Utility function for handling API errors
-const handleError = (error: unknown, defaultMessage: string): string => {
-  if (error instanceof AxiosError && error.response?.data?.message) {
-    return error.response.data.message;
-  }
-  return defaultMessage;
-};
-
 // Async thunks
 const getUsers = createAsyncThunk(
   "user/getUsers",
@@ -65,7 +58,7 @@ const getUsers = createAsyncThunk(
       return response.data;
     } catch (error) {
       handleApiError(error); 
-      const message = handleError(error, "Failed to fetch users");
+      const message = parseErrorMessage(error, "Failed to fetch users");
       return rejectWithValue(message);
     }
   }
@@ -79,7 +72,7 @@ const deleteUser = createAsyncThunk(
       return userId;
     } catch (error) {
       handleApiError(error); 
-      const message = handleError(error, "Failed to delete user");
+      const message = parseErrorMessage(error, "Failed to delete user");
       return rejectWithValue(message);
     }
   }
@@ -93,7 +86,7 @@ const addUser = createAsyncThunk(
       return response.data.data.user;
     } catch (error) {
       handleApiError(error); 
-      const message = handleError(error, "Failed to add user");
+      const message = parseErrorMessage(error, "Failed to add user");
       return rejectWithValue(message);
     }
   }
@@ -113,7 +106,7 @@ const updateUser = createAsyncThunk(
       return response.data.data.user;
     } catch (error) {
       handleApiError(error); 
-      const message = handleError(error, "Failed to update user");
+      const message = parseErrorMessage(error, "Failed to update user");
       return rejectWithValue(message);
     }
   }

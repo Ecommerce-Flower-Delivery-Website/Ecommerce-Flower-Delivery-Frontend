@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 import { api } from "../../lib/ajax/api";
+import { parseErrorMessage } from "../../utils/helper";
 const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
 const API_URL = `${import.meta.env.API_BASE_URL}/api/${API_VERSION}`;
 
@@ -75,14 +76,6 @@ const initialState: TInitialState = {
   },
 };
 
-// Utility function for handling API errors
-const handleError = (error: unknown, defaultMessage: string): string => {
-  if (error instanceof AxiosError && error.response?.data?.message) {
-    return error.response.data.message;
-  }
-  return defaultMessage;
-};
-
 export const getCategories = createAsyncThunk(
   "category/getCategories",
   async (
@@ -102,7 +95,7 @@ export const getCategories = createAsyncThunk(
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to get categories";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -117,7 +110,7 @@ export const addCategory = createAsyncThunk(
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to add category";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -134,7 +127,7 @@ export const editCategory = createAsyncThunk(
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to edit category";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -148,7 +141,7 @@ export const deleteCategory = createAsyncThunk(
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to delete category";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
