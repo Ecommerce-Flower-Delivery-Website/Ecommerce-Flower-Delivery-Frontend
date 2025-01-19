@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import  { AxiosError } from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
@@ -79,7 +79,7 @@ const initialState: TInitialState = {
 export const getCategories = createAsyncThunk(
   "category/getCategories",
   async (
-    paginationInfo: { page: number; limit: number },
+    paginationInfo: { page?: number; limit?: number },
     { rejectWithValue }
   ) => {
     try {
@@ -99,7 +99,6 @@ export const getCategories = createAsyncThunk(
     }
   }
 );
-
 export const addCategory = createAsyncThunk(
   "category/addCategory",
   async (values: TCatergoryAdd, { rejectWithValue }) => {

@@ -9,13 +9,13 @@ export const Dashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { theme, toggleTheme } = useThemeToggle();
   const navigate = useNavigate();
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
-    if (!user || !token) {
-      navigate("/dashboard/login_dashboard");
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   const user = localStorage.getItem("user");
+  //   const token = localStorage.getItem("token");
+  //   if (!user || !token) {
+  //     navigate("/dashboard/login_dashboard");
+  //   }
+  // }, [navigate]);
   return (
     <div className="flex">
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
