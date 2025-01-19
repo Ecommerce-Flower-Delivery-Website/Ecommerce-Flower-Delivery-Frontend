@@ -55,6 +55,7 @@ const SubscribePlans = () => {
   const [show, setshow] = useState(false);
   const [id, setid] = useState<string>("");
   const dispatch = useReduxDispatch();
+  
   const navigate = useNavigate();
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -120,20 +121,10 @@ const SubscribePlans = () => {
         },
       },
       {
-        accessorKey: "deliveryFrequency",
-        header: "Delivery Frequency",
-        cell: ({ row }) => <div className="text-center">{row.getValue("deliveryFrequency")}</div>,
-      },
-      {
-        accessorKey: "deliveryCount",
-        header: "Delivery Count",
-        cell: ({ row }) => <div className="text-center">{row.getValue("deliveryCount")}</div>,
-      },
-      {
         accessorKey: "image",
         header: "Image",
         cell: ({ row }) => {
-            return( <div className="text-center">
+            return( <div className="flex justify-center">
                 <img
                 className="w-[100px] lg:h-full object-cover rounded-lg"
                 src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${row.getValue("image")}`}

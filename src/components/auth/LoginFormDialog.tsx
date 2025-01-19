@@ -76,7 +76,7 @@ const LoginFormDialog = ({isOpen,handleClose}:{isOpen:boolean,handleClose:() => 
           <Plus className="mr-2 h-4 w-4" /> Create New User
         </Button>
       </DialogTrigger> */}
-      <DialogContent className="flex flex-col h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full md:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10">
+      <DialogContent className="mt-[48px] lg:mt-[81px] flex flex-col h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full lg:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10">
         <DialogHeader>
         <DialogTitle className="text-start font-semibold text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
           Greetings! Welcome to luxury gift shop.
