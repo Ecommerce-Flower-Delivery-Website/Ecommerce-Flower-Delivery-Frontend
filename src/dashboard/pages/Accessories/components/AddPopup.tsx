@@ -5,7 +5,7 @@ import { Input } from "../../../components/input";
 export interface Accessory {
   _id: number;
   title: string;
-  image: string;
+  image: File | string;
   stock: number;
   description: string;
   price: number;
@@ -47,9 +47,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
           }
         );
 
-
         const addedAccessory = response.data;
-
         setAccessories((prev) => [...prev, addedAccessory]);
         setPopupVisible(false);
         setNewAccessory({
@@ -67,6 +65,13 @@ const AddPopup: React.FC<AddPopupProps> = ({
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setNewAccessory({ ...newAccessory, image: file });
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md dark:bg-gray-900">
@@ -79,14 +84,12 @@ const AddPopup: React.FC<AddPopupProps> = ({
               setNewAccessory({ ...newAccessory, title: e.target.value })
             }
           />
-
-          <Input
+          <input
             type="file"
-            onChange={handleFileChange}
             accept="image/*"
-            placeholder="Select Image"
-            />
-
+            onChange={handleFileChange}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
+          />
           <Input
             placeholder="Stock"
             type="number"
@@ -98,7 +101,6 @@ const AddPopup: React.FC<AddPopupProps> = ({
               })
             }
           />
-          
           <Input
             placeholder="Description"
             value={newAccessory.description}

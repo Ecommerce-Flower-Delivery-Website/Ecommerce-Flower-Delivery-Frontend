@@ -177,4 +177,5 @@ export const validateSchemas = {
   order: OrderSchema,
   createOrder: createOrderSchema,
   editOrder: editOrderSchema,
+
 };

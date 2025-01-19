@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 interface Product {
   priceAfterDiscount: string;
-  discount?:string;
+  discount?: string;
   quantity: string;
   id: string;
   title: string;
@@ -23,7 +23,7 @@ interface ProductState {
   products: Product[];
   product: {
     priceAfterDiscount: string;
-    discount?:string;
+    discount?: string;
     quantity: string;
     id: string;
     title: string;
@@ -67,10 +67,8 @@ export const getProducts = createAsyncThunk(
     try {
       const response = await api.get("/product");
       if (response.status === 201 || response.status === 200) {
-
         return response.data.data.products;
       }
-      
     } catch (error) {
       handleApiError(error);
       return rejectWithValue(error instanceof Error ? error.message : "Error");
@@ -89,7 +87,7 @@ export const addProducts = createAsyncThunk(
       }
     } catch (error) {
       console.log(error);
-      
+
       handleApiError(error);
       return rejectWithValue(error instanceof Error ? error.message : "Error");
     }
@@ -101,9 +99,9 @@ export const getProduct = createAsyncThunk(
   async (id: string | undefined, { rejectWithValue }) => {
     try {
       const response = await api.get(`/product/${id}`);
-      
+
       if (response.status === 201 || response.status === 200) {
-        return response.data.data;
+        return response.data.data.product;
       }
     } catch (error) {
       handleApiError(error);

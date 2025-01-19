@@ -4,26 +4,20 @@ import Navbar from "./components/Navbar/Navbar";
 import { useDialogRenderer } from "../hooks/useDialogRender";
 
 import { RootState, useReduxSelector } from "../store/store";
+import Footer from "./components/Footer/Footer";
 
 const Website = () => {
-
-
-    const { user} = useReduxSelector(
-      (state: RootState) => state.auth
-    );
-    const { renderDialog } = useDialogRenderer(user);
-
+  const { user } = useReduxSelector((state: RootState) => state.auth);
+  const { renderDialog } = useDialogRenderer(user);
 
   return (
-    <>
+    <div className=" bg-white text-black light">
       <Navbar />
-        <Outlet />
-      {/* <Footer /> */}
+      <Outlet />
+      <Footer />
       {renderDialog()}
-
-
-    </>
+    </div>
   );
-}
+};
 
-export default Website
+export default Website;

@@ -22,10 +22,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 type LoginFormType = z.infer<typeof validateSchemas.login>;
 
-const LoginFormDialog = ({isOpen,handleClose}:{isOpen:boolean,handleClose:() => void}) => {
-
+const LoginFormDialog = ({
+  isOpen,
+  handleClose,
+}: {
+  isOpen: boolean;
+  handleClose: () => void;
+}) => {
   const [, setSearchParams] = useSearchParams();
-
 
   const {
     register,
@@ -35,42 +39,42 @@ const LoginFormDialog = ({isOpen,handleClose}:{isOpen:boolean,handleClose:() => 
     resolver: zodResolver(validateSchemas.login),
   });
 
-    const dispatch = useReduxDispatch();
-    const { isPending } = useReduxSelector((state) => state.auth);
-    const navigate = useNavigate();
-  
+  const dispatch = useReduxDispatch();
+  const { isPending } = useReduxSelector((state) => state.auth);
+  const navigate = useNavigate();
 
-    const onSubmit = async (data: LoginFormType) => {
-      const res = await dispatch(loginUser(data));
-      if (res.meta.requestStatus === "fulfilled") {
-
-        if(res.payload?.data?.user?.isAccountVerified===false){
-          setSearchParams((prevParams) => {
-            prevParams.set(EnumsSearchParams.dialog,EnumsDialogShow.Verify)
-            return prevParams
-          })
-
-        }else if(res.payload?.data?.user?.isAdmin===true && res.payload?.data?.user?.isAccountVerified===true){
-
-          handleClose()
-          navigate("/dashboard", {
-              replace: true,
-            });
-
-        }else if(res.payload?.data?.user?.isAdmin===false && res.payload?.data?.user?.isAccountVerified===true ){
-          handleClose()
-          navigate("/", {
-              replace: true,
-            });
-        }
-
+  const onSubmit = async (data: LoginFormType) => {
+    const res = await dispatch(loginUser(data));
+    if (res.meta.requestStatus === "fulfilled") {
+      if (res.payload?.data?.user?.isAccountVerified === false) {
+        setSearchParams((prevParams) => {
+          prevParams.set(EnumsSearchParams.dialog, EnumsDialogShow.Verify);
+          return prevParams;
+        });
+      } else if (
+        res.payload?.data?.user?.isAdmin === true &&
+        res.payload?.data?.user?.isAccountVerified === true
+      ) {
+        handleClose();
+        navigate("/dashboard", {
+          replace: true,
+        });
+      } else if (
+        res.payload?.data?.user?.isAdmin === false &&
+        res.payload?.data?.user?.isAccountVerified === true
+      ) {
+        handleClose();
+        navigate("/", {
+          replace: true,
+        });
       }
+    }
 
-      console.log(res,"resresresres")
-    };
+    console.log(res, "resresresres");
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose} >
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       {/* <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" /> Create New User
@@ -78,28 +82,31 @@ const LoginFormDialog = ({isOpen,handleClose}:{isOpen:boolean,handleClose:() => 
       </DialogTrigger> */}
       <DialogContent className="mt-[48px] lg:mt-[81px] flex flex-col h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full lg:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10">
         <DialogHeader>
-        <DialogTitle className="text-start font-semibold text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
-          Greetings! Welcome to luxury gift shop.
-        </DialogTitle>
+          <DialogTitle className="text-start font-semibold  text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
+            Greetings! Welcome to luxury gift shop.
+          </DialogTitle>
         </DialogHeader>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-4 "
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 ">
           <div className="flex flex-col gap-3">
-            <label htmlFor="email" className="text-start text-base font-medium ">
+            <label
+              htmlFor="email"
+              className="text-start text-base font-medium "
+            >
               Email
             </label>
             <Input
               id="email"
               type="email"
               {...register("email")}
-              className="h-[56px] rounded-none text-base font-medium "
+              className="h-[56px] rounded-none  text-base font-medium "
             />
           </div>
-          {errors.email && <ErrorMessage message={errors.email?.message } />}
+          {errors.email && <ErrorMessage message={errors.email?.message} />}
           <div className="flex flex-col gap-3">
-            <label htmlFor="password" className="text-start text-base font-medium ">
+            <label
+              htmlFor="password"
+              className="text-start text-base font-medium "
+            >
               Password
             </label>
             <Input
@@ -109,42 +116,51 @@ const LoginFormDialog = ({isOpen,handleClose}:{isOpen:boolean,handleClose:() => 
               className="h-[56px] rounded-none text-base font-medium "
             />
           </div>
-          {errors.password && <ErrorMessage message={errors.password?.message} />}
-          
+          {errors.password && (
+            <ErrorMessage message={errors.password?.message} />
+          )}
+
           <Button
-                type="submit"
-                className="h-[56px] rounded-none text-base font-medium w-full bg-[#121212] hover:bg-[#2e2e2e] text-white transition-[colors_transform] duration-200"
-                disabled={isSubmitting || isPending}
-              >
-                {isSubmitting ? "CONTINUE..." : "CONTINUE"}
-        </Button>
+            type="submit"
+            className="h-[56px] rounded-none text-base font-medium w-full bg-[#121212] hover:bg-[#2e2e2e] text-white transition-[colors_transform] duration-200"
+            disabled={isSubmitting || isPending}
+          >
+            {isSubmitting ? "CONTINUE..." : "CONTINUE"}
+          </Button>
         </form>
         <p className="mt-6 w-full text-[#808080] text-[16px] leading-5 font-medium">
-        Don't have an account ?
-        <span className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`} 
-        onClick={()=>{
-          setSearchParams((prevParams) => {
-            prevParams.set(EnumsSearchParams.dialog,EnumsDialogShow.SignUp)
-            return prevParams
-          })
-      }}
-      >
-          Sign Up
-        </span>
-        
+          Don't have an account ?
+          <span
+            className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
+            onClick={() => {
+              setSearchParams((prevParams) => {
+                prevParams.set(
+                  EnumsSearchParams.dialog,
+                  EnumsDialogShow.SignUp
+                );
+                return prevParams;
+              });
+            }}
+          >
+            Sign Up
+          </span>
         </p>
 
         <p className="mt-6 w-full text-[#808080] text-[16px] leading-5 font-medium">
-        <span className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`} 
-        onClick={()=>{
-          setSearchParams((prevParams) => {
-            prevParams.set(EnumsSearchParams.dialog,EnumsDialogShow.ForgotPassowrd)
-            return prevParams
-          })
-      }}
-      >
-          Forgot your password ?
-        </span>
+          <span
+            className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
+            onClick={() => {
+              setSearchParams((prevParams) => {
+                prevParams.set(
+                  EnumsSearchParams.dialog,
+                  EnumsDialogShow.ForgotPassowrd
+                );
+                return prevParams;
+              });
+            }}
+          >
+            Forgot your password ?
+          </span>
         </p>
 
         {/* <p className="w-full text-center border-b mx-0 mt-6 mb-6 leading-[0.1rem] border-[#D2D2D7] ">
@@ -168,4 +184,4 @@ const LoginFormDialog = ({isOpen,handleClose}:{isOpen:boolean,handleClose:() => 
   );
 };
 
-export default LoginFormDialog ;
+export default LoginFormDialog;

@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 import { api } from "../../lib/ajax/api";
+import { parseErrorMessage } from "../../utils/helper";
 const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
 const API_URL = `${import.meta.env.API_BASE_URL}/api/${API_VERSION}`;
 
@@ -75,14 +76,6 @@ const initialState: TInitialState = {
   },
 };
 
-// Utility function for handling API errors
-const handleError = (error: unknown, defaultMessage: string): string => {
-  if (error instanceof AxiosError && error.response?.data?.message) {
-    return error.response.data.message;
-  }
-  return defaultMessage;
-};
-
 export const getCategories = createAsyncThunk(
   "category/getCategories",
   async (
@@ -91,7 +84,7 @@ export const getCategories = createAsyncThunk(
   ) => {
     try {
       const { page, limit } = paginationInfo;
-      const response = await axios.get(`${API_URL}/category`, {
+      const response = await api.get(`/category`, {
         params: {
           page: page,
           limit: limit,
@@ -102,7 +95,7 @@ export const getCategories = createAsyncThunk(
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to get categories";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -111,13 +104,13 @@ export const addCategory = createAsyncThunk(
   "category/addCategory",
   async (values: TCatergoryAdd, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/category`, values);
+      const response = await api.post(`/category`, values);
 
       return response.data.data.category;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to add category";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -129,15 +122,12 @@ export const editCategory = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.put(
-        `${API_URL}/category/${id}`,
-        categoryInfo
-      );
+      const response = await api.put(`/category/${id}`, categoryInfo);
       return response.data.data.updatedCategory;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to edit category";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -146,12 +136,12 @@ export const deleteCategory = createAsyncThunk(
   "category/deleteCategory",
   async (id: string, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/category/${id}`);
+      await api.delete(`/category/${id}`);
       return id;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to delete category";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
