@@ -34,14 +34,14 @@ const SubscribeHero = () => {
             {subscribeFeatures.map((el, index) => {
               return (
                 <div key={index}>
-                  <h3 className="font-medium text-[16px] leading-[19.2px] text-[#121212] pb-2">
+                  <h3 className="font-medium text-[16px] leading-[19.2px] text-[#121212] pb-2 relative right-7">
                     {el.title}
                   </h3>
-                  <div>
-                    <p className="leading-[22.4px] text-[#121212E5]">
-                      {el.pargraph}
-                    </p>
-                  </div>
+                    <ul className="list-disc"> 
+                    <li className="leading-[22.4px] text-[#121212E5] marker:text-[11px]">
+                        {el.pargraph}
+                        </li>
+                    </ul> 
                 </div>
               );
             })}
