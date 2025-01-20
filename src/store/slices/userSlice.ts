@@ -50,14 +50,14 @@ const initialState: TInitialState = {
 // Async thunks
 const getUsers = createAsyncThunk(
   "user/getUsers",
-  async (values: { page: number; limit: number }, { rejectWithValue }) => {
+  async (queryParams: { page?: number; limit?: number, field?:string, value?:string }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/users`, {
-        params: values,
+        params: queryParams,
       });
       return response.data;
     } catch (error) {
-      handleApiError(error); 
+      handleApiError(error);
       const message = parseErrorMessage(error, "Failed to fetch users");
       return rejectWithValue(message);
     }

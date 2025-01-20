@@ -1,16 +1,14 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { deleteSubsciblePlan, getSubscribePlans } from "../../../store/slices/subscribePlansSlice";
 
 import {
@@ -47,6 +45,7 @@ import {
 import { Edit2, Eye, Trash2 } from "lucide-react";
 import { SubscribePlan } from "../../../types/subscribePlansType";
 import DeleteModalPlan from "../../components/SubscribePlans/DeleteModalPlan";
+import { Button } from "../../components/button";
 
 const SubscribePlans = () => {
   const { subscribePlansData, loading } = useReduxSelector(
@@ -59,15 +58,18 @@ const SubscribePlans = () => {
   const navigate = useNavigate();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowsPerPage, setRowsPerPage] = useState(1);
   const totalPages = subscribePlansData?.pagination?.totalPages;
+
+  const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
+  const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
+
   const setCurrentPage = ({ page }: { page: number }) => {
     dispatch(getSubscribePlans({ page, limit: rowsPerPage }));
   };
   useEffect(() => {
-    dispatch(getSubscribePlans({ page: subscribePlansData?.pagination.currentPage, limit: rowsPerPage }));
-  }, [dispatch, subscribePlansData?.pagination.currentPage, rowsPerPage]);
+    dispatch(getSubscribePlans({ page: subscribePlansData?.pagination.currentPage, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
+  }, [dispatch, subscribePlansData?.pagination.currentPage, rowsPerPage, fieldSearch, valueSearch]);
 
   const editProducts = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -89,6 +91,18 @@ const SubscribePlans = () => {
     const onClose = () => {
       setshow(false);
     };
+
+    const searchByTitleInput = useRef<HTMLInputElement | null>(null);
+      
+    const handleSearch = (field: string, value : string) => {
+       setFieldSearch(field);
+       setValueSearch(value);
+      }
+      
+    const handleResetSearch = () => {
+       setFieldSearch(undefined);
+      setValueSearch(undefined);    
+     }  
 
   const columns: ColumnDef<SubscribePlan, unknown>[] = [
 {
@@ -190,11 +204,8 @@ const SubscribePlans = () => {
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      columnFilters,
       pagination: {
         pageSize: rowsPerPage,
         pageIndex: subscribePlansData?.pagination.currentPage - 1,
@@ -208,18 +219,12 @@ const SubscribePlans = () => {
 
   return (
     <>
-          <div className="flex justify-end">
-            <NavLink
-              to={"/dashboard/subscribe-plans/add"}
-              className="bg-primary rounded p-4 font-bold mb-6">
-              Add Subscribe Plan
-            </NavLink>
-        </div>
 
             <Card>
 
-      <CardHeader className="flex items-end justify-end gap-4">
-        <div className="flex w-full flex-wrap items-center justify-between gap-2">
+            <CardHeader className="flex items-center justify-between gap-4">
+        {/* First Column */}
+        <div className="flex flex-col gap-2">
           <div className="flex items-center space-x-2">
             <span className="text-sm">Show</span>
             <Select
@@ -230,24 +235,36 @@ const SubscribePlans = () => {
                 <SelectValue placeholder={rowsPerPage} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="25">25</SelectItem>
-                <SelectItem value="50">50</SelectItem>
-                <SelectItem value="100">100</SelectItem>
+                {[1, 10, 25, 50, 100].map((value) => (
+                  <SelectItem key={value} value={value.toString()}>
+                    {value}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <span className="text-sm">entries</span>
           </div>
-          <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
-            <Input
+          <div>
+            <Button onClick={handleResetSearch}>Reset Search</Button>
+          </div>
+        </div>
+
+        {/* Second Column */}
+        <div className="flex flex-col gap-2">
+              <NavLink
+                to={"/dashboard/subscribe-plans/add"}
+                className="bg-primary rounded p-3 w-fit">
+                Add Subscribe Plan
+              </NavLink>
+            <div className="flex items-center gap-2 max-md:flex-wrap">
+              <Input
               placeholder="Search by name..."
-              value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("title")?.setFilterValue(event.target.value)
-              }
               className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
-            />
+              ref={searchByTitleInput}
+               />
+              
+              <Button onClick={()=> handleSearch("title", searchByTitleInput.current?.value as string)}>search</Button>
+              
           </div>
         </div>
       </CardHeader>
@@ -297,12 +314,7 @@ const SubscribePlans = () => {
           </TableBody>
         </Table>
         <div className="flex items-center justify-between py-4">
-          <div className="text-nowrap text-sm text-muted-foreground">
-            Showing{" "}
-            {table.getPrePaginationRowModel().rows?.length +
-              (subscribePlansData?.pagination.currentPage - 1) * rowsPerPage}
-            of {subscribePlansData?.pagination?.totalPlans} entries
-          </div>
+          
           <Pagination>
             <PaginationContent>
               <PaginationItem>
