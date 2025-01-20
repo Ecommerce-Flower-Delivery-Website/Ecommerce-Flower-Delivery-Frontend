@@ -34,10 +34,10 @@ const initialState: SubscribePlanStates = {
 
 export const getSubscribePlans = createAsyncThunk(
   "subscribe_plans/getSubscribePlans",
-  async (values: { page: number; limit?: number }, { rejectWithValue }) => {
+  async (queryParams: { page?: number; limit?: number, field?:string, value?:string }, { rejectWithValue }) => {
     try {
       const response = await api.get("/subscribe", {
-        params: values,
+        params: queryParams,
       });
       if (response.status === 201 || response.status === 200) {
         return response.data.data;

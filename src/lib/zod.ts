@@ -32,13 +32,11 @@ const ResendVerifyCode = UserSchema.pick({ email: true });
 const addReviewSchema = z.object({
   name: z.string().trim().min(1, "name is required"),
   text: z.string().trim().min(1, "text is required"),
-  shouldShow: z.string().default("0"),
 });
 
 const validateUpdateReviewSchema = z.object({
   name: z.string().trim().min(1, "name is required"),
   text: z.string().trim().min(1, "text is required"),
-  shouldShow: z.string().default("0"),
 });
 
 const CartSchema = z.object({

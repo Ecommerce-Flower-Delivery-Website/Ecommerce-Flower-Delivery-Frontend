@@ -1,11 +1,8 @@
-import  { AxiosError } from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 import { api } from "../../lib/ajax/api";
 import { parseErrorMessage } from "../../utils/helper";
-const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
-const API_URL = `${import.meta.env.API_BASE_URL}/api/${API_VERSION}`;
 
 interface Product {
   priceAfterDiscount: string;
@@ -79,16 +76,12 @@ const initialState: TInitialState = {
 export const getCategories = createAsyncThunk(
   "category/getCategories",
   async (
-    paginationInfo: { page?: number; limit?: number },
+    queryParams: { page?: number; limit?: number, field?:string, value?:string },
     { rejectWithValue }
   ) => {
     try {
-      const { page, limit } = paginationInfo;
       const response = await api.get(`/category`, {
-        params: {
-          page: page,
-          limit: limit,
-        },
+        params: queryParams,
       });
 
       return response.data.data;
