@@ -5,18 +5,21 @@ import { useDialogRenderer } from "../hooks/useDialogRender";
 
 import { RootState, useReduxSelector } from "../store/store";
 import Footer from "./components/Footer/Footer";
+import { CartProvider } from "../contexts/CartContext";
 
 const Website = () => {
   const { user } = useReduxSelector((state: RootState) => state.auth);
   const { renderDialog } = useDialogRenderer(user);
 
   return (
-    <div className=" bg-white text-black light">
-      <Navbar />
-      <Outlet />
-      <Footer />
-      {renderDialog()}
-    </div>
+    <CartProvider>
+      <div className=" bg-white text-black light">
+        <Navbar />
+        <Outlet />
+        <Footer />
+        {renderDialog()}
+      </div>
+    </CartProvider>
   );
 };
 
