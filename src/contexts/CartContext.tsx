@@ -1,11 +1,24 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/ajax/api";
-
+export type AccessoryType = {
+  _id: string;
+  title: string;
+  image: string;
+  stock: number;
+  description: string;
+  price: number;
+};
+export type ProductType = {
+  image: string;
+  price: string;
+  title: string;
+  _id: string;
+};
 type CartItem = {
-  productId: string;
-  accessoriesId?: string[];
-  quantity: number;
+  productId: ProductType;
+  accessoriesId?: AccessoryType[];
+  productQuantity: number;
 };
 
 type CartData = {
@@ -17,12 +30,12 @@ type CartData = {
 type AddItemPayload = {
   productId: string;
   accessoriesId?: string[];
-  quantity: number;
+  productQuantity: number;
 };
 
 type UpdateQuantityPayload = {
   productId: string;
-  quantity: number;
+  productQuantity: number;
 };
 
 const fetchCart = async (): Promise<CartData> => {
@@ -39,8 +52,8 @@ const removeItemFromCart = async (productId: string) => {
 };
 
 const updateItemQuantity = async (payload: UpdateQuantityPayload) => {
-  const { productId, quantity } = payload;
-  await api.put(`/cart/${productId}`, { quantity });
+  const { productId, productQuantity } = payload;
+  await api.put(`/cart/${productId}`, { productQuantity });
 };
 
 type CartContextType = {
@@ -63,13 +76,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["cart"],
     queryFn: fetchCart,
+    refetchOnMount: true,
   });
 
   const addItemMutation = useMutation({
     mutationFn: addItemToCart,
     onMutate: async (newItem) => {
       await queryClient.cancelQueries({ queryKey: ["cart"] });
-
+      console.log(newItem);
       const previousCart = queryClient.getQueryData<CartData>(["cart"]);
 
       if (previousCart) {
@@ -102,7 +116,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
         queryClient.setQueryData(["cart"], {
           ...previousCart,
           items: previousCart.items.filter(
-            (item) => item.productId !== productId
+            (item) => item.productId._id !== productId
           ),
         });
       }
@@ -121,7 +135,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
 
   const updateQuantityMutation = useMutation({
     mutationFn: updateItemQuantity,
-    onMutate: async ({ productId, quantity }) => {
+    onMutate: async ({ productId, productQuantity }) => {
       await queryClient.cancelQueries({ queryKey: ["cart"] });
 
       const previousCart = queryClient.getQueryData<CartData>(["cart"]);
@@ -130,7 +144,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
         queryClient.setQueryData(["cart"], {
           ...previousCart,
           items: previousCart.items.map((item) =>
-            item.productId === productId ? { ...item, quantity } : item
+            item.productId._id === productId
+              ? { ...item, productQuantity }
+              : item
           ),
         });
       }

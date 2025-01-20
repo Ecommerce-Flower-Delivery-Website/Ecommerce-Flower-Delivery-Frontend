@@ -1,15 +1,14 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Outlet } from "react-router-dom";
-import { ErrorPage } from "./pages/error-page/ErrorPage";
 import { Provider } from "react-redux";
-import { store } from "./store/store";
-import { ThemeProvider } from "./contexts/ThemeProvider";
+import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
-import React, { useState } from "react";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ThemeProvider } from "./contexts/ThemeProvider";
 import "./index.css";
-import { CartProvider } from "./contexts/CartContext";
+import { ErrorPage } from "./pages/error-page/ErrorPage";
+import { store } from "./store/store";
 
 export const RootLayout = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -19,12 +18,10 @@ export const RootLayout = () => {
       <React.StrictMode>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
-            <CartProvider>
-              <ToastContainer theme="colored" />
-              <Provider store={store}>
-                <Outlet />
-              </Provider>
-            </CartProvider>
+            <ToastContainer theme="colored" />
+            <Provider store={store}>
+              <Outlet />
+            </Provider>
           </ThemeProvider>
         </QueryClientProvider>
       </React.StrictMode>
