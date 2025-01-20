@@ -7,9 +7,7 @@ export interface SubscribePlan {
     price: string;
     isFreeDelivery: string;
     features: string[];
-    deliveryFrequency: string;
-    deliveryCount: string;
-    users_id: User[];
+    users_id: {user:User,deliveryFrequency:string,deliveryCount:string}[];
     createdAt: string;
     updatedAt: string;
 }

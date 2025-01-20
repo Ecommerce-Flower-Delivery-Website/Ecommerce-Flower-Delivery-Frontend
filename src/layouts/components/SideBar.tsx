@@ -4,6 +4,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Gem,
+  Gift,
   LayoutDashboard,
   LogOut,
   MessageCircle,
@@ -30,6 +31,7 @@ const menuItems = [
   { id: "orders", label: "Orders", icon: ChartColumnStacked },
   { id: "reminder", label: "Reminedr", icon: MessageCircle },
   { id: "reviews", label: "reviews", icon: Star },
+  { id: "gift-discount", label: "gift discounts", icon: Gift },
 ];
 interface SidebarProps {
   open: boolean;

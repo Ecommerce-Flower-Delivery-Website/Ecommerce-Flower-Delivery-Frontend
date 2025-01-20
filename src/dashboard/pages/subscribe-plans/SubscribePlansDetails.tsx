@@ -56,14 +56,6 @@ export const SubscribePlansDetails = () => {
               label="Is Free Delivery"
               value={subscribePlanData?.isFreeDelivery==="1" ?"Yes":"No"}
             />
-            <InfoItem
-              label="Delivery Frequency"
-              value={subscribePlanData?.deliveryFrequency ? subscribePlanData?.deliveryFrequency :""}
-            />
-            <InfoItem
-              label="Delivery Count"
-              value={subscribePlanData?.deliveryCount ? subscribePlanData?.deliveryCount :""}
-            />
           </Section>
 
           <Section title="Features">
@@ -82,9 +74,11 @@ export const SubscribePlansDetails = () => {
               label="Users"
               value={Array.isArray(subscribePlanData?.users_id) ? 
 
-                `${subscribePlanData?.users_id.map((user) => (
-                  `${user?.email} ${subscribePlanData?.users_id?.length>1 ? " , ":""}`
-
+                `${subscribePlanData?.users_id.map((item) => (
+                  `Email: ${item?.user?.email}  - 
+                  Delivery Count: ${item?.deliveryCount} - 
+                  Delivery Frequency: ${item?.deliveryFrequency} ${subscribePlanData?.users_id?.length>1 ? " , ":""}\n`
+                  
                 ))}`
 
                 :"No Users"

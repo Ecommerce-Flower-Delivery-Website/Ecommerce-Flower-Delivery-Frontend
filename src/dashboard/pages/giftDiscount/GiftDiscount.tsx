@@ -1,36 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  useReduxDispatch,
-  useReduxSelector,
-  RootState,
-} from "../../../store/store";
-import {
-  getCategories,
-  TCategoryFromBackEnd,
-} from "../../../store/slices/categorySlice";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getFilteredRowModel,
-} from "@tanstack/react-table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/select";
+import { useReduxDispatch, useReduxSelector, RootState } from "../../../store/store";
+import { getGiftDiscounts, TGiftDiscount } from "../../../store/slices/giftDiscountSlice";
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getFilteredRowModel } from "@tanstack/react-table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/select";
 import { Card, CardContent, CardHeader } from "../../components/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/table";
 import {
   Pagination,
   PaginationContent,
@@ -40,62 +14,39 @@ import {
   PaginationPrevious,
 } from "../../components/pagination";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import * as CategoryForms from "./components/CategoryForms";
 import { Input } from "../../components/input";
+import { CreateGiftDiscount, EditGiftDiscount, RemoveGiftDiscount } from "./components/GiftDiscountForms";
 
-const CategoryPage = () => {
-  const { categories, loading, pagination } = useReduxSelector(
-    (state: RootState) => state.category
-  );
+const GiftDiscount = () => {
+  const { giftDiscounts, loading, pagination } = useReduxSelector((state: RootState) => state.giftDiscount);
   const dispatch = useReduxDispatch();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    dispatch(getCategories({ page: 1, limit: rowsPerPage }));
+    dispatch(getGiftDiscounts({ page: 1, limit: rowsPerPage }));
   }, [dispatch, rowsPerPage]);
 
   const totalPages = pagination.totalPages;
 
-  const columns: ColumnDef<TCategoryFromBackEnd, unknown>[] = [
+  const columns: ColumnDef<TGiftDiscount, unknown>[] = [
     {
-      accessorKey: "_id",
-      header: "ID",
+      accessorKey: "codeGift",
+      header: "Code",
+      filterFn: 'includesString',
     },
     {
-      accessorKey: "title",
-      header: "Title",
-      filterFn: "includesString", 
-    },
-    {
-      accessorKey: "image",
-      header: "Image",
-      cell: ({ row }) => {
-        return (
-          <div className="text-center">
-            <img
-              className="w-[100px] lg:h-full object-cover rounded-lg"
-              src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${row.getValue(
-                "image"
-              )}`}
-              alt={"category image"}
-            />
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "description",
-      header: "Description",
+      accessorKey: "discountGift",
+      header: "Discount",
     },
     {
       header: "Actions",
       cell: ({ row }) => {
-        const category = row.original;
+        const giftDiscount = row.original;
         return (
           <div className="flex space-x-2">
-            <CategoryForms.EditCategory category={category} />
-            <CategoryForms.RemoveCategory categoryId={category._id} />
+            <EditGiftDiscount giftDiscount={giftDiscount} />
+            <RemoveGiftDiscount giftDiscountId={giftDiscount._id} />
           </div>
         );
       },
@@ -103,7 +54,7 @@ const CategoryPage = () => {
   ];
 
   const table = useReactTable({
-    data: categories,
+    data: giftDiscounts,
     columns,
     state: { globalFilter: searchTerm },
     getCoreRowModel: getCoreRowModel(),
@@ -112,7 +63,7 @@ const CategoryPage = () => {
   });
 
   const setCurrentPage = ({ page }: { page: number }) => {
-    dispatch(getCategories({ page, limit: rowsPerPage }));
+    dispatch(getGiftDiscounts({ page, limit: rowsPerPage }));
   };
 
   if (loading) {
@@ -142,15 +93,15 @@ const CategoryPage = () => {
             </Select>
             <span className="text-sm">entries</span>
           </div>
-
+          
           <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
             <Input
-              placeholder="Search by title..."
+              placeholder="Search by code..."
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
             />
-            <CategoryForms.CreateCategory />
+            <CreateGiftDiscount />
           </div>
         </div>
       </CardHeader>
@@ -164,42 +115,32 @@ const CategoryPage = () => {
                   <TableHead key={header.id} className="text-left px-4 py-2">
                     {header.isPlaceholder
                       ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                      : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {categories.length > 0 ? (
+            {giftDiscounts.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-4 py-2">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                    <TableCell key={cell.id} className="px-4">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="text-center px-4 py-2"
-                >
-                  No categories found.
+              <TableRow className="py-5">
+                <TableCell colSpan={columns.length} className="text-center px-4">
+                  No gift discounts found.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -209,11 +150,7 @@ const CategoryPage = () => {
                     page: Math.max(pagination.currentPage - 1, 1),
                   })
                 }
-                className={
-                  pagination.currentPage === 1
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
+                className={pagination.currentPage === 1 ? "pointer-events-none opacity-50" : ""}
               />
             </PaginationItem>
             {Array.from({ length: totalPages }).map((_, i) => (
@@ -233,11 +170,7 @@ const CategoryPage = () => {
                     page: Math.min(pagination.currentPage + 1, totalPages),
                   })
                 }
-                className={
-                  pagination.currentPage === totalPages
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
+                className={pagination.currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
               />
             </PaginationItem>
           </PaginationContent>
@@ -247,4 +180,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default GiftDiscount;

@@ -12,7 +12,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   id,
 }) => {
   return (
-    <div className="fixed inset-0 px-6 z-50 flex justify-center items-center deleteModale bg-black bg-opacity-50 backdrop-blur-[10px]">
+    <div className="fixed dark:text-white inset-0 px-6 z-50 flex justify-center items-center deleteModale bg-black bg-opacity-50 backdrop-blur-[10px]">
       <div
         className="bg-[#020817] rounded-xl py-5 lg:w-[40%] border md:w-[75%] w-[100%]  px-3 flex flex-col"
         style={{
