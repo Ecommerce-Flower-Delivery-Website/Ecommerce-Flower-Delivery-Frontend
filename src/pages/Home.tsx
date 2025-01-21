@@ -1,18 +1,17 @@
-import SelectionPlan from "../components/PlanSection"
-// import ContactUs from "./components/ContactUs/ContactUs"
-// import OurClientsSay from "./components/OurClientsSay/OurClientsSay"
-// import OurService from "./components/OurService/OurService"
+import SelectionPlan from "../components/PlanSection";
+import ContactUs from "./components/ContactUs/ContactUs";
+import OurClientsSay from "./components/OurClientsSay/OurClientsSay";
+import OurService from "./components/OurService/OurService";
 
 const Home = () => {
   return (
     <div className="home">
-      
-      <SelectionPlan/>
-      {/* <ContactUs />
+      <SelectionPlan />
+      <ContactUs />
       <OurService />
-      <OurClientsSay /> */}
+      <OurClientsSay />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

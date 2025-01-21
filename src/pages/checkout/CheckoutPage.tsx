@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalStorage } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -82,7 +83,7 @@ export default function CheckoutPage() {
       JSON.parse(localStorage.getItem("order") || "{}") ?? initialOrder,
   });
 
-  const [discountGift, setDiscountGift] = useState<string>("");
+  const [discountGift, setDiscountGift] = useState<string>();
   const [step, setStep] = useState<CheckoutStep>("information");
 
   const contactMethods = useForm({
@@ -114,21 +115,23 @@ export default function CheckoutPage() {
   };
   const makePurchaseMutation = useMutation({
     mutationFn: async (data: CreateOrder) => {
+      console.log("Data", data);
       return await api.post("/order", data);
     },
     onSuccess: () => {
       toast.success("Order placed successfully!");
     },
-    onError: () => {
-      toast.error("failed to submit");
+    onError: (error: AxiosError) => {
+      //@ts-expect-error backend api configuration
+      toast.error(error.response.data?.message || "failed to submit");
+      console.error(error);
     },
   });
-
-  const handlePaymentSubmit = () => {
-    if (!state.contact || !state.payment || !state.shipping) return;
+  const handlePaymentSubmit = (payment: z.infer<typeof paymentFormSchema>) => {
+    if (!state.contact || !state.shipping) return;
     makePurchaseMutation.mutate({
       ...state.contact,
-      ...state.payment,
+      ...payment,
       ...state.shipping,
       discountGift,
     });

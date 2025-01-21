@@ -2,7 +2,7 @@ import { useClickOutside } from "@mantine/hooks";
 import { Portal } from "@radix-ui/react-select";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { useCart } from "../../../contexts/CartContext";
+import { AccessoryType, useCart } from "../../../contexts/CartContext";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 interface CartItemProps {
@@ -11,30 +11,75 @@ interface CartItemProps {
   quantity: number;
   image: string;
   onRemove: () => void;
+  accessories?: AccessoryType[];
+  id: string;
 }
 
-function CartItem({ name, price, quantity, image, onRemove }: CartItemProps) {
+function CartItem({
+  name,
+  price,
+  quantity,
+  image,
+  onRemove,
+  id,
+  accessories,
+}: CartItemProps) {
+  const { removeAccessory } = useCart();
   return (
-    <div className="grid grid-cols-1  py-8 sm:grid-cols-[100px_100px_1fr] gap-4 p-4 border-b border-black">
-      <div className="relative border size-[100px] border-black overflow-hidden">
-        <img
-          src={image}
-          alt={name}
-          className="object-cover absolute inset-0 w-full h-full transition-transform hover:scale-110"
-        />
+    <>
+      <div className="grid grid-cols-1  py-8 sm:grid-cols-[100px_100px_1fr] gap-4 p-4 border-b border-black">
+        <div className="relative border size-[100px] border-black overflow-hidden">
+          <img
+            src={image}
+            alt={name}
+            className="object-cover absolute inset-0 w-full h-full transition-transform hover:scale-110"
+          />
+        </div>
+        <div className="space-y-1">
+          <h3 className="font-medium">{name}</h3>
+          <p className="text-sm">Quantity ({quantity})</p>
+          <p className="font-medium">${price}</p>
+        </div>
+        <button
+          onClick={() => onRemove()}
+          className="text-sm ml-auto text-gray-500 hover:text-gray-900 transition-colors"
+        >
+          Remove
+        </button>
       </div>
-      <div className="space-y-1">
-        <h3 className="font-medium">{name}</h3>
-        <p className="text-sm">Quantity ({quantity})</p>
-        <p className="font-medium">${price}</p>
-      </div>
-      <button
-        onClick={() => onRemove()}
-        className="text-sm ml-auto text-gray-500 hover:text-gray-900 transition-colors"
-      >
-        Remove
-      </button>
-    </div>
+      {accessories && accessories.length > 0 ? (
+        <div className="flex gap-4 p-4 border-b border-black">
+          {accessories.map((accessory) => {
+            return (
+              <div
+                key={accessory._id}
+                className=" flex flex-col justify-center text-center"
+              >
+                <div className="relative border size-20 border-black overflow-hidden">
+                  <img
+                    src={accessory.image}
+                    alt={accessory.title}
+                    className="object-cover absolute inset-0 w-full h-full transition-transform hover:scale-110"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-medium">{accessory.title}</h3>
+                  <p className="font-medium">${accessory.price}</p>
+                </div>
+                <button
+                  onClick={() => removeAccessory(id, accessory._id)}
+                  className="text-sm  text-gray-500 hover:text-gray-900 transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
   );
 }
 const CartModal = ({
@@ -111,7 +156,7 @@ const CartModal = ({
                         ) : (
                           cartItems.map((item) => (
                             <motion.div
-                              key={item.productId._id}
+                              key={item.productId?._id}
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -20 }}
@@ -122,11 +167,13 @@ const CartModal = ({
                               }}
                             >
                               <CartItem
-                                image={item.productId.image}
-                                name={item.productId.title}
-                                price={Number(item.productId.price)}
+                                id={item.productId._id}
+                                image={item.productId?.image}
+                                name={item.productId?.title}
+                                price={Number(item.productId?.price)}
                                 quantity={item.productQuantity}
-                                onRemove={() => removeItem(item.productId._id)}
+                                accessories={item.accessoriesId}
+                                onRemove={() => removeItem(item.productId?._id)}
                               />
                             </motion.div>
                           ))

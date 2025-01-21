@@ -27,14 +27,18 @@ export function PaymentForm({
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/[^0-9]/g, "");
-    if (value.length >= 2 && value.length <= 4) {
-      value = value.slice(0, 2) + "/" + value.slice(2, 4);
+
+    if (value.length > 4) {
+      value = value.slice(0, 4);
     }
+
+    if (value.length >= 2) {
+      value = value.slice(0, 2) + "/" + value.slice(2);
+    }
+
     e.target.value = value;
-    if (value.length === 5) {
-      e.target.setSelectionRange(5, 5);
-    }
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       <CompletedStep title="Contact information" onEdit={onEditContact} />
@@ -65,6 +69,7 @@ export function PaymentForm({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Input
+                type="text"
                 {...register("expiryDate", {
                   required: "Expiry date is required",
                   validate: (value) => {

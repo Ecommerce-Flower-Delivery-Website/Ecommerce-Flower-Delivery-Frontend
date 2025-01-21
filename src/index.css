@@ -59,20 +59,19 @@
   }
 
   body {
-    @apply h-screen  font-sans;
+    @apply h-screen bg-background font-sans;
   }
 }
 .swiper {
   height: 150px;
 }
 
-
 /* For Webkit browsers (e.g., Chrome, Edge, Safari) */
 ul::-webkit-scrollbar {
-  width: 5px; 
+  width: 5px;
 }
 
 ul::-webkit-scrollbar-thumb {
-  background-color: rgba(150, 150, 150, 0.8); 
-  border-radius: 10px; 
+  background-color: rgba(150, 150, 150, 0.8);
+  border-radius: 10px;
 }
