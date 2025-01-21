@@ -6,7 +6,7 @@ export function OrderSummary({
   applyGiftCard,
   discountGift,
 }: {
-  discountGift: string;
+  discountGift?: string;
   applyGiftCard: (val: string) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);

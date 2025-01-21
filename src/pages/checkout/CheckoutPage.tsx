@@ -190,7 +190,10 @@ export default function CheckoutPage() {
             </>
           )}
         </div>
-        <OrderSummary applyGiftCard={(val: string) => setDiscountGift(val)} />
+        <OrderSummary
+          discountGift={discountGift}
+          applyGiftCard={(val: string) => setDiscountGift(val)}
+        />
       </div>
     </main>
   );
