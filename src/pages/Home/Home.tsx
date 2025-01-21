@@ -8,11 +8,11 @@ import WhyChooseUs from "../components/WhyChooseUs/WhyChooseUs";
 const Home = () => {
   return (
     <div className="home">
-      <Hero />
+      {/* <Hero />
       <HomeAboutUs />
       <WhyChooseUs />
       <ContactUs />
-      <OurService />
+      <OurService /> */}
       <OurClientsSay />
     </div>
   );

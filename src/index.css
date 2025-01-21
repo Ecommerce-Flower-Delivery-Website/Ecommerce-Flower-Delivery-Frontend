@@ -61,21 +61,27 @@
     overflow: unset;
     @apply h-screen overflow-hidden bg-background font-sans text-foreground;
   }
-
-  .swiper {
-    height: 150px;
-  }
-  .swiper-pagination-bullet {
-    background-color: #808080 !important;
-  }
+}
+/* .swiper-pagination {
+  display: block;
+  position: relative !important;
+  margin: 0;
+  padding: 0;
+  bottom: 0 !important;
+}   */
+.swiper {
+  height: 150px;
+}
+.swiper-pagination-bullet {
+  background-color: #808080 !important;
+}
+.swiper-button-prev,
+.swiper-button-next {
+  color: #121212 !important;
+}
+@media screen and (width < 1200) {
   .swiper-button-prev,
   .swiper-button-next {
-    color: #121212 !important;
-  }
-  @media screen and (width < 1200) {
-    .swiper-button-prev,
-    .swiper-button-next {
-      display: none !important;
-    }
+    display: none !important;
   }
 }
