@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -7,6 +7,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/select";
 import { ArrowUpDown, ChevronDown, ChevronUp, Trash, Edit } from "lucide-react";
 import { Button } from "../../components/button";
 import { Card, CardContent, CardHeader } from "../../components/card";
@@ -22,6 +23,10 @@ import {
 import AddPopup from "./components/AddPopup";
 import EditPopup from "./components/EditPopup";
 import { api } from "../../../lib/ajax/api";
+import {Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../../components/pagination";
+import { handleApiError } from "../../../lib/utils";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { toast } from "react-toastify";
 
 interface Accessory {
   _id: number;
@@ -35,15 +40,6 @@ interface Accessory {
 
 export const Accessories: React.FC = () => {
   const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [filteredAccessories, setFilteredAccessories] = useState<Accessory[]>(
-    []
-  );
-  const [searchTerm, setSearchTerm] = useState(""); // Search term state
-  const [currentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [rowsPerPage] = useState(10);
-  const [isPopupVisible, setPopupVisible] = useState(false);
-  const [isEditPopupVisible, setEditPopupVisible] = useState(false);
   const [newAccessory, setNewAccessory] = useState<Accessory>({
     _id: 0,
     title: "",
@@ -56,33 +52,59 @@ export const Accessories: React.FC = () => {
   const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(
     null
   );
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setFilteredAccessories(accessories); // Initialize with all accessories
-  }, [accessories]);
+  const [rowsPerPage, setRowsPerPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
+  const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
+
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isEditPopupVisible, setEditPopupVisible] = useState(false);
 
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
+        setLoading(true);
         const response = await api.get(
-          `http://localhost:3000/api/v1/accessory?pageNumber=${currentPage}`
+          `/accessory`, {
+            params: {
+              page: currentPage,
+              limit: rowsPerPage,
+              field: fieldSearch,
+              value: valueSearch
+            }
+          }
         );
         setAccessories(response.data.accessories);
         setTotalPages(response.data.totalPages);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching accessories:", error);
+        handleApiError(error);
       }
     };
 
     fetchAccessories();
-  }, [currentPage, rowsPerPage]);
+  }, [currentPage, rowsPerPage, fieldSearch, valueSearch]);
 
-  useEffect(() => {
-    const filtered = accessories.filter((accessory) =>
-      accessory.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredAccessories(filtered);
-  }, [accessories, searchTerm]);
+  const handeleChangeRowPerPage = (newRowPerPage : number) => {
+    setCurrentPage(1);
+    setRowsPerPage(newRowPerPage);
+  }
+
+  const searchByTitleInput = useRef<HTMLInputElement | null>(null);
+    
+  const handleSearch = (field: string, value : string) => {
+    setFieldSearch(field);
+    setValueSearch(value);
+  }
+
+  const handleResetSearch = () => {
+     setFieldSearch(undefined);
+     setValueSearch(undefined);
+  }
 
   const handleEdit = (id: number) => {
     const accessoryToEdit = accessories.find((item) => item._id === id);
@@ -102,14 +124,15 @@ export const Accessories: React.FC = () => {
 
     try {
       const response = await api.delete(
-        `http://localhost:3000/api/v1/accessory/${id}`
+        `/accessory/${id}`
       );
       if (response.status === 200) {
         // Remove the deleted accessory from the state
         setAccessories((prev) =>
           prev.filter((accessory) => accessory._id !== id)
         );
-        console.log("Accessory deleted successfully");
+        
+       toast.success("accessory added successfully");
       }
     } catch (error) {
       console.error("Error deleting accessory:", error);
@@ -128,20 +151,14 @@ export const Accessories: React.FC = () => {
     {
       accessorKey: "title",
       header: ({ column }) => (
-        <Button
+        <div
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="p-0 hover:bg-transparent"
         >
           Title
-          {column.getIsSorted() === "asc" ? (
-            <ChevronUp className="ml-2 h-4 w-4" />
-          ) : column.getIsSorted() === "desc" ? (
-            <ChevronDown className="ml-2 h-4 w-4" />
-          ) : (
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          )}
-        </Button>
+          
+        </div>
       ),
     },
     {
@@ -160,7 +177,7 @@ export const Accessories: React.FC = () => {
       header: "Products",
       cell: ({ row }) => (
         <div>
-          {row.original.products_array.map((product) => (
+          {row.original.products_array?.map((product) => (
             <span key={product._id} className="block">
               {product.title}
             </span>
@@ -200,30 +217,67 @@ export const Accessories: React.FC = () => {
   ];
 
   const table = useReactTable({
-    data: filteredAccessories,
+    data: accessories,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
 
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <>
-      <Card>
-        <CardHeader className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
-          <div className="flex items-center gap-4">
-            <span className="text-sm">entries</span>
-            <Input
-              placeholder="Search by title..."
-              className="max-w-md"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)} // Update search term on change
-            />
-          </div>
-          <Button variant="outline" onClick={() => setPopupVisible(true)}>
-            Add New Accessory
-          </Button>
-        </CardHeader>
+      <Card className="mb-7">
+
+      <CardHeader className="flex items-center justify-between gap-4">
+              {/* First Column */}
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm">Show</span>
+                    <Select
+                      value={rowsPerPage.toString()}
+                      onValueChange={(value) => handeleChangeRowPerPage(parseInt(value))}
+                    >
+                      <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
+                        <SelectValue placeholder={rowsPerPage} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 10, 25, 50, 100].map((value) => (
+                          <SelectItem key={value} value={value.toString()}>
+                            {value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  <span className="text-sm">entries</span>
+                </div>
+                <div>
+                 <Button onClick={() => handleResetSearch()}>Reset Search</Button> 
+                </div>
+              </div>
+      
+              {/* Second Column */}
+              <div className="flex flex-col gap-2">
+                  <div>
+                  <Button onClick={() => setPopupVisible(true)}>
+                    Add New Accessory
+                  </Button>     
+                 </div>
+                  <div className="flex items-center gap-2 max-md:flex-wrap">
+                     <Input
+                        placeholder="Search by name..."
+                        className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
+                         ref={searchByTitleInput}
+                      />
+                     <Button onClick={()=> handleSearch("title", searchByTitleInput.current?.value as string)}>search</Button> 
+                </div>
+              </div>
+            </CardHeader>
+
+        
         <CardContent>
           <Table>
             <TableHeader>
@@ -243,7 +297,7 @@ export const Accessories: React.FC = () => {
               ))}
             </TableHeader>
             <TableBody>
-              {filteredAccessories.length > 0 ? (
+              {accessories.length > 0 ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
@@ -267,6 +321,36 @@ export const Accessories: React.FC = () => {
           </Table>
         </CardContent>
       </Card>
+       <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() =>
+                  setCurrentPage( Math.max(currentPage - 1, 1))
+                }
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  onClick={() => setCurrentPage(i + 1 )}
+                  isActive={currentPage === i + 1}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() =>
+                  setCurrentPage(Math.min(currentPage + 1, totalPages))
+                }
+                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>       
       {isPopupVisible && (
         <AddPopup
           setAccessories={setAccessories}
@@ -282,6 +366,7 @@ export const Accessories: React.FC = () => {
           updateAccessory={updateAccessory}
         />
       )}
+      
     </>
   );
 };
