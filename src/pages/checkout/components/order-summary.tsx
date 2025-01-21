@@ -1,10 +1,12 @@
-import { LockIcon, ShoppingCart } from "lucide-react";
+import { Check, LockIcon, ShoppingCart } from "lucide-react";
 import { useRef, useState } from "react";
 import { useCart } from "../../../contexts/CartContext";
 
 export function OrderSummary({
   applyGiftCard,
+  discountGift,
 }: {
+  discountGift: string;
   applyGiftCard: (val: string) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -20,7 +22,7 @@ export function OrderSummary({
           <ShoppingCart className="w-5 h-5 mr-2" />
           Show order summary {isExpanded ? "▼" : "▲"}
         </button>
-        <span className="text-lg">$100</span>
+        <span className="text-lg">${data?.priceAll}</span>
       </div>
 
       <div
@@ -52,7 +54,7 @@ export function OrderSummary({
                   Quantity ({item.productQuantity})
                 </p>
               </div>
-              <span className="text-base">$100</span>
+              <span className="text-base">${item.productId.price}</span>
             </div>
           );
         })}
@@ -70,11 +72,12 @@ export function OrderSummary({
             <button
               onClick={() => {
                 const input = ref.current as unknown as HTMLInputElement;
+
                 applyGiftCard(input.value);
               }}
-              className="bg-black h-14 text-white rounded-none hover:bg-black/90 px-8"
+              className="bg-black h-14 flex justify-center items-center text-white rounded-none hover:bg-black/90 px-8"
             >
-              APPLY
+              {discountGift ? "APPLY" : <Check />}
             </button>
           </div>
         </div>
@@ -82,7 +85,7 @@ export function OrderSummary({
         <div className="space-y-4 pt-4 border-t border-gray-200">
           <div className="flex justify-between">
             <span>Subtotal</span>
-            <span>$100.00</span>
+            <span>${data?.priceAll}</span>
           </div>
           <div className="flex justify-between">
             <span>Shipping</span>
@@ -90,7 +93,7 @@ export function OrderSummary({
           </div>
           <div className="flex justify-between pt-4 border-t border-gray-200">
             <span>Total</span>
-            <span className="text-xl">$100.00</span>
+            <span className="text-xl">${data?.priceAll}</span>
           </div>
         </div>
 
