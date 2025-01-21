@@ -1,3 +1,4 @@
+import SectionTitle from "../SectionTitle/SectionTitle";
 import TextDetail from "../textDetail";
 
 const HomeAboutUs = () => {
@@ -5,10 +6,8 @@ const HomeAboutUs = () => {
     <div className="aj-story">
       <div className="flex flex-col md:flex-row">
         {/* Left Column */}
-        <div className="w-full md:w-1/2 border md:border-b-0 border-t-0 md:border-t md:border-t-[#121212] border-[#121212] p-[80px]">
-          <h2 className="font-semibold text-[50px] leading-[60px]">
-            About us
-          </h2>
+        <div className="w-full md:w-1/2 border md:border-b-0 border-t-0 md:border-t md:border-t-[#121212] border-[#121212] px-4 py-10 md:p-[80px]">
+          <SectionTitle title="About us" />
         </div>
 
         {/* Right Column */}

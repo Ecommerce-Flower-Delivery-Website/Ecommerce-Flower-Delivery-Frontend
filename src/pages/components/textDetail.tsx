@@ -11,18 +11,18 @@ const TextDetail = ({ subTitle, title, text, button }: TextDetailProps) => {
     : "text-[#121212E5] font-normal leading-[22.4px]";
 
   return (
-    <div className="relative h-full border border-r-[#121212] border-b-[#121212] p-[80px]">
+    <div className="relative h-full border border-r-[#121212] border-b-[#121212] px-4 py-10 md:p-[80px]">
       {subTitle ? (
-        <h3 className="text-[14px] font-medium uppercase leading-[16.8px] mb-6">
+        <h3 className="text-xs md:text-sm font-medium uppercase leading-[16.8px] mb-6">
           {subTitle}
         </h3>
       ) : (
         ""
       )}
-      <h2 className="text-[38px] leading-[45.6px] font-medium mb-4">{title}</h2>
+      <h2 className="text-[26px] md:text-[38px]  leading-[31.2px] md:leading-[45.6px] font-medium mb-4">{title}</h2>
       <p className={pStyle}>{text}</p>
       {button ? (
-        <button className="leading-[19.2px] uppercase font-medium tracking-[0.025em] border border-[#121212] px-[43px] py-[19.5px]">
+        <button className="w-full md:w-fit text-sm leading-[14px] md:leading-[19.2px] uppercase font-medium tracking-[0.025em] border border-[#121212] px-[43px] py-[19.5px]">
           {button}
         </button>
       ) : (

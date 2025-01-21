@@ -1,5 +1,6 @@
 import React, { useState, FormEvent } from "react";
 import axios from "axios";
+import SectionTitle from "../../SectionTitle/SectionTitle";
 
 interface ApiResponse {
   message?: string;
@@ -50,21 +51,21 @@ const CallBack: React.FC = () => {
   };
 
   return (
-    <div className="aj-callback px-[80px] pt-[80px] pb-[99px] border border-[#121212] border-b-0">
-      <h2 className="text-[50px] leading-[60px] mb-6 font-bold">To Contact Us</h2>
-      <p className="mb-4 leading-[25.2px] text-lg">We will call you back</p>
-      <form className="flex gap-4" onSubmit={handleSubmit}>
+    <div className="aj-callback px-4 py-10 md:px-[80px] md:pt-[80px] md:pb-[99px] border border-[#121212] border-b-0">
+      <SectionTitle title="To Contact Us" />
+      <p className="mb-4 leading-[25.2px] mt-6 md:mt-0 text-lg">We will call you back</p>
+      <form className="flex flex-col flex-wrap md:flex-row gap-4" onSubmit={handleSubmit}>
         <input
           type="tel"
           placeholder="+380 XX XXX XX XX"
           value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)} // تحديث قيمة الحقل
-          className="border border-[#D2D2D7] px-7 py-2 w-[272px] h-[56px]"
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          className="border border-[#D2D2D7] px-7 py-2 w-full md:w-[272px] h-[56px]"
           required
         />
         <button
           type="submit"
-          className="bg-black text-white px-7 py-2 w-[272px] h-[56px]"
+          className="bg-black text-white px-7 py-2 w-full md:w-[272px] h-[56px] min-w-fit"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Submitting..." : "BOOK A CALL"}
