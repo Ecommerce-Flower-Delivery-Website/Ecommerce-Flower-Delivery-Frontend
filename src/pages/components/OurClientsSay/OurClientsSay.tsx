@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import GoogleImage from "./../../../assets/google-logo.png";
 import { api } from "../../../lib/ajax/api";
+import SectionTitle from "../SectionTitle/SectionTitle";
 
 interface Reviews {
   name: string;
@@ -23,7 +24,9 @@ const OurClientsSay: React.FC = () => {
         const response = await api.get(`http://localhost:3000/api/v1/review`);
         const fetchedReviews = response.data.data.reviews;
         if (!Array.isArray(fetchedReviews)) {
-          throw new Error("Invalid response format: reviews should be an array");
+          throw new Error(
+            "Invalid response format: reviews should be an array"
+          );
         }
         setReviews(fetchedReviews);
         console.log("Fetched Reviews:", fetchedReviews);
@@ -47,22 +50,19 @@ const OurClientsSay: React.FC = () => {
   }
 
   return (
-    <div className="aj-our-clients-say p-[80px]">
+    <div className="aj-our-clients-say p-10 md:p-[80px]">
       <div className="testimonials-header flex flex-col gap-2 mb-6 justify-center items-center">
         <img src={GoogleImage} alt="Google logo" />
         <h4 className="uppercase">Reviews</h4>
       </div>
-      <h2
-        style={{ textAlign: "center", marginBottom: "20px" }}
-        className="text-[50px] leading-[60px] font-[600]"
-      >
-        What Our Clients Say
-      </h2>
+      <div className="text-center mb-4">
+        <SectionTitle title="Our Clients say" />
+      </div>
       {isLoading ? (
         <div style={{ textAlign: "center", padding: "20px" }}>
           <p>Loading reviews...</p>
         </div>
-      ) : (!reviews || reviews.length === 0) ? (
+      ) : !reviews || reviews.length === 0 ? (
         <div style={{ textAlign: "center", padding: "20px" }}>
           <p>No reviews available at the moment.</p>
         </div>
@@ -90,10 +90,10 @@ const OurClientsSay: React.FC = () => {
             <SwiperSlide key={index}>
               <div style={{ textAlign: "center" }}>
                 <p className="flex flex-col">
-                  <span className="text-[28px] italic font-[400] leading-[33.6px]">
+                  <span className="text-[22px] md:text-[28px] italic font-[400] leading-[26.4px] md:leading-[33.6px]">
                     {review.text}
                   </span>
-                  <span className="mt-4 font-[500] leading-[19.2px]">
+                  <span className="mt-4 font-[500] leading-[16px] md:leading-[19.2px]">
                     - {review.name}
                   </span>
                 </p>
@@ -102,6 +102,7 @@ const OurClientsSay: React.FC = () => {
           ))}
         </Swiper>
       )}
+      <button className="leading-[19.2px] w-full md:w-[180px] h-[56px] border border-black mt-16 tracking-[0.03em] uppercase">Read reviews</button>
     </div>
   );
 };

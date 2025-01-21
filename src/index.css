@@ -62,13 +62,6 @@
     @apply h-screen bg-background font-sans text-foreground;
   }
 }
-/* .swiper-pagination {
-  display: block;
-  position: relative !important;
-  margin: 0;
-  padding: 0;
-  bottom: 0 !important;
-}   */
 .swiper {
   height: 150px;
 }
@@ -79,7 +72,7 @@
 .swiper-button-next {
   color: #121212 !important;
 }
-@media screen and (width < 1200) {
+@media screen and (width < 1200px) {
   .swiper-button-prev,
   .swiper-button-next {
     display: none !important;
