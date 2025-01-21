@@ -143,22 +143,6 @@ const userSlice = createSlice({
         state.loading = false;
         state.users = state.users.filter((user) => user._id !== action.payload);
 
-         // Update the pagination state
-         const totalUsers = state.pagination.totalUsers - 1; // Decrement total users
-         const totalPages = Math.max(1, Math.ceil(totalUsers / state.pagination.pageSize)); // Recalculate total pages
- 
-         // Adjust current page if necessary
-         if (state.pagination.currentPage > totalPages) {
-           state.pagination.currentPage = totalPages; // If current page is greater than the new total pages, set it to the last page
-         }
- 
-         // Update pagination state
-         state.pagination = {
-           ...state.pagination,
-           totalUsers,
-           totalPages,
-         };
-
          toast.success("User deleted successfully");
       })
       .addCase(deleteUser.rejected, (state, action) => {

@@ -3,7 +3,8 @@ import { api } from "../../lib/ajax/api";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 
-interface Product {
+export interface IProduct {
+  _id: string,
   priceAfterDiscount: string;
   discount?: string;
   quantity: string;
@@ -20,7 +21,7 @@ interface Product {
 }
 
 interface ProductState {
-  products: Product[];
+  products: IProduct[];
   product: {
     priceAfterDiscount: string;
     discount?: string;
