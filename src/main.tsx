@@ -24,7 +24,7 @@ import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import ProductPage from "./pages/product-info/ProductInfo";
 import AboutUsPage from "./pages/AboutUs/AboutUs";
