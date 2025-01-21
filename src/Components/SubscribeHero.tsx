@@ -1,3 +1,5 @@
+import SectionTitle from "./SectionTitle/SectionTitle";
+
 const subscribeFeatures = [
   {
     title: "For Yourself",
@@ -26,27 +28,27 @@ const SubscribeHero = () => {
             className="h-[500px] md:h-full w-full object-cover"
           />
         </div>
-        <div className="md:w-1/2 min-h-[720px] p-20">
-          <h1 className="font-semibold text-[50px] pb-6 leading-[60px] text-[#121212] ">
-            Flower Subscription
-          </h1>
-          <div className="flex flex-col	gap-6 pb-[71px]">
+        <div className="md:w-1/2 px-4 py-10 md:p-20">
+          <div className="pb-4">
+            <SectionTitle title="Flower Subscription" />
+          </div>
+          <div className="flex flex-col	gap-6 pb-12 md:pb-[79px] lg:pb-[71px]">
             {subscribeFeatures.map((el, index) => {
               return (
                 <div key={index}>
-                  <h3 className="font-medium text-[16px] leading-[19.2px] text-[#121212] pb-2 relative right-7">
+                  <h3 className="font-medium text-[16px] leading-[19.2px] text-[#121212] pb-2">
                     {el.title}
                   </h3>
-                    <ul className="list-disc"> 
+                  <ul className="list-disc pl-6">
                     <li className="leading-[22.4px] text-[#121212E5] marker:text-[11px]">
-                        {el.pargraph}
-                        </li>
-                    </ul> 
+                      {el.pargraph}
+                    </li>
+                  </ul>
                 </div>
               );
             })}
           </div>
-          <button className="py-[18px] px-6 border border-[#121212] font-medium leading-[19.2px] text-[#121212]">
+          <button className="w-full sm:w-fit py-[18px] px-6 border border-[#121212] font-medium leading-[19.2px] text-[#121212]">
             EXPLORE PLANS
           </button>
         </div>
