@@ -30,7 +30,6 @@ const ShowProductDetails = () => {
     price,
     description,
     stock,
-    priceAfterDiscount,
     discount,
     quantity,
     category_id,
@@ -55,9 +54,7 @@ const ShowProductDetails = () => {
             </h3>
             <div className="flex justify-between mb-4">
               <h3 className="text-lg lg:text-xl font-bold">Price: {price}$</h3>
-              <h3 className="text-lg lg:text-xl font-bold">
-                Price After Discount: {priceAfterDiscount}$
-              </h3>
+             
             </div>
             {discount && (
               <h3 className="text-lg lg:text-xl font-bold mb-4">

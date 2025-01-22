@@ -21,7 +21,6 @@ const EditProductsPage = () => {
   const [stock, setstock] = useState<string | number>("");
   const [price, setprice] = useState<string | number>("");
   const [quantity, setQuantity] = useState<string>("");
-  const [priceAfterDiscount, setPriceAfterDiscount] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [image, setimage] = useState<string | File>("");
   const navigate = useNavigate();
@@ -53,9 +52,6 @@ const EditProductsPage = () => {
       formData.append("price", price);
     }    
 
-    if(priceAfterDiscount) {
-      formData.append("priceAfterDiscount", priceAfterDiscount);
-    }
 
     if (quantity) {
       formData.append("quantity", quantity);
@@ -86,7 +82,6 @@ const EditProductsPage = () => {
         setdescription(product.description);
         setstock(product.stock);
         setprice(product.price);
-        setPriceAfterDiscount(product.priceAfterDiscount);
         setQuantity(product.quantity);
         setCategoryId(product.category_id._id);
         setpreviewImage(`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${product.image}`);
@@ -183,21 +178,7 @@ const EditProductsPage = () => {
                   required
                 />
               </div>
-              <div className="flex-1 min-w-[200px]">
-                <label htmlFor="priceAfterDiscount" className="block mb-2">
-                  Price After Discount :
-                </label>
-                <input
-                  type="number"
-                  id="priceAfterDiscount"
-                  name="priceAfterDiscount"
-                  value={priceAfterDiscount}
-                  onChange={(e) => setPriceAfterDiscount(e.target.value)}
-                  placeholder="Price After Discount"
-                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                  required
-                />
-              </div>
+              
               <div className="flex-1 min-w-[200px]">
                 <label htmlFor="category_id" className="block mb-2">
                   Category Id :

@@ -120,11 +120,7 @@ const ProductsTable = () => {
       header: "Price",
       cell: ({ row }) => `$${row.getValue("price")}`,
     },
-    {
-      accessorKey: "priceAfterDiscount",
-      header: "Price After Discount",
-      cell: ({ row }) => `$${row.getValue("priceAfterDiscount")}`,
-    },
+    
     {
       id: "actions",
       header: "Actions",

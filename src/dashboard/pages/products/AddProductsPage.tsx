@@ -22,7 +22,6 @@ const AddProductsPage = () => {
   const [description, setDescription] = useState<string>("");
   const [stock, setStock] = useState<string>("");
   const [price, setPrice] = useState<string>("");
-  const [priceAfterDiscount, setPriceAfterDiscount] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [image, setImage] = useState<string | File>("");
@@ -58,7 +57,6 @@ const AddProductsPage = () => {
     formData.append("description", description);
     formData.append("stock", stock);
     formData.append("price", price);
-    formData.append("priceAfterDiscount", priceAfterDiscount);
     formData.append("quantity", quantity);
     formData.append("category_id", categoryId);
     formData.append("image", image);
@@ -108,19 +106,7 @@ const AddProductsPage = () => {
                 />
               </div>
 
-              <div className="flex-1 min-w-[200px]">
-                <label htmlFor="priceAfterDiscount" className="block mb-2">
-                  Price After Discount :
-                </label>
-                <input
-                  type="number"
-                  id="priceAfterDiscount"
-                  name="priceAfterDiscount"
-                  onChange={(e) => setPriceAfterDiscount(e.target.value)}
-                  placeholder="Price After Discount"
-                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                />
-              </div>
+              
 
               <div className="flex-1 min-w-[200px]">
                 <label htmlFor="category_id" className="block mb-2">
