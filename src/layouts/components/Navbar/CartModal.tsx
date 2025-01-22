@@ -57,7 +57,7 @@ function CartItem({
               >
                 <div className="relative border size-20 border-black overflow-hidden">
                   <img
-                    src={accessory.image}
+                    src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${accessory.image}`}
                     alt={accessory.title}
                     className="object-cover absolute inset-0 w-full h-full transition-transform hover:scale-110"
                   />
@@ -168,7 +168,7 @@ const CartModal = ({
                             >
                               <CartItem
                                 id={item.productId._id}
-                                image={item.productId?.image}
+                                image={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${item.productId?.image}`}
                                 name={item.productId?.title}
                                 price={Number(item.productId?.price)}
                                 quantity={item.productQuantity}

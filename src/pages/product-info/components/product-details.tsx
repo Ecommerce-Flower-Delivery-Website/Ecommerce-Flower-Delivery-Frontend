@@ -92,7 +92,7 @@ export const ProductDetails = ({ productId }: { productId: string }) => {
     <div className="grid grid-cols-1 border border-y-0 divide-x-[1px] divide-black xl:grid-cols-2">
       <div className="relative aspect-[420/375] md:h-full w-full">
         <img
-          src={backendBaseUrl + product.image}
+          src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${product.image}`}
           alt={product.title}
           className=" absolute inset-0 size-full"
         />
@@ -266,7 +266,7 @@ function AccessoriesSection({
                 >
                   <div className="relative h-[150px] w-full">
                     <img
-                      src={accessory.image}
+                      src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${accessory.image}`}
                       alt={accessory.title}
                       className=" absolute inset-0 size-full"
                     />

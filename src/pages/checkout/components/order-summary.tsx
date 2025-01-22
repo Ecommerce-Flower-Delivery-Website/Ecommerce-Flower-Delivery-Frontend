@@ -41,7 +41,7 @@ export function OrderSummary({
             >
               <div className="w-[100px] h-[100px] border border-gray-200 relative">
                 <img
-                  src={import.meta.env.BASE_URL + "/" + item.productId.image}
+                  src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${item.productId.image}`}
                   alt={item.productId.title}
                   className="object-cover absolute inset-0 size-full"
                 />
