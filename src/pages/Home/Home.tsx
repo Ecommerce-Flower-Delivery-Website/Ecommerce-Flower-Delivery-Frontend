@@ -8,10 +8,10 @@ import StepsExplanation from "../components/StepsExplanation/StepsExplanation";
 
 const Home = () => {
   return (
-    <div className="home">
+    <div className=" w-screen">
       <Hero />
       <HomeAboutUs />
-      <StepsExplanation textArray={whyChooseUsData} />  
+      <StepsExplanation textArray={whyChooseUsData} />
       <ContactUs />
       <OurService />
       <OurClientsSay />

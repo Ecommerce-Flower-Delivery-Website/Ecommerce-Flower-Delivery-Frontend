@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ProductDetails } from "./components/product-details";
-import { RelatedProducts } from "./components/related-products";
+import { RelatedProducts } from "../../components/RelatedProducts/RelatedProducts";
 
 export default function ProductPage() {
   const params = useParams();
@@ -14,7 +14,7 @@ export default function ProductPage() {
   return (
     <>
       <ProductDetails productId={id} />
-      <RelatedProducts />
+      <RelatedProducts productId={id} />
     </>
   );
 }
