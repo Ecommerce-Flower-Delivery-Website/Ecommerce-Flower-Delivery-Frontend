@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useReduxDispatch, useReduxSelector } from "../../store/store";
 import { getRelatedProduct } from "../../store/slices/productSlice";
 import LoadingSpinner from "../../dashboard/components/LoadingSpinner";
+import { Link } from "react-router-dom";
 
 export function RelatedProducts({ productId }: { productId: string }) {
   const dispatch = useReduxDispatch();
@@ -35,10 +36,9 @@ export function RelatedProducts({ productId }: { productId: string }) {
         <h2 className="text-xl md:text-2xl">You may also like...</h2>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-        {products.map((product, index) => (
-          <a
+        {products.map((product, index) => {          
+          return  <Link to={`/product/${product._id}`}
             key={product.id + "-" + index}
-            href="#"
             className={`block group border-t sm:first:border-t-0 sm:nth-2:border-t-0 md:border-t-0 ${
               index < products.length - 1 ? "md:border-r border-black" : ""
             }`}
@@ -56,8 +56,8 @@ export function RelatedProducts({ productId }: { productId: string }) {
               <h3 className="text-base">{product.title}</h3>
               <p className="text-sm text-gray-600">price {product.price}$</p>
             </div>
-          </a>
-        ))}
+          </Link>
+})}
       </div>
     </div>
   );
