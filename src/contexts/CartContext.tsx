@@ -97,7 +97,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     queryFn: fetchCart,
     refetchOnMount: true,
   });
-  console.log("data", data);
   const addItemMutation = useMutation({
     mutationFn: addItemToCart,
     onMutate: async (newItem) => {
@@ -173,12 +172,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
         );
         queryClient.setQueryData(["cart"], {
           ...previousCart,
-          items: [
-            ...previousCart.items.filter(
-              (item) => item.productId._id !== productId
-            ),
-            { ...updatedProduct, accessoryId: updatedAccessory },
-          ],
+          items: previousCart.items.map((item) =>
+            item.productId._id === productId
+              ? { ...item, accessoriesId: updatedAccessory }
+              : item
+          ),
         });
       }
 
@@ -189,8 +187,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
         queryClient.setQueryData(["cart"], context.previousCart);
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    onSettled: (_data, _error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [`product/${variables.productId}`],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["cart"],
+      });
+      queryClient.refetchQueries({
+        queryKey: [`product/${variables.productId}`, "cart"],
+      });
     },
   });
 

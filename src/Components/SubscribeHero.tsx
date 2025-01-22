@@ -22,7 +22,7 @@ const SubscribeHero = () => {
       <header className="md:flex">
         <div className="md:w-1/2">
           <img
-            src="../../public/assets/images/image (2).jpg"
+            src="/assets/images/image (2).jpg"
             className="h-[500px] md:h-full w-full object-cover"
           />
         </div>
@@ -37,11 +37,11 @@ const SubscribeHero = () => {
                   <h3 className="font-medium text-[16px] leading-[19.2px] text-[#121212] pb-2 relative right-7">
                     {el.title}
                   </h3>
-                    <ul className="list-disc"> 
+                  <ul className="list-disc">
                     <li className="leading-[22.4px] text-[#121212E5] marker:text-[11px]">
-                        {el.pargraph}
-                        </li>
-                    </ul> 
+                      {el.pargraph}
+                    </li>
+                  </ul>
                 </div>
               );
             })}
