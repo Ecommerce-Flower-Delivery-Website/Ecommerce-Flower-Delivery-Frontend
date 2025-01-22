@@ -58,7 +58,7 @@ const SubscribePlans = () => {
   const navigate = useNavigate();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [rowsPerPage, setRowsPerPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const totalPages = subscribePlansData?.pagination?.totalPages;
 
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
