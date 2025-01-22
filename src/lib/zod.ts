@@ -15,6 +15,7 @@ const passwordZodSchema = (name = "password") =>
 const UserSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters long."),
   email: z.string().email("Invalid email address."),
+  phone: z.string(),
   subscriptions: z.string().nullable().default(null),
   verified: z.boolean().optional().default(false),
   password: passwordZodSchema("password"),

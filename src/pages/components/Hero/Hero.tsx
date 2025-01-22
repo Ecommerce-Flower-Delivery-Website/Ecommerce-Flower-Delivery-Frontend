@@ -13,7 +13,7 @@ import { getCategories } from "../../../store/slices/categorySlice";
 import LoadingSpinner from "../../../dashboard/components/LoadingSpinner";
 
 const Hero = () => {
-  const { categories, loading, pagination } = useReduxSelector(
+  const { categories, loading, pagination, error } = useReduxSelector(
     (state: RootState) => state.category
   );
   const dispatch = useReduxDispatch();
@@ -21,6 +21,14 @@ const Hero = () => {
   useEffect(() => {
     dispatch(getCategories({}));
   }, [dispatch]);
+
+  if (error) {
+    return (
+      <div style={{ textAlign: "center", padding: "20px" }}>
+        <p>Failed to get categories</p>
+      </div>
+    );
+  }
 
   return (
     <div className="aj-hero">

@@ -109,6 +109,23 @@ const RegisterFormDialog = ({
             />
           </div>
           {errors.email && <ErrorMessage message={errors.email?.message} />}
+
+          <div className="flex flex-col gap-3 px-1">
+            <label
+              htmlFor="phone"
+              className="text-start text-base font-medium  "
+            >
+              Phone
+            </label>
+            <Input
+              id="phone"
+              type="number"
+              {...register("phone")}
+              className="h-[56px] dark:placeholder:text-black dark:border-input  rounded-none   text-base font-medium "
+            />
+          </div>
+          {errors.phone && <ErrorMessage message={errors.phone?.message} />}
+
           <div className="flex flex-col gap-3 px-1">
             <label
               htmlFor="password"
