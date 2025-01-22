@@ -80,14 +80,17 @@ const LoginFormDialog = ({
           <Plus className="mr-2 h-4 w-4" /> Create New User
         </Button>
       </DialogTrigger> */}
-      <DialogContent className="mt-[48px] lg:mt-[81px] flex flex-col h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full lg:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10">
-        <DialogHeader>
+      <DialogContent
+        aria-describedby={"Sign in"}
+        className="mt-[48px] md:mt-[57px] lg:mt-[81px] light flex flex-col h-full   sm:rounded-none bg-white text-black border-[#121212] shadow-none   max-w-full lg:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10"
+      >        
+      <DialogHeader>
           <DialogTitle className="text-start font-semibold  text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
             Greetings! Welcome to luxury gift shop.
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 ">
-          <div className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4  pb-[50px] overflow-y-auto">
+          <div className="flex flex-col gap-3 px-1">
             <label
               htmlFor="email"
               className="text-start text-base font-medium "
@@ -98,11 +101,11 @@ const LoginFormDialog = ({
               id="email"
               type="email"
               {...register("email")}
-              className="h-[56px] rounded-none  text-base font-medium "
+              className="h-[56px] dark:placeholder:text-black dark:border-input rounded-none  text-base font-medium "
             />
           </div>
           {errors.email && <ErrorMessage message={errors.email?.message} />}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 px-1">
             <label
               htmlFor="password"
               className="text-start text-base font-medium "
@@ -113,7 +116,7 @@ const LoginFormDialog = ({
               id="password"
               type="password"
               {...register("password")}
-              className="h-[56px] rounded-none text-base font-medium "
+              className="h-[56px] dark:placeholder:text-black dark:border-input rounded-none text-base font-medium "
             />
           </div>
           {errors.password && (
@@ -122,13 +125,13 @@ const LoginFormDialog = ({
 
           <Button
             type="submit"
-            className="h-[56px] rounded-none text-base font-medium w-full bg-[#121212] hover:bg-[#2e2e2e] text-white transition-[colors_transform] duration-200"
+            className="h-[56px] rounded-none text-base font-medium w-full bg-[#121212] hover:scale-100 hover:bg-[#2e2e2e] text-white transition-[colors_transform] duration-200"
             disabled={isSubmitting || isPending}
           >
             {isSubmitting ? "CONTINUE..." : "CONTINUE"}
           </Button>
-        </form>
-        <p className="mt-6 w-full text-[#808080] text-[16px] leading-5 font-medium">
+
+          <p className="mt-6 w-full text-[#808080] text-[16px] leading-5 font-medium">
           Don't have an account ?
           <span
             className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
@@ -146,7 +149,7 @@ const LoginFormDialog = ({
           </span>
         </p>
 
-        <p className="mt-6 w-full text-[#808080] text-[16px] leading-5 font-medium">
+        <p className="mt-6 mb-6  w-full text-[#808080] text-[16px] leading-5 font-medium">
           <span
             className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
             onClick={() => {
@@ -162,6 +165,8 @@ const LoginFormDialog = ({
             Forgot your password ?
           </span>
         </p>
+        </form>
+
 
         {/* <p className="w-full text-center border-b mx-0 mt-6 mb-6 leading-[0.1rem] border-[#D2D2D7] ">
             <span className="bg-white text-[#D2D2D7] text-sm font-normal py-0 px-2">

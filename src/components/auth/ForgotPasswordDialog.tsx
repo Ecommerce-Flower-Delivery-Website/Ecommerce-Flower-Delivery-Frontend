@@ -58,7 +58,7 @@ const ForgotPasswordDialog = ({
       </DialogTrigger> */}
       <DialogContent
         aria-describedby={"Forgot your password"}
-        className="light flex flex-col bg-white text-black h-full overflow-y-auto sm:rounded-none border-[#121212] shadow-none   max-w-full md:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10"
+        className="mt-[48px] md:mt-[57px] lg:mt-[81px] light flex flex-col h-full   sm:rounded-none bg-white text-black border-[#121212] shadow-none   max-w-full lg:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10"
       >
         <DialogHeader>
           <DialogTitle className="text-start font-semibold text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
@@ -69,8 +69,8 @@ const ForgotPasswordDialog = ({
             access to your account
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 ">
-          <div className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4   pb-[50px]  overflow-y-auto ">
+          <div className="flex flex-col gap-3 px-1">
             <label
               htmlFor="email"
               className="text-start text-base font-medium "
@@ -81,20 +81,20 @@ const ForgotPasswordDialog = ({
               id="email"
               type="email"
               {...register("email")}
-              className="h-[56px] rounded-none bg-black text-white text-base font-medium "
+              className="h-[56px] dark:placeholder:text-black dark:border-input rounded-none  text-white text-base font-medium "
             />
           </div>
           {errors.email && <ErrorMessage message={errors.email?.message} />}
 
           <Button
             type="submit"
-            className="h-[56px] rounded-none text-base font-medium w-full bg-[#121212] hover:bg-[#2e2e2e] text-white transition-[colors_transform] duration-200"
+            className="h-[56px] rounded-none text-base font-medium w-full bg-[#121212] hover:scale-100 hover:bg-[#2e2e2e] text-white transition-[colors_transform] duration-200"
             disabled={isSubmitting || isPending}
           >
             {isSubmitting ? "CONTINUE..." : "CONTINUE"}
           </Button>
         </form>
-        <p className="mt-6 w-full text-[#808080] text-[16px] leading-5 font-medium">
+        <p className="mb-6 mt-6 w-full text-[#808080] text-[16px] leading-5 font-medium">
           Back to sign in ?
           <span
             className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
