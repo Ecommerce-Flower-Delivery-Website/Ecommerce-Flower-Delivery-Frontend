@@ -10,6 +10,7 @@ import {
 } from "../../../store/store";
 import { useEffect } from "react";
 import { getCategories } from "../../../store/slices/categorySlice";
+import LoadingSpinner from "../../../dashboard/components/LoadingSpinner";
 
 const Hero = () => {
   const { categories, loading, pagination } = useReduxSelector(
@@ -56,7 +57,7 @@ const Hero = () => {
         </div>
 
         <div className="w-full lg:w-1/2 flex flex-col">
-          {categories.map((el, index) => {
+          {loading ? <LoadingSpinner /> : categories.map((el, index) => {
             return (
               <div
                 className={`flex flex-grow ${

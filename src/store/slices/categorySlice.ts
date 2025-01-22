@@ -10,12 +10,12 @@ interface Product {
   quantity: string;
   id: string;
   title: string;
-  price: number;
-  stock: number;
+  price: string;
+  stock: string;
   description: string;
   image?: string;
-  category_id: number;
-  accessory_id: number;
+  category_id: string;
+  accessory_id: string;
   created_at: string;
   updated_at: string;
 }

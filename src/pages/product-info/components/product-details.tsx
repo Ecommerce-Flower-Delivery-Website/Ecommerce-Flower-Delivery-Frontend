@@ -42,6 +42,7 @@ type AccessoryType = {
   title: string;
   image: string;
   price: string;
+  stock: string;
 };
 
 export const ProductDetails = ({ productId }: { productId: string }) => {
@@ -239,8 +240,10 @@ function AccessoriesSection({
         </button>
         <ScrollArea className="w-full" ref={scrollRef}>
           <div className="flex space-x-4 pb-4 justify-center">
-            {accessories.map((accessory) => (
-              <motion.div
+            {accessories.map((accessory) => {
+              if (accessory.stock === "0") return null;
+              
+              return <motion.div
                 key={accessory._id}
                 className={cn(
                   "flex-none relative border-2 rounded-lg overflow-hidden",
@@ -276,7 +279,7 @@ function AccessoriesSection({
                   </div>
                 </button>
               </motion.div>
-            ))}
+            })}
           </div>
         </ScrollArea>
         <button

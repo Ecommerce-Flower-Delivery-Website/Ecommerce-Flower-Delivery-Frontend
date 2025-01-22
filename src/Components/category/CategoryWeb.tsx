@@ -44,9 +44,10 @@ const CategoryWeb = () => {
           </div>
           <div className="w-full lg:w-1/2 border-l border-textPrimaryColor">
             <div className="flex flex-wrap">
-              {products.map((product) => {
+              {products.map((product) => {                
+                if (product.stock === "0") return null;
                 return (
-                  <button  className="h-[360px] w-full relative md:w-1/2">
+                  <button  className="h-[360px] w-full relative md:w-1/2" onClick={() => navigate(`/product/${product._id}`)}>
                     <img
                       src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${
                         product.image

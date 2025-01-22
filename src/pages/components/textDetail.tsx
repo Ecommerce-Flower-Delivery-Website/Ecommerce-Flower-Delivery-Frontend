@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface TextDetailProps {
     subTitle?: string;
     title: string;
@@ -22,9 +24,9 @@ interface TextDetailProps {
         <h2 className="text-[26px] md:text-[38px]  leading-[31.2px] md:leading-[45.6px] font-medium mb-4">{title}</h2>
         <p className={pStyle}>{text}</p>
         {button ? (
-          <button className="w-full md:w-fit text-sm leading-[14px] md:leading-[19.2px] uppercase font-medium tracking-[0.025em] border border-[#121212] px-[43px] py-[19.5px]">
+          <Link to={"/about-us"} className="w-full md:w-fit text-sm leading-[14px] md:leading-[19.2px] uppercase font-medium tracking-[0.025em] border border-[#121212] px-[43px] py-[19.5px]">
             {button}
-          </button>
+          </Link>
         ) : (
           ""
         )}

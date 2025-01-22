@@ -1,16 +1,17 @@
+import { whyChooseUsData } from "../../data/whyChooseUsData";
 import ContactUs from "../components/ContactUs/ContactUs";
 import Hero from "../components/Hero/Hero";
 import HomeAboutUs from "../components/HomeAboutUs/HomeAboutUs";
 import OurClientsSay from "../components/OurClientsSay/OurClientsSay";
 import OurService from "../components/OurService/OurService";
-import WhyChooseUs from "../components/WhyChooseUs/WhyChooseUs";
+import StepsExplanation from "../components/StepsExplanation/StepsExplanation";
 
 const Home = () => {
   return (
     <div className="home">
       <Hero />
       <HomeAboutUs />
-      <WhyChooseUs />  
+      <StepsExplanation textArray={whyChooseUsData} />  
       <ContactUs />
       <OurService />
       <OurClientsSay />

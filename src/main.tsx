@@ -31,6 +31,7 @@ import AboutUsPage from "./pages/AboutUs/AboutUs";
 
 import CheckoutPage from "./pages/checkout/CheckoutPage";
 import GiftDiscount from "./dashboard/pages/giftDiscount/GiftDiscount";
+import Subscribe from "./pages/subscribe/Subscribe";
 // import SubscribeHero from "./Components/SubscribeHero";
 
 const routers = createBrowserRouter([
@@ -46,6 +47,7 @@ const routers = createBrowserRouter([
           { path: "/product/:id", element: <ProductPage /> },
           { path: "/about-us", element: <AboutUsPage /> },
           { path: "/check-out", element: <CheckoutPage /> },
+          {path: "/subscribe", element: <Subscribe />}
 
         ],
       },

@@ -51,7 +51,7 @@ export const getReviews = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       handleApiError(error);
-      const generalMessage = "failed to get review";
+      const generalMessage = "Failed to get reviews";
       return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }

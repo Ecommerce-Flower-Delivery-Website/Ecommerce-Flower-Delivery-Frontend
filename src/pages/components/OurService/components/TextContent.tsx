@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface TextContentProps {
   subTitle: string;
   title: string;
@@ -9,9 +11,9 @@ interface TextContentProps {
 const TextContent = ({ subTitle, title, text, button, white }: TextContentProps) => {
   let buttonStyle;
   if(white) {
-    buttonStyle = "leading-[19.2px] w-full md:w-[180px] h-[56px] border border-white tracking-[0.03em] uppercase";
+    buttonStyle = "flex justify-center items-center leading-[19.2px] w-full md:w-[180px] h-[56px] border border-white tracking-[0.03em] uppercase";
   } else {
-    buttonStyle = "leading-[19.2px] w-full md:w-[180px] h-[56px] border border-[#121212] tracking-[0.03em] uppercase";
+    buttonStyle = "flex justify-center items-center leading-[19.2px] w-full md:w-[180px] h-[56px] border border-[#121212] tracking-[0.03em] uppercase";
   }
 
   return (
@@ -23,10 +25,9 @@ const TextContent = ({ subTitle, title, text, button, white }: TextContentProps)
       <p className="text-lg leading-[25.2px] max-w-[586px] mb-[64px] text-center">
         {text}
       </p>
-      <button className={buttonStyle}>
-
+      <Link to={"/subscribe"} className={buttonStyle}>
         {button}
-      </button>
+      </Link>
     </div>
   );
 };

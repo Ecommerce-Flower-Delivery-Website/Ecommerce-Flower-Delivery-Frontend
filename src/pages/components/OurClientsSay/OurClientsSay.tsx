@@ -5,6 +5,8 @@ import "swiper/swiper-bundle.css";
 import GoogleImage from "./../../../assets/google-logo.png";
 import { api } from "../../../lib/ajax/api";
 import SectionTitle from "../SectionTitle/SectionTitle";
+import { getReviews } from "../../../store/slices/reviewSlice";
+import { RootState, useReduxDispatch, useReduxSelector } from "../../../store/store";
 
 interface Reviews {
   name: string;
@@ -12,39 +14,18 @@ interface Reviews {
 }
 
 const OurClientsSay: React.FC = () => {
-  const [reviews, setReviews] = useState<Reviews[] | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      setIsLoading(true);
-      setError(null); // Reset any previous error
-      try {
-        const response = await api.get(`/review`);
-        const fetchedReviews = response.data.data.reviews;
-        if (!Array.isArray(fetchedReviews)) {
-          throw new Error(
-            "Invalid response format: reviews should be an array"
-          );
-        }
-        setReviews(fetchedReviews);
-        console.log("Fetched Reviews:", fetchedReviews);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-        setError("Failed to load reviews. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { reviews, loading, error } = useReduxSelector((state: RootState) => state.review);
+  const dispatch = useReduxDispatch();
 
-    fetchReviews();
-  }, []);
+    useEffect(() => {
+      dispatch(getReviews({}));
+    }, [dispatch]);  
 
   if (error) {
     return (
       <div style={{ textAlign: "center", padding: "20px" }}>
-        <p>{error}</p>
+        <p>Failed to get reviews</p>
       </div>
     );
   }
@@ -58,7 +39,7 @@ const OurClientsSay: React.FC = () => {
       <div className="text-center mb-4">
         <SectionTitle title="Our Clients say" />
       </div>
-      {isLoading ? (
+      {loading ? (
         <div style={{ textAlign: "center", padding: "20px" }}>
           <p>Loading reviews...</p>
         </div>
@@ -102,7 +83,7 @@ const OurClientsSay: React.FC = () => {
           ))}
         </Swiper>
       )}
-      <button className="leading-[19.2px] w-full md:w-[180px] h-[56px] border border-black mt-16 tracking-[0.03em] uppercase">Read reviews</button>
+      {/* <button className="leading-[19.2px] w-full md:w-[180px] h-[56px] border border-black mt-16 tracking-[0.03em] uppercase">Read reviews</button> */}
     </div>
   );
 };

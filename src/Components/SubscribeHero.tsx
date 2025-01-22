@@ -19,7 +19,7 @@ const subscribeFeatures = [
 const SubscribeHero = () => {
   return (
     <>
-      <header className="md:flex ">
+      <header className="md:flex">
         <div className="md:w-1/2">
           <img
             src="../../public/assets/images/image (2).jpg"
