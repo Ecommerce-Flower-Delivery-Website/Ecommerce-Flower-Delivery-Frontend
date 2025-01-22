@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useReduxDispatch, useReduxSelector, RootState } from "../../../store/store";
 import { getGiftDiscounts, TGiftDiscount } from "../../../store/slices/giftDiscountSlice";
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getFilteredRowModel } from "@tanstack/react-table";
@@ -16,16 +16,20 @@ import {
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { Input } from "../../components/input";
 import { CreateGiftDiscount, EditGiftDiscount, RemoveGiftDiscount } from "./components/GiftDiscountForms";
+import { Button } from "../../components/button";
 
 const GiftDiscount = () => {
   const { giftDiscounts, loading, pagination } = useReduxSelector((state: RootState) => state.giftDiscount);
   const dispatch = useReduxDispatch();
+
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchTerm, setSearchTerm] = useState("");
+
+  const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
+  const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    dispatch(getGiftDiscounts({ page: 1, limit: rowsPerPage }));
-  }, [dispatch, rowsPerPage]);
+    dispatch(getGiftDiscounts({ page: 1, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
+  }, [dispatch, rowsPerPage, fieldSearch, valueSearch]);
 
   const totalPages = pagination.totalPages;
 
@@ -56,15 +60,24 @@ const GiftDiscount = () => {
   const table = useReactTable({
     data: giftDiscounts,
     columns,
-    state: { globalFilter: searchTerm },
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onGlobalFilterChange: setSearchTerm,
   });
 
   const setCurrentPage = ({ page }: { page: number }) => {
-    dispatch(getGiftDiscounts({ page, limit: rowsPerPage }));
+    dispatch(getGiftDiscounts({ page, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
   };
+
+  const searchByCodeInput = useRef<HTMLInputElement | null>(null);
+  
+  const handleSearch = (field: string, value : string) => {
+    setFieldSearch(field);
+     setValueSearch(value);
+    }
+  
+  const handleResetSearch = () => {
+     setFieldSearch(undefined);
+      setValueSearch(undefined);    
+   }  
 
   if (loading) {
     return <LoadingSpinner />;
@@ -72,8 +85,9 @@ const GiftDiscount = () => {
 
   return (
     <Card>
-      <CardHeader className="flex items-end justify-end gap-4">
-        <div className="flex w-full flex-wrap items-center justify-between gap-2">
+       <CardHeader className="flex items-center justify-between gap-4">
+        {/* First Column */}
+        <div className="flex flex-col gap-2">
           <div className="flex items-center space-x-2">
             <span className="text-sm">Show</span>
             <Select
@@ -93,18 +107,29 @@ const GiftDiscount = () => {
             </Select>
             <span className="text-sm">entries</span>
           </div>
-          
-          <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
-            <Input
-              placeholder="Search by code..."
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
-            />
-            <CreateGiftDiscount />
+          <div>
+            <Button onClick={handleResetSearch}>Reset Search</Button>
+          </div>
+        </div>
+
+        {/* Second Column */}
+        <div className="flex flex-col gap-2">
+            <div>
+              <CreateGiftDiscount />
+            </div>
+            <div className="flex items-center gap-2 max-md:flex-wrap">
+              <Input
+                placeholder="Search by code..."
+                className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
+                ref={searchByCodeInput}
+              />
+              
+              <Button onClick={()=> handleSearch("title", searchByCodeInput.current?.value as string)}>search</Button>
+              
           </div>
         </div>
       </CardHeader>
+
 
       <CardContent>
         <Table className="table-auto border-collapse w-full mb-7">

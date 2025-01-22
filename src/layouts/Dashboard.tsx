@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useThemeToggle } from "../contexts/hooks/useThemeToggle";
 import { Button } from "../dashboard/components/button";
 import { Sidebar } from "./components/SideBar";
+import { ScrollArea } from "../components/ui/ScrollArea";
 
 export const Dashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -19,7 +20,7 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="flex">
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-      <div className="flex relative flex-col flex-1 ">
+      <ScrollArea className="flex relative flex-col flex-1 h-screen ">
         <header className="flex items-center h-16 justify-between px-6 py-4 bg-muted ">
           <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
             Dashboard
@@ -35,10 +36,10 @@ export const Dashboard: React.FC = () => {
             </Button>
           </div>
         </header>
-        <main className="flex-1  overflow-y-auto bg-background  p-6">
+        <main className="flex-1 h-full  p-6  ">
           <Outlet />
         </main>
-      </div>
+      </ScrollArea>
     </div>
   );
 };

@@ -15,7 +15,7 @@ import {
   Loader2,
   Trash2,
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../components/button";
 import { Card, CardContent, CardHeader } from "../../components/card";
 import {
@@ -38,6 +38,7 @@ import {
 import { Switch } from "../../components/switch";
 import { toast } from "react-toastify";
 import { handleApiError } from "../../../lib/utils";
+import { api } from "../../../lib/ajax/api";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
@@ -88,22 +89,30 @@ export const ContactsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filter, setFilter] = useState<"all" | "checked" | "unchecked">("all");
-  const [searchTerm, setSearchTerm] = useState("");
+
   const [isDeleting, setIsDeleting] = useState<number | null>(null);
   const [isUpdating, setIsUpdating] = useState<number | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     isOpen: boolean;
     id: number | null;
-  }>({ isOpen: false, id: null });
+  }>({ isOpen: false, id: null });  
+
+  const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
+  const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await axios.get(
-          `${baseUrl}/api/${apiVersion}/contact?pageNumber=${currentPage}`
-        );
+        const response = await api.get("/contact", {
+          params: {
+            page: currentPage,
+            limit: 5,
+            field: fieldSearch,
+            value: valueSearch
+          }
+        })
         const { contacts, pagination } = response.data.data;
-
+        
         setContacts(contacts);
         setTotalPages(pagination?.totalPages || 1);
       } catch (error) {
@@ -112,7 +121,19 @@ export const ContactsPage: React.FC = () => {
     };
 
     fetchContacts();
-  }, [currentPage]);
+  }, [currentPage, fieldSearch, valueSearch]);
+
+  const searchByNameInput = useRef<HTMLInputElement | null>(null);
+  
+    const handleSearch = (field: string, value : string) => {
+      setFieldSearch(field);
+      setValueSearch(value);
+     }
+  
+    const handleResetSearch = () => {
+       setFieldSearch(undefined);
+       setValueSearch(undefined);    
+     }      
 
   const filteredContacts = useMemo(() => {
     return contacts
@@ -120,17 +141,7 @@ export const ContactsPage: React.FC = () => {
         if (filter === "all") return true;
         return filter === "checked" ? contact.isChecked : !contact.isChecked;
       })
-      .filter(
-        (contact) =>
-          contact.user_id?.name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          contact.user_id?.email
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          contact.user_id?.phone.includes(searchTerm)
-      );
-  }, [contacts, filter, searchTerm]);
+  }, [contacts, filter]);
 
   const handleToggleChecked = async (id: number) => {
     try {
@@ -272,35 +283,52 @@ export const ContactsPage: React.FC = () => {
   return (
     <>
       <Card>
-        <CardHeader className="flex flex-col gap-4">
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2">
-              <Button
-                variant={filter === "all" ? "default" : "outline"}
-                onClick={() => setFilter("all")}
-              >
-                All
-              </Button>
-              <Button
-                variant={filter === "checked" ? "default" : "outline"}
-                onClick={() => setFilter("checked")}
-              >
-                Checked
-              </Button>
-              <Button
-                variant={filter === "unchecked" ? "default" : "outline"}
-                onClick={() => setFilter("unchecked")}
-              >
-                Unchecked
-              </Button>
+      <CardHeader className="flex items-center justify-between gap-4">
+              {/* First Column */}
+              <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center">
+              <div className="flex gap-2">
+                <Button
+                  variant={filter === "all" ? "default" : "outline"}
+                  onClick={() => setFilter("all")}
+                >
+                  All
+                </Button>
+                <Button
+                  variant={filter === "checked" ? "default" : "outline"}
+                  onClick={() => setFilter("checked")}
+                >
+                  Checked
+                </Button>
+                <Button
+                  variant={filter === "unchecked" ? "default" : "outline"}
+                  onClick={() => setFilter("unchecked")}
+                >
+                  Unchecked
+                </Button>
+              </div>
             </div>
-          </div>
-          <Input
-            placeholder="Search by name, email, or phone"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </CardHeader>
+                <div>
+                <Button onClick={() => handleResetSearch()}>Reset Search</Button> 
+                </div>
+              </div>
+      
+              {/* Second Column */}
+              <div className="flex flex-col gap-2">
+                  <div>
+                  </div>
+                  <div className="flex items-center gap-2 max-md:flex-wrap">
+                     <Input
+                        placeholder="Search by name..."
+                        className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
+                        ref={searchByNameInput}
+                      />
+                    <Button onClick={()=> handleSearch("name", searchByNameInput.current?.value as string)}>search</Button>
+                </div>
+              </div>
+            </CardHeader>
+            
+        
         <CardContent>
           <Table>
             <TableHeader>

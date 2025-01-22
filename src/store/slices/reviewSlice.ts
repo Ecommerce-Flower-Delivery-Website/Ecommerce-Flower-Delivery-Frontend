@@ -1,18 +1,13 @@
-import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 import { parseErrorMessage } from "../../utils/helper";
-
-const API_BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL;
-const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
-const API_URL = `${API_BASE_URL}/api/${API_VERSION}`;
+import { api } from "../../lib/ajax/api";
 
 export type TReviewFromBackEnd = {
   _id: "string";
   name: "string";
   text: "string";
-  shouldShow: boolean;
   createdAt: "string";
   updatedAt: "string";
   __v: "number";
@@ -45,16 +40,12 @@ const initialState: TInitialState = {
 export const getReviews = createAsyncThunk(
   "review/getReviews",
   async (
-    paginationInfo: { page: number; limit: number },
+    queryParams: { page?: number; limit?: number, field?:string, value?:string },
     { rejectWithValue }
   ) => {
-    try {
-      const { page, limit } = paginationInfo;
-      const response = await axios.get(`${API_URL}/review`, {
-        params: {
-          page: page,
-          limit: limit,
-        },
+    try {      
+      const response = await api.get(`/review`, {
+        params: queryParams
       });
 
       return response.data.data;
@@ -73,7 +64,7 @@ export const addReview = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.post(`${API_URL}/review`, values);
+      const response = await api.post(`/review`, values);
 
       return response.data.data;
     } catch (error) {
@@ -97,8 +88,7 @@ export const editReview = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.put(`${API_URL}/review/${id}`, reviewInfo);
-      console.log(response.data.data);
+      const response = await api.put(`/review/${id}`, reviewInfo);
 
       return response.data.data;
     } catch (error) {
@@ -113,7 +103,7 @@ export const deleteReview = createAsyncThunk(
   "review/deleteReview",
   async (id: string, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/review/${id}`);
+      await api.delete(`/review/${id}`);
       return id;
     } catch (error) {
       handleApiError(error);
@@ -139,6 +129,9 @@ const reviewSlice = createSlice({
         state.loading = false;
         state.reviews = action.payload.reviews;
         state.pagination = action.payload.pagination;
+
+        console.log("hi hero5", action.payload);
+        
       })
       .addCase(getReviews.rejected, (state, action) => {
         state.loading = false;

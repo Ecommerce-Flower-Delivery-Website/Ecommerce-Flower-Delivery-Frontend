@@ -1,6 +1,5 @@
 import {
   BarChart,
-  ChartColumnStacked,
   ChevronLeft,
   ChevronRight,
   Gem,
@@ -16,19 +15,18 @@ import {
 } from "lucide-react";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { cn } from "../../lib/utils";
 import { Button } from "../../dashboard/components/button";
+import { cn } from "../../lib/utils";
 
 const menuItems = [
   { id: "users", label: "User Management", icon: Users },
   { id: "accessories", label: "Accessories", icon: Gem },
   { id: "contact", label: "Contact", icon: Phone },
   { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "orders", label: "Orders", icon: Receipt },
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "subscribe-plans", label: "Subscribe Plans", icon: BarChart },
   { id: "category", label: "Categories", icon: Users },
-  { id: "orders", label: "Orders", icon: ChartColumnStacked },
+  { id: "orders", label: "Orders", icon: Receipt },
   { id: "reminder", label: "Reminedr", icon: MessageCircle },
   { id: "reviews", label: "reviews", icon: Star },
   { id: "gift-discount", label: "gift discounts", icon: Gift },
@@ -48,14 +46,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   return (
     <aside
       className={cn(
-        "bg-muted  dark:bg-gray-800 border-r dark:border-gray-700 min-h-screen transition-all duration-300 ease-in-out",
+        "bg-muted  dark:bg-gray-800 border-r dark:border-gray-700 h-screen transition-all duration-300 ease-in-out",
         open ? "w-64" : "w-16"
       )}
     >
       <div className="flex flex-col h-full">
         <div
           className={cn(
-            "flex items-center justify-between h-16 px-4 border-b border-gray-200 p-4 dark:border-gray-700",
+            "flex items-center justify-between h-16 px-4 border-b border-gray-200 p-3 dark:border-gray-700",
             {
               " justify-center": !open,
             }
@@ -85,7 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
               to={item.id}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center p-4 transition-colors  text-gray-700 dark:text-gray-300 hover:bg-primary dark:hover:bg-primary",
+                  "flex items-center p-3 transition-colors  text-gray-700 dark:text-gray-300 hover:bg-primary dark:hover:bg-primary",
                   {
                     "bg-gray-100 hover:text-foreground dark:bg-gray-700 text-primary dark:text-primary-foreground":
                       isActive,
@@ -106,10 +104,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
             </NavLink>
           ))}
         </nav>
-        <div className="border-t border-gray-200 p-4 dark:border-gray-700">
+        <div className="border-t border-gray-200 p-3 dark:border-gray-700">
           <Button
             variant="ghost"
-            className={cn(" w-full p-4 justify-start", {
+            className={cn(" w-full p-3 justify-start", {
               "justify-center": !open,
             })}
             onClick={handleLogout}

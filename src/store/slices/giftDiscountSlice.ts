@@ -1,13 +1,9 @@
 
-  import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 import { parseErrorMessage } from "../../utils/helper";
-
-const API_BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL;
-const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
-const API_URL = `${API_BASE_URL}/api/${API_VERSION}`;
+import { api } from "../../lib/ajax/api";
 
 export type TGiftDiscount = {
   _id: string;
@@ -45,17 +41,14 @@ const initialState: TInitialState = {
 export const getGiftDiscounts = createAsyncThunk(
   "giftDiscount/getGiftDiscounts",
   async (
-    paginationInfo: { page: number; limit: number },
+    queryParams: { page?: number; limit?: number, field?:string, value?:string },
     { rejectWithValue }
   ) => {
     try {
-      const { page, limit } = paginationInfo;
-      const response = await axios.get(`${API_URL}/giftDiscounts`, {
-        params: {
-          page,
-          limit,
-        },
-      });
+      const response = await api.get
+        (`/giftDiscounts`, {
+          params: queryParams
+        });
       
       return response.data.data;
     } catch (error) {
@@ -74,7 +67,7 @@ export const addGiftDiscount = createAsyncThunk(
   ) => {
     try {
       
-      const response = await axios.post(`${API_URL}/giftDiscounts`, values);
+      const response = await api.post(`/giftDiscounts`, values);
       return response.data.data.giftDiscount;
     } catch (error) {
       handleApiError(error);
@@ -97,7 +90,7 @@ export const updateGiftDiscount = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.put(`${API_URL}/giftDiscounts/${id}`, values);
+      const response = await api.put(`/giftDiscounts/${id}`, values);
       return response.data.data.giftDiscount;
     } catch (error) {
       handleApiError(error);
@@ -111,7 +104,7 @@ export const deleteGiftDiscount = createAsyncThunk(
   "giftDiscount/deleteGiftDiscount",
   async (id: string, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/giftDiscounts/${id}`);
+      await api.delete(`/giftDiscounts/${id}`);
       return id;
     } catch (error) {
       handleApiError(error);
@@ -135,6 +128,8 @@ const giftDiscountSlice = createSlice({
         state.loading = false;
         state.giftDiscounts = action.payload.giftDiscounts;        
         state.pagination = action.payload.pagination;
+
+        
       })
       .addCase(getGiftDiscounts.rejected, (state, action) => {
         state.loading = false;

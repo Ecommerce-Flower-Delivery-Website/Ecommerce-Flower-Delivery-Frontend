@@ -50,14 +50,14 @@ const initialState: TInitialState = {
 // Async thunks
 const getUsers = createAsyncThunk(
   "user/getUsers",
-  async (values: { page: number; limit: number }, { rejectWithValue }) => {
+  async (queryParams: { page?: number; limit?: number, field?:string, value?:string }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/users`, {
-        params: values,
+        params: queryParams,
       });
       return response.data;
     } catch (error) {
-      handleApiError(error); 
+      handleApiError(error);
       const message = parseErrorMessage(error, "Failed to fetch users");
       return rejectWithValue(message);
     }
@@ -142,22 +142,6 @@ const userSlice = createSlice({
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
         state.users = state.users.filter((user) => user._id !== action.payload);
-
-         // Update the pagination state
-         const totalUsers = state.pagination.totalUsers - 1; // Decrement total users
-         const totalPages = Math.max(1, Math.ceil(totalUsers / state.pagination.pageSize)); // Recalculate total pages
- 
-         // Adjust current page if necessary
-         if (state.pagination.currentPage > totalPages) {
-           state.pagination.currentPage = totalPages; // If current page is greater than the new total pages, set it to the last page
-         }
- 
-         // Update pagination state
-         state.pagination = {
-           ...state.pagination,
-           totalUsers,
-           totalPages,
-         };
 
          toast.success("User deleted successfully");
       })
