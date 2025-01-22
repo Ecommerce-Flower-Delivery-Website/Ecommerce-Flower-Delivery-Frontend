@@ -66,7 +66,7 @@ export const ProductDetails = ({ productId }: { productId: string }) => {
   const [selectedAccessories, setSelectedAccessories] = useState<string[]>(
     accessoriesIds ?? []
   );
-  const backendBaseUrl = import.meta.env.NEXT_VITE_API_BASE_URL;
+  const backendBaseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -206,6 +206,7 @@ function AccessoriesSection({
   setSelectedAccessories: (accessoryId: string) => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const backendBaseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -242,43 +243,48 @@ function AccessoriesSection({
           <div className="flex space-x-4 pb-4 justify-center">
             {accessories.map((accessory) => {
               if (accessory.stock === "0") return null;
-              
-              return <motion.div
-                key={accessory._id}
-                className={cn(
-                  "flex-none relative border-2 rounded-lg overflow-hidden",
-                  {
-                    "border-pink-500": selectedAccessories.includes(
-                      accessory._id
-                    ),
-                    "border-transparent": !selectedAccessories.includes(
-                      accessory._id
-                    ),
-                  }
-                )}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <button
-                  className="flex flex-col transition-colors hover:bg-pink-100 cursor-pointer w-[150px]"
-                  onClick={() => setSelectedAccessories(accessory._id)}
-                  aria-pressed={selectedAccessories.includes(accessory._id)}
+
+              return (
+                <motion.div
+                  key={accessory._id}
+                  className={cn(
+                    "flex-none relative border-2 rounded-lg overflow-hidden",
+                    {
+                      "border-pink-500": selectedAccessories.includes(
+                        accessory._id
+                      ),
+                      "border-transparent": !selectedAccessories.includes(
+                        accessory._id
+                      ),
+                    }
+                  )}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <div className="relative h-[150px] w-full">
-                    <img
-                      src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${accessory.image}`}
-                      alt={accessory.title}
-                      className=" absolute inset-0 size-full"
-                    />
-                  </div>
-                  <div className="text-start p-2">
-                    <h3 className="text-sm mb-1 font-medium">
-                      {accessory.title}
-                    </h3>
-                    <p className="text-sm text-[#808080]">${accessory.price}</p>
-                  </div>
-                </button>
-              </motion.div>
+
+                  <button
+                    className="flex flex-col transition-colors hover:bg-pink-100 cursor-pointer w-[150px]"
+                    onClick={() => setSelectedAccessories(accessory._id)}
+                    aria-pressed={selectedAccessories.includes(accessory._id)}
+                  >
+                    <div className="relative h-[150px] w-full">
+                      <img
+                        src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${accessory.image}`}
+                        alt={accessory.title}
+                        className=" absolute inset-0 size-full"
+                      />
+                    </div>
+                    <div className="text-start p-2">
+                      <h3 className="text-sm mb-1 font-medium">
+                        {accessory.title}
+                      </h3>
+                      <p className="text-sm text-[#808080]">
+                        ${accessory.price}
+                      </p>
+                    </div>
+                  </button>
+                </motion.div>
+              );
             })}
           </div>
         </ScrollArea>

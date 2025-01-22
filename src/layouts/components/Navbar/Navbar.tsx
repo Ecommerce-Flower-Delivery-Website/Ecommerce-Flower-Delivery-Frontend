@@ -33,7 +33,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="border border-textPrimaryColor flex justify-between items-center">
+      <div className="border sticky top-0 z-40 bg-white border-textPrimaryColor flex justify-between items-center">
         <div className="lg:w-1/4 ">
           <button
             onClick={() => setNavMenu(!navMenu)}
@@ -74,13 +74,15 @@ const Navbar = () => {
           )}
           <button
             onClick={() => setIsOpen(true)}
-            className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+            disabled={!user}
+            className="hidden disabled:opacity-50 disabled:pointer-events-none lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
           >
             Cart
           </button>
           <button
+            disabled={!user}
             onClick={() => setIsOpen(true)}
-            className="lg:hidden inline-block p-3 md:p-4 border-l border-textPrimaryColor hover:bg-gray-800 hover:text-white"
+            className="lg:hidden disabled:opacity-50 disabled:pointer-events-none inline-block p-3 md:p-4 border-l border-textPrimaryColor hover:bg-gray-800 hover:text-white"
           >
             <RiShoppingBagLine size={"24"} />
           </button>
