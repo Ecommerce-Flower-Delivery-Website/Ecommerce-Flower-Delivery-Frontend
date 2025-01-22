@@ -54,7 +54,7 @@ export const OrdersPage = () => {
   );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
   const setCurrentPage = ({ page }: { page: number }) => {
     dispatch(getAllOrdersThunk({ page, limit: rowsPerPage }));
   };

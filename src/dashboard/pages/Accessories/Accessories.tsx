@@ -54,7 +54,7 @@ export const Accessories: React.FC = () => {
   );
   const [loading, setLoading] = useState(true);
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
 

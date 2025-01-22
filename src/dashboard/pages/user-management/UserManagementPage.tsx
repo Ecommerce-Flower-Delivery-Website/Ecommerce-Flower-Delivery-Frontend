@@ -53,7 +53,7 @@ export const UserManagementPage = () => {
   const dispatch = useReduxDispatch();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
 
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
     const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);

@@ -49,7 +49,7 @@ const CategoryPage = () => {
     (state: RootState) => state.category
   );
   const dispatch = useReduxDispatch();
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
 
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
