@@ -64,7 +64,7 @@ const RegisterFormDialog = ({
       </DialogTrigger> */}
       <DialogContent
         aria-describedby={"Sign up"}
-        className="light flex flex-col h-full overflow-y-auto sm:rounded-none bg-white text-black border-[#121212] shadow-none   max-w-full md:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10"
+        className="light t-[48px] lg:mt-[81px] flex flex-col h-[720px] overflow-y-auto sm:rounded-none bg-white text-black border-[#121212] shadow-none   max-w-full md:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10"
       >
         <DialogHeader>
           <DialogTitle className="text-start font-semibold text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">

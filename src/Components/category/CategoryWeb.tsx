@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useReduxDispatch, useReduxSelector } from "../../store/store";
 import { getCategory } from "../../store/slices/categorySlice";
 import LoadingSpinner from "../../dashboard/components/LoadingSpinner";
+import { useNavigate, useParams } from "react-router-dom";
 // import { useParams } from "react-router-dom";
 
 const CategoryWeb = () => {
@@ -9,8 +10,16 @@ const CategoryWeb = () => {
   const { category, loading } = useReduxSelector((state) => state.category);
   // const { id } = useParams();
 
+  const params = useParams();
+  const id = params.id;
+  const navigate = useNavigate();
+  if (!id) {
+    navigate("not-found");
+    return;
+  }
+
   useEffect(() => {
-    dispatch(getCategory("67816bc4d306a7ea6d0d3239"));
+    dispatch(getCategory(id));
   }, [dispatch]);
 
   const { image, title, products } = category;
@@ -37,7 +46,7 @@ const CategoryWeb = () => {
             <div className="flex flex-wrap">
               {products.map((product) => {
                 return (
-                  <div className="h-[360px] w-full relative md:w-1/2">
+                  <button  className="h-[360px] w-full relative md:w-1/2">
                     <img
                       src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${
                         product.image
@@ -53,7 +62,7 @@ const CategoryWeb = () => {
                         price {product.price}$
                       </p>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>

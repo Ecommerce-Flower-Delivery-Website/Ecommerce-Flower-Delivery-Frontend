@@ -42,7 +42,7 @@ const routers = createBrowserRouter([
         element: <Website />,
         children: [
           { index: true, element: <Home /> },
-          { path: "category", element: <CategoryWeb /> },
+          { path: "category/:id", element: <CategoryWeb /> },
           { path: "/product/:id", element: <ProductPage /> },
           { path: "/about-us", element: <AboutUsPage /> },
           { path: "/check-out", element: <CheckoutPage /> },

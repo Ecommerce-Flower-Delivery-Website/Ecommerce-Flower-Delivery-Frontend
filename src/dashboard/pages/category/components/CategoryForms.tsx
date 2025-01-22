@@ -85,7 +85,6 @@ export const CreateCategory = () => {
           <Textarea
             {...register("description")}
             placeholder="Description"
-            required
             className="dark:bg-gray-800 h-24 mb-5"
           />
 
@@ -199,7 +198,6 @@ export const EditCategory = ({
             {...register("description")}
             defaultValue={category.description}
             placeholder="Description"
-            required
             className="dark:bg-gray-800 h-24 mb-5"
           />
           <div className="mb-5">
