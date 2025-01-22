@@ -3,8 +3,7 @@ import { api } from "../../lib/ajax/api";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 
-export interface IProduct {
-  _id: string,
+interface Product {
   priceAfterDiscount: string;
   discount?: string;
   quantity: string;
@@ -21,7 +20,7 @@ export interface IProduct {
 }
 
 interface ProductState {
-  products: IProduct[];
+  products: Product[];
   product: {
     priceAfterDiscount: string;
     discount?: string;
@@ -39,6 +38,12 @@ interface ProductState {
   };
   loading: boolean;
   error: null | string;
+  pagination: {
+    totalCategories: number;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+  }
 }
 
 const initialState: ProductState = {
@@ -60,15 +65,23 @@ const initialState: ProductState = {
   },
   loading: false,
   error: null,
+  pagination: {
+    totalCategories: 0,
+    totalPages: 0,
+    currentPage: 1,
+    pageSize: 1,
+  },
 };
 
 export const getProducts = createAsyncThunk(
   "product/getProducts",
-  async (_, { rejectWithValue }) => {
+  async (paginationInfo: { page?: number; limit?: number }, { rejectWithValue }) => {
+    const { page, limit } = paginationInfo;
     try {
-      const response = await api.get("/product");
+      const response = await api.get(`/product?page=${page}&limit=${limit}`);
       if (response.status === 201 || response.status === 200) {
-        return response.data.data.products;
+        console.log(response.data.data);
+        return response.data.data;
       }
     } catch (error) {
       handleApiError(error);
@@ -177,7 +190,8 @@ const ProductSlice = createSlice({
       })
       .addCase(getProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.products = action.payload.products;
+        state.pagination = action.payload.pagination;
       })
       .addCase(getProducts.rejected, (state, action) => {
         state.error = action.payload as string;

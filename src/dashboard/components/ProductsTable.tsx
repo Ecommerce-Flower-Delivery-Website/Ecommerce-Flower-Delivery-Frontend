@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ColumnDef,
@@ -6,24 +6,14 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
-  PaginationState,
 } from "@tanstack/react-table";
 import { Edit2, Trash2 } from "lucide-react";
-import { useReduxDispatch } from "../../store/store";
-import { deleteProduct } from "../../store/slices/productSlice";
-
+import { useReduxDispatch, useReduxSelector } from "../../store/store";
+import { deleteProduct, getProducts } from "../../store/slices/productSlice";
 import DeleteModal from "./DeleteModal";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./select";
 import { Input } from "./input";
 import {
   Table,
@@ -59,31 +49,30 @@ interface Product {
   updated_at: string;
 }
 
-interface ProductsTableProps {
-  productsArray: Product[];
-  fetchData: () => void;
-}
-
-const ProductsTable: React.FC<ProductsTableProps> = ({
-  productsArray,
-  fetchData,
-}) => {
+const ProductsTable = () => {
   const navigate = useNavigate();
   const dispatch = useReduxDispatch();
+  const { products, loading, pagination } = useReduxSelector(
+    (state) => state.product
+  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [show, setShow] = useState(false);
   const [id, setId] = useState<string>("");
-
-  // Pagination state
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 5,
-  });
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const totalPages = pagination?.totalPages;
 
   const handleRowClick = (rowData: Product) => {
     navigate(`/dashboard/products/product/${rowData._id}`);
   };
+
+  useEffect(() => {
+    dispatch(getProducts({ page: 1, limit: rowsPerPage })).then((result)=>{
+      if(result.meta.requestStatus === "fulfilled"){
+        console.log(totalPages);
+      }
+    });
+  }, [dispatch]);
 
   const deleteProductFunc = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -93,7 +82,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
   const onConfirm = async (id: string) => {
     await dispatch(deleteProduct(id));
-    fetchData();
     setShow(false);
   };
 
@@ -157,58 +145,28 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
     },
   ];
 
-  const pagination = {
-    pageIndex,
-    pageSize,
-  };
-
   const table = useReactTable({
-    data: productsArray,
+    data: products,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
-      pagination,
     },
-    pageCount: Math.ceil(productsArray.length / pageSize),
   });
+
+    const setCurrentPage = ({ page }: { page: number }) => {
+      dispatch(getProducts({ page, limit: rowsPerPage }));
+    };
 
   return (
     <Card className="w-full">
       <CardHeader className="space-y-4">
         <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-sm">Show</span>
-            <Select
-              value={pageSize.toString()}
-              onValueChange={(value) =>
-                setPagination((prev) => ({
-                  ...prev,
-                  pageSize: Number(value),
-                  pageIndex: 0,
-                }))
-              }>
-              <SelectTrigger className="w-20">
-                <SelectValue placeholder={pageSize} />
-              </SelectTrigger>
-              <SelectContent>
-                {[5, 10, 15, 20, 25].map((size) => (
-                  <SelectItem key={size} value={size.toString()}>
-                    {size}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <span className="text-sm">entries</span>
-          </div>
-
           <Input
             placeholder="Search by title..."
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -221,7 +179,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
       </CardHeader>
 
       <CardContent>
-        {productsArray.length === 0 ? (
+        {products?.length === 0 ? (
           <div className="text-center py-4 text-gray-500 dark:text-gray-400">
             No Products Found
           </div>
@@ -278,39 +236,54 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
             </div>
 
             <div className="mt-4">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() => table.previousPage()}
-                      className={
-                        !table.getCanPreviousPage()
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                  {Array.from({ length: table.getPageCount() }, (_, i) => (
-                    <PaginationItem key={i}>
-                      <PaginationLink
-                        onClick={() => table.setPageIndex(i)}
-                        isActive={table.getState().pagination.pageIndex === i}>
-                        {i + 1}
-                      </PaginationLink>
+              {loading ? (
+                <div>Loading...</div>
+              ) : (
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() =>
+                          setCurrentPage({
+                            page: Math.max(pagination.currentPage - 1, 1),
+                          })
+                        }
+                        className={
+                          (pagination?.currentPage || 1) === 1
+                            ? "pointer-events-none opacity-50"
+                            : ""
+                        }
+                      />
                     </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() => table.nextPage()}
-                      className={
-                        !table.getCanNextPage()
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage({ page: i + 1 })}
+                          isActive={(pagination?.currentPage || 1) === i + 1}>
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() =>
+                          setCurrentPage({
+                            page: Math.min(
+                              pagination.currentPage + 1,
+                              totalPages
+                            ),
+                          })
+                        }
+                        className={
+                          (pagination?.currentPage || 1) === totalPages
+                            ? "pointer-events-none opacity-50"
+                            : ""
+                        }
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              )}
             </div>
           </>
         )}
