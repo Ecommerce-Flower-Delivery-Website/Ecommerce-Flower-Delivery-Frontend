@@ -15,6 +15,11 @@ export const Dashboard: React.FC = () => {
     const token = localStorage.getItem("token");
     if (!user || !token) {
       navigate("/dashboard/login_dashboard");
+    } else {
+      const parsedUser  = JSON.parse(user);      
+      if (parsedUser.isAdmin === false) {
+        navigate("/dashboard/login_dashboard");
+      }
     }
   }, [navigate]);
   return (
