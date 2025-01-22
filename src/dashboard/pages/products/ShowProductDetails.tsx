@@ -71,13 +71,10 @@ const ShowProductDetails = () => {
               Description: {description}
             </h3>
             <h3 className="text-lg lg:text-xl font-bold mb-4">
-              Category ID: {category_id.title}
+              Category Name: {category_id.title}
             </h3>
           </div>
-          <div>
-            <h3 className="text-lg lg:text-xl font-bold mb-2">Accessory:</h3>
-            <AccessoryPhoto />
-          </div>
+     
         </div>
       </div>
     </div>

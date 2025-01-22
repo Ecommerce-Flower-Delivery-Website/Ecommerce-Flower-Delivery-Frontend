@@ -10,7 +10,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Loader, Trash2 } from "lucide-react";
 import { useReduxDispatch, useReduxSelector } from "../../store/store";
 import { deleteProduct, getProducts } from "../../store/slices/productSlice";
 import DeleteModal from "./DeleteModal";
@@ -32,6 +32,7 @@ import {
   PaginationPrevious,
 } from "./pagination";
 import { Card, CardContent, CardHeader } from "./card";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface Product {
   priceAfterDiscount: string;
@@ -158,6 +159,10 @@ const ProductsTable = () => {
     const setCurrentPage = ({ page }: { page: number }) => {
       dispatch(getProducts({ page, limit: rowsPerPage }));
     };
+
+    if (loading) {
+      return <LoadingSpinner />;
+    }
 
   return (
     <Card className="w-full">

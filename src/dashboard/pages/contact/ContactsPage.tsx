@@ -39,6 +39,7 @@ import { Switch } from "../../components/switch";
 import { toast } from "react-toastify";
 import { handleApiError } from "../../../lib/utils";
 import { api } from "../../../lib/ajax/api";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
@@ -100,6 +101,8 @@ export const ContactsPage: React.FC = () => {
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -115,7 +118,9 @@ export const ContactsPage: React.FC = () => {
         
         setContacts(contacts);
         setTotalPages(pagination?.totalPages || 1);
+        setIsLoading(false);
       } catch (error) {
+        handleApiError(error);
         console.error("Error fetching contacts:", error);
       }
     };
@@ -279,6 +284,10 @@ export const ContactsPage: React.FC = () => {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
