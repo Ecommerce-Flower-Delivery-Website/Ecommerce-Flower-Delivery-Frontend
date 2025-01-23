@@ -7,6 +7,7 @@ import { Input } from "../../../components/input";
 import { getProducts, IProduct } from "../../../../store/slices/productSlice";
 import { handleApiError } from "../../../../lib/utils";
 import { toast } from "react-toastify";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 export interface Accessory {
   _id: number;
@@ -38,7 +39,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
   const dispatch = useReduxDispatch();
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts({}));
   }, [dispatch]);
 
   const handleAddAccessory = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -100,6 +101,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md dark:bg-gray-900">
         <h2 className="text-xl font-semibold mb-4">Add New Accessory</h2>
+        {loading ? <LoadingSpinner /> :
         <form onSubmit={handleAddAccessory}>
         <div className="flex flex-col gap-4">
    
@@ -121,7 +123,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
             <label className="block mb-2">
               Select Products:
             </label>
-            <Select
+             <Select
               isMulti
               options={productOptions}
               value={selectedProducts}
@@ -141,6 +143,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
                 }),
               }}
             />
+            
           </div>
           
           <div>
@@ -211,6 +214,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
           </div>
         </div>
         </form>
+}
       </div>
     </div>
   );
