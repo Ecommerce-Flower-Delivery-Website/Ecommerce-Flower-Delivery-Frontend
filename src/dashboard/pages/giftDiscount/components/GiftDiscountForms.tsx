@@ -159,7 +159,7 @@ export const RemoveGiftDiscount = ({ giftDiscountId }: { giftDiscountId: string 
           <Button variant="ghost" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} className="text-white">
+          <Button onClick={onConfirm}>
             Confirm
           </Button>
         </div>
