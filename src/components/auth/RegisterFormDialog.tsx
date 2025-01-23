@@ -65,8 +65,7 @@ const RegisterFormDialog = ({
 
       <DialogContent
         aria-describedby={"Sign up"}
-
-        className="mt-[48px] md:mt-[57px] lg:mt-[81px] light flex flex-col h-full   sm:rounded-none bg-white text-black border-[#121212] shadow-none   max-w-full lg:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10"
+        className="mt-[48px] md:mt-[57px] lg:mt-[81px]  flex flex-col h-full   sm:rounded-none bg-white text-black border-[#121212] shadow-none   max-w-full lg:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10"
       >
         <DialogHeader>
           <DialogTitle className="text-start font-semibold text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
@@ -77,7 +76,10 @@ const RegisterFormDialog = ({
             checkout, and more.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4   pb-[50px] overflow-y-auto">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid gap-4   pb-[50px] overflow-y-auto"
+        >
           <div className="flex flex-col gap-3 px-1">
             <label
               htmlFor="email"
@@ -183,21 +185,23 @@ const RegisterFormDialog = ({
           </Button>
 
           <p className="mt-6 mb-6 w-full text-[#808080] text-[16px] leading-5 font-medium">
-          Had an account ?
-          <span
-            className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
-            onClick={() => {
-              setSearchParams((prevParams) => {
-                prevParams.set(EnumsSearchParams.dialog, EnumsDialogShow.Login);
-                return prevParams;
-              });
-            }}
-          >
-            Sign In
-          </span>
-        </p>
+            Had an account ?
+            <span
+              className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
+              onClick={() => {
+                setSearchParams((prevParams) => {
+                  prevParams.set(
+                    EnumsSearchParams.dialog,
+                    EnumsDialogShow.Login
+                  );
+                  return prevParams;
+                });
+              }}
+            >
+              Sign In
+            </span>
+          </p>
         </form>
-
       </DialogContent>
     </Dialog>
   );

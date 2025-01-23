@@ -82,14 +82,17 @@ const LoginFormDialog = ({
       </DialogTrigger> */}
       <DialogContent
         aria-describedby={"Sign in"}
-        className="mt-[48px] md:mt-[57px] lg:mt-[81px] light flex flex-col h-full   sm:rounded-none bg-white text-black border-[#121212] shadow-none   max-w-full lg:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10"
-      >        
-      <DialogHeader>
+        className="mt-[48px] md:mt-[57px] lg:mt-[81px]  flex flex-col h-full   sm:rounded-none bg-white text-black border-[#121212] shadow-none   max-w-full lg:max-w-[722px] px-4 sm:px-20 pt-10 sm:pt-20 pb-10"
+      >
+        <DialogHeader>
           <DialogTitle className="text-start font-semibold  text-[34px] sm:text-[50px] leading-10 sm:leading-[60px]">
             Greetings! Welcome to luxury gift shop.
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4  pb-[50px] overflow-y-auto">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid gap-4  pb-[50px] overflow-y-auto"
+        >
           <div className="flex flex-col gap-3 px-1">
             <label
               htmlFor="email"
@@ -132,41 +135,40 @@ const LoginFormDialog = ({
           </Button>
 
           <p className="mt-6 w-full text-[#808080] text-[16px] leading-5 font-medium">
-          Don't have an account ?
-          <span
-            className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
-            onClick={() => {
-              setSearchParams((prevParams) => {
-                prevParams.set(
-                  EnumsSearchParams.dialog,
-                  EnumsDialogShow.SignUp
-                );
-                return prevParams;
-              });
-            }}
-          >
-            Sign Up
-          </span>
-        </p>
+            Don't have an account ?
+            <span
+              className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
+              onClick={() => {
+                setSearchParams((prevParams) => {
+                  prevParams.set(
+                    EnumsSearchParams.dialog,
+                    EnumsDialogShow.SignUp
+                  );
+                  return prevParams;
+                });
+              }}
+            >
+              Sign Up
+            </span>
+          </p>
 
-        <p className="mt-6 mb-6  w-full text-[#808080] text-[16px] leading-5 font-medium">
-          <span
-            className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
-            onClick={() => {
-              setSearchParams((prevParams) => {
-                prevParams.set(
-                  EnumsSearchParams.dialog,
-                  EnumsDialogShow.ForgotPassowrd
-                );
-                return prevParams;
-              });
-            }}
-          >
-            Forgot your password ?
-          </span>
-        </p>
+          <p className="mt-6 mb-6  w-full text-[#808080] text-[16px] leading-5 font-medium">
+            <span
+              className={`hover:text-[#2b2b2b] hover:font-bold"} ms-1 text-[#121212] text-[16px]  leading-5 font-medium cursor-pointer`}
+              onClick={() => {
+                setSearchParams((prevParams) => {
+                  prevParams.set(
+                    EnumsSearchParams.dialog,
+                    EnumsDialogShow.ForgotPassowrd
+                  );
+                  return prevParams;
+                });
+              }}
+            >
+              Forgot your password ?
+            </span>
+          </p>
         </form>
-
 
         {/* <p className="w-full text-center border-b mx-0 mt-6 mb-6 leading-[0.1rem] border-[#D2D2D7] ">
             <span className="bg-white text-[#D2D2D7] text-sm font-normal py-0 px-2">

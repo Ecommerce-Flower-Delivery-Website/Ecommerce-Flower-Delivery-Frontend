@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
-import { ThemeProvider } from "./contexts/ThemeProvider";
 import "./index.css";
 import { ErrorPage } from "./pages/error-page/ErrorPage";
 import { store } from "./store/store";
@@ -17,12 +16,10 @@ export const RootLayout = () => {
     <ErrorBoundary fallbackRender={(props) => <ErrorPage {...props} />}>
       <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider>
-            <ToastContainer theme="colored" />
-            <Provider store={store}>
-              <Outlet />
-            </Provider>
-          </ThemeProvider>
+          <ToastContainer theme="colored" />
+          <Provider store={store}>
+            <Outlet />
+          </Provider>
         </QueryClientProvider>
       </React.StrictMode>
     </ErrorBoundary>

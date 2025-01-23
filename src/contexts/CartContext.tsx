@@ -1,6 +1,7 @@
-import React, { createContext, useContext, ReactNode } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { createContext, ReactNode, useContext } from "react";
 import { api } from "../lib/ajax/api";
+import { useReduxSelector } from "../store/store";
 export type AccessoryType = {
   _id: string;
   title: string;
@@ -91,12 +92,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const queryClient = useQueryClient();
-
+  const { user } = useReduxSelector((state) => state.auth);
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["cart"],
     queryFn: fetchCart,
-    refetchOnMount: true,
+    enabled: () => Boolean(user?._id),
+    refetchOnMount: false,
+    initialData: undefined,
   });
+
   const addItemMutation = useMutation({
     mutationFn: addItemToCart,
     onMutate: async (newItem) => {
