@@ -22,10 +22,12 @@ export const ReviewPage = () => {
   const { reviews, loading, pagination } = useReduxSelector((state: RootState) => state.review);
   const dispatch = useReduxDispatch();
 
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
 
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
+
+  const [nameSearch, setNameSearch] = useState("");
 
   useEffect(() => {
     dispatch(getReviews({ page: 1, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
@@ -78,7 +80,16 @@ export const ReviewPage = () => {
     const handleResetSearch = () => {
        setFieldSearch(undefined);
        setValueSearch(undefined);    
+
+       setNameSearch("");
+
      }    
+
+     const handleSearchByName = (field : string, value : string) => {
+      setNameSearch(value);
+      handleSearch(field, value);
+    }
+
     
   //  const handleSearchByName = () => {
   //       setFieldSearch("name");
@@ -104,7 +115,7 @@ export const ReviewPage = () => {
                         <SelectValue placeholder={rowsPerPage} />
                       </SelectTrigger>
                       <SelectContent>
-                        {[1, 10, 25, 50, 100].map((value) => (
+                        {[1, 3, 10, 25, 50, 100].map((value) => (
                           <SelectItem key={value} value={value.toString()}>
                             {value}
                           </SelectItem>
@@ -128,8 +139,9 @@ export const ReviewPage = () => {
                         placeholder="Search by name..."
                         className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
                         ref={searchByNameInput}
+                        defaultValue={nameSearch}
                       />
-                    <Button onClick={()=> handleSearch("name", searchByNameInput.current?.value as string)}>search</Button>
+                    <Button onClick={()=> handleSearchByName("name", searchByNameInput.current?.value as string)}>search</Button>
                 </div>
               </div>
             </CardHeader>

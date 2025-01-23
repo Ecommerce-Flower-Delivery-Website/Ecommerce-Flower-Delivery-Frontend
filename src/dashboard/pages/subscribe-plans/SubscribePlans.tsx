@@ -58,12 +58,14 @@ const SubscribePlans = () => {
   const navigate = useNavigate();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
   const totalPages = subscribePlansData?.pagination?.totalPages;
 
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
+  const [nameSearch, setNameSearch] = useState("");
+  
   const setCurrentPage = ({ page }: { page: number }) => {
     dispatch(getSubscribePlans({ page, limit: rowsPerPage }));
   };
@@ -102,7 +104,15 @@ const SubscribePlans = () => {
     const handleResetSearch = () => {
        setFieldSearch(undefined);
       setValueSearch(undefined);    
+
+      setNameSearch("");
      }  
+
+     const handleSearchByName = (field : string, value : string) => {
+      setNameSearch(value);
+      handleSearch(field, value);
+    }
+
 
   const columns: ColumnDef<SubscribePlan, unknown>[] = [
 {
@@ -235,7 +245,7 @@ const SubscribePlans = () => {
                 <SelectValue placeholder={rowsPerPage} />
               </SelectTrigger>
               <SelectContent>
-                {[1, 10, 25, 50, 100].map((value) => (
+                {[1,3, 10, 25, 50, 100].map((value) => (
                   <SelectItem key={value} value={value.toString()}>
                     {value}
                   </SelectItem>
@@ -261,9 +271,10 @@ const SubscribePlans = () => {
               placeholder="Search by name..."
               className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
               ref={searchByTitleInput}
+              defaultValue={nameSearch}
                />
               
-              <Button onClick={()=> handleSearch("title", searchByTitleInput.current?.value as string)}>search</Button>
+              <Button onClick={()=> handleSearchByName("title", searchByTitleInput.current?.value as string)}>search</Button>
               
           </div>
         </div>

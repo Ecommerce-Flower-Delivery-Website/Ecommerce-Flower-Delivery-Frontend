@@ -27,6 +27,9 @@ const GiftDiscount = () => {
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
+  const [CodeSearch, setCodeSearch] = useState("");
+  
+
   useEffect(() => {
     dispatch(getGiftDiscounts({ page: 1, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
   }, [dispatch, rowsPerPage, fieldSearch, valueSearch]);
@@ -77,7 +80,14 @@ const GiftDiscount = () => {
   const handleResetSearch = () => {
      setFieldSearch(undefined);
       setValueSearch(undefined);    
+
+      setCodeSearch("");
    }  
+
+   const handleSearchByCode = (field : string, value : string) => {
+    setCodeSearch(value);
+    handleSearch(field, value);
+  }
 
   if (loading) {
     return <LoadingSpinner />;
@@ -98,7 +108,7 @@ const GiftDiscount = () => {
                 <SelectValue placeholder={rowsPerPage} />
               </SelectTrigger>
               <SelectContent>
-                {[1, 10, 25, 50, 100].map((value) => (
+                {[1,3, 10, 25, 50, 100].map((value) => (
                   <SelectItem key={value} value={value.toString()}>
                     {value}
                   </SelectItem>
@@ -122,9 +132,10 @@ const GiftDiscount = () => {
                 placeholder="Search by code..."
                 className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
                 ref={searchByCodeInput}
+                defaultValue={CodeSearch}
               />
               
-              <Button onClick={()=> handleSearch("title", searchByCodeInput.current?.value as string)}>search</Button>
+              <Button onClick={()=> handleSearchByCode("title", searchByCodeInput.current?.value as string)}>search</Button>
               
           </div>
         </div>

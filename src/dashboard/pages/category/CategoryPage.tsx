@@ -54,6 +54,9 @@ const CategoryPage = () => {
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
+   const [titleSearch, setTitleSearch] = useState("");
+
+
   useEffect(() => {
     dispatch(getCategories({ page: 1, limit: rowsPerPage, field: fieldSearch, value: valueSearch  }));
   }, [dispatch, rowsPerPage, fieldSearch, valueSearch]);
@@ -120,8 +123,15 @@ const CategoryPage = () => {
 
   const handleResetSearch = () => {
      setFieldSearch(undefined);
-     setValueSearch(undefined);    
+     setValueSearch(undefined);  
+     
+     setTitleSearch("");
    }      
+
+   const handleSearchByTitle = (field : string, value : string) => {
+    setTitleSearch(value);
+    handleSearch(field, value);
+  }
 
   if (loading) {
     return <LoadingSpinner />;
@@ -142,7 +152,7 @@ const CategoryPage = () => {
                         <SelectValue placeholder={rowsPerPage} />
                       </SelectTrigger>
                       <SelectContent>
-                        {[1, 10, 25, 50, 100].map((value) => (
+                        {[1,3, 10, 25, 50, 100].map((value) => (
                           <SelectItem key={value} value={value.toString()}>
                             {value}
                           </SelectItem>
@@ -166,8 +176,9 @@ const CategoryPage = () => {
                         placeholder="Search by title..."
                         className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
                         ref={searchByTitleInput}
+                        defaultValue={titleSearch}
                       />
-                    <Button onClick={()=> handleSearch("title", searchByTitleInput.current?.value as string)}>search</Button>
+                    <Button onClick={()=> handleSearchByTitle("title", searchByTitleInput.current?.value as string)}>search</Button>
                 </div>
               </div>
             </CardHeader>

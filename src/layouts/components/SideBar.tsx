@@ -20,12 +20,12 @@ import { cn } from "../../lib/utils";
 
 const menuItems = [
   { id: "users", label: "User Management", icon: Users },
-  { id: "accessories", label: "Accessories", icon: Gem },
   { id: "contact", label: "Contact", icon: Phone },
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "subscribe-plans", label: "Subscribe Plans", icon: BarChart },
   { id: "category", label: "Categories", icon: Users },
+  { id: "accessories", label: "Accessories", icon: Gem },
   { id: "orders", label: "Orders", icon: Receipt },
   { id: "reminder", label: "Reminedr", icon: MessageCircle },
   { id: "reviews", label: "reviews", icon: Star },

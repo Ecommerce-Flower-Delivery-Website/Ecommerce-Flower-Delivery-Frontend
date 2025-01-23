@@ -110,7 +110,7 @@ const AddProductsPage = () => {
 
               <div className="flex-1 min-w-[200px]">
                 <label htmlFor="category_id" className="block mb-2">
-                  Category Id :
+                  Category Name :
                 </label>
                 <select
                   className="w-full h-12 px-3 text-white dark:bg-gray-800 font-semibold border border-gray-300 rounded"

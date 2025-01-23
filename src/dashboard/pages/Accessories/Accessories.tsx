@@ -61,6 +61,8 @@ export const Accessories: React.FC = () => {
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
+  const [titleSearch, setTitleSearch] = useState("");
+
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [isEditPopupVisible, setEditPopupVisible] = useState(false);
 
@@ -104,6 +106,13 @@ export const Accessories: React.FC = () => {
   const handleResetSearch = () => {
      setFieldSearch(undefined);
      setValueSearch(undefined);
+
+     setTitleSearch("");
+  }
+
+  const handleSearchByTitle = (field : string, value : string) => {
+    setTitleSearch(value);
+    handleSearch(field, value);
   }
 
   const handleEdit = (id: number) => {
@@ -245,7 +254,7 @@ export const Accessories: React.FC = () => {
                         <SelectValue placeholder={rowsPerPage} />
                       </SelectTrigger>
                       <SelectContent>
-                        {[1, 10, 25, 50, 100].map((value) => (
+                        {[1,3, 10, 25, 50, 100].map((value) => (
                           <SelectItem key={value} value={value.toString()}>
                             {value}
                           </SelectItem>
@@ -271,8 +280,9 @@ export const Accessories: React.FC = () => {
                         placeholder="Search by name..."
                         className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
                          ref={searchByTitleInput}
+                         defaultValue={titleSearch}
                       />
-                     <Button onClick={()=> handleSearch("title", searchByTitleInput.current?.value as string)}>search</Button> 
+                     <Button onClick={()=> handleSearchByTitle("title", searchByTitleInput.current?.value as string)}>search</Button> 
                 </div>
               </div>
             </CardHeader>

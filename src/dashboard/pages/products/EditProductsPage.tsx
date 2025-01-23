@@ -102,7 +102,7 @@ const EditProductsPage = () => {
 
   return (
     <>
-      <div className="text-white">
+      <div className="dark:text-white">
         <NavLink to={"/dashboard/products"}>
           <ArrowBigLeft size={40} />
         </NavLink>
@@ -181,10 +181,10 @@ const EditProductsPage = () => {
               
               <div className="flex-1 min-w-[200px]">
                 <label htmlFor="category_id" className="block mb-2">
-                  Category Id :
+                  Category name :
                 </label>
                 <select
-                  className="w-full h-12 px-3 text-white dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                  className="w-full h-12 px-3 dark:text-white dark:bg-gray-800 font-semibold border border-gray-300 rounded"
                   id="category-select"
                   value={categoryId}
                   onChange={handleChange}>

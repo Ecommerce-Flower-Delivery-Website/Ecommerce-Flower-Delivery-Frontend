@@ -101,6 +101,8 @@ export const ContactsPage: React.FC = () => {
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
+  const [nameSearch, setNameSearch] = useState("");
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -138,7 +140,15 @@ export const ContactsPage: React.FC = () => {
     const handleResetSearch = () => {
        setFieldSearch(undefined);
        setValueSearch(undefined);    
+
+       setNameSearch("");
+
      }      
+
+     const handleSearchByName = (field : string, value : string) => {
+      setNameSearch(value);
+      handleSearch(field, value);
+    }
 
   const filteredContacts = useMemo(() => {
     return contacts
@@ -331,8 +341,9 @@ export const ContactsPage: React.FC = () => {
                         placeholder="Search by name..."
                         className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
                         ref={searchByNameInput}
+                        defaultValue={nameSearch}
                       />
-                    <Button onClick={()=> handleSearch("name", searchByNameInput.current?.value as string)}>search</Button>
+                    <Button onClick={()=> handleSearchByName("name", searchByNameInput.current?.value as string)}>search</Button>
                 </div>
               </div>
             </CardHeader>

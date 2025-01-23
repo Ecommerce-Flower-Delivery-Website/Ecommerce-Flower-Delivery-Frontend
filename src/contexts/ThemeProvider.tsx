@@ -12,6 +12,7 @@ export const ThemeContext = createContext<{
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const [isDarkMode, setIsDarkMode] = useLocalStorage<boolean | undefined>({
     key: "theme",
+    defaultValue: true
   });
   const toggleTheme = () => {
     setIsDarkMode((prev) => {
