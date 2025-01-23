@@ -1,10 +1,10 @@
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Moon, Sun } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useThemeToggle } from "../contexts/hooks/useThemeToggle";
 import { Button } from "../dashboard/components/button";
 import { Sidebar } from "./components/SideBar";
-import { ScrollArea } from "../components/ui/ScrollArea";
 
 export const Dashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -16,7 +16,7 @@ export const Dashboard: React.FC = () => {
     if (!user || !token) {
       navigate("/dashboard/login_dashboard");
     } else {
-      const parsedUser  = JSON.parse(user);      
+      const parsedUser = JSON.parse(user);
       if (parsedUser.isAdmin === false) {
         navigate("/dashboard/login_dashboard");
       }
@@ -27,9 +27,7 @@ export const Dashboard: React.FC = () => {
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
       <ScrollArea className="flex relative flex-col flex-1 h-screen ">
         <header className="flex items-center h-16 justify-between px-6 py-4 bg-muted ">
-          <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
-            Dashboard
-          </h1>
+          <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
           <div className="flex items-center space-x-4">
             <Button variant="outline" onClick={() => toggleTheme()}>
               {theme === "dark" ? (

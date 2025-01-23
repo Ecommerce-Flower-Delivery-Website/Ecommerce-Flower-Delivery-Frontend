@@ -3,7 +3,7 @@ import { useLocalStorage } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Loader2Icon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -13,6 +13,8 @@ import { OrderSummary } from "./components/order-summary";
 import { PaymentForm } from "./components/payment-form";
 import { ProgressSteps } from "./components/progress-steps";
 import { ShippingForm } from "./components/shipping-form";
+import { useReduxSelector } from "../../store/store";
+import { useNavigate } from "react-router-dom";
 
 // Zod schema for validation
 const contactFormSchema = z.object({
@@ -141,7 +143,13 @@ export default function CheckoutPage() {
   // Handlers to go back to previous steps
   const handleEditContact = () => setStep("information");
   const handleEditShipping = () => setStep("shipping");
-
+  const { user } = useReduxSelector((state) => state.auth);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
+  }, [navigate, user]);
   return (
     <main className="">
       <div className="flex flex-col-reverse md:flex-row lg:grid lg:grid-cols-2">
