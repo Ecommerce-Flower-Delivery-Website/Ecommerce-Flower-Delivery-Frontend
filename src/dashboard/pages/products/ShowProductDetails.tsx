@@ -37,9 +37,9 @@ const ShowProductDetails = () => {
   return (
     <div className="min-h-screen text-white p-5">
       <NavLink to="/dashboard/products" className="mb-5 inline-block">
-        <ArrowBigLeft size={40} className="cursor-pointer" />
+        <ArrowBigLeft size={40} className="cursor-pointer text-black dark:text-white" />
       </NavLink>
-      <div className="text-[#020817] dark:text-white dark:bg-[#020817] shadow-lg w-full mx-auto rounded p-5 flex flex-col lg:flex-row gap-6">
+      <div className="text-[#020817] dark:text-whit dark:bg-[#020817] shadow-lg w-full mx-auto rounded p-5 flex flex-col lg:flex-row gap-6">
         <div className="lg:w-1/2 w-full">
           <img
             className="w-full lg:h-full object-cover rounded-lg"

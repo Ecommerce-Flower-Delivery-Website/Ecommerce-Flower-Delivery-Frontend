@@ -138,7 +138,7 @@ export const Remove = ({ reviewId }: { reviewId: string }) => {
           <Button onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} className=" text-white">
+          <Button onClick={onConfirm} >
             Confirm
           </Button>
         </div>

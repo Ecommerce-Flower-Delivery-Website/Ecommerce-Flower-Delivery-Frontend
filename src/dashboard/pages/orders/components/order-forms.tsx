@@ -79,7 +79,7 @@ export const Remove = ({
                 );
               }
             }}
-            className="hover:bg-primary-hover bg-primary text-white"
+            className="hover:bg-primary-hover bg-primary"
           >
             Confirm
           </Button>
