@@ -135,10 +135,10 @@ export const Remove = ({ reviewId }: { reviewId: string }) => {
         </DialogHeader>
         <p>Are you sure you want to delete this review?</p>
         <div className="flex justify-between">
-          <Button onClick={() => setIsOpen(false)}>
+          <Button variant="ghost"  className=" dark:text-white" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} >
+          <Button onClick={onConfirm}>
             Confirm
           </Button>
         </div>
