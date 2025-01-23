@@ -1,10 +1,15 @@
 import { StrictMode, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from "./App";
 import { RootLayout } from "./RootLayout";
-import { Dashboard } from "./dashboard/layouts/Dashboard";
+import CategoryWeb from "./components/category/CategoryWeb";
+import { Dashboard } from "./layouts/Dashboard";
+import Website from "./layouts/Website";
+import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import { OrderPreviewPage } from "./dashboard/pages/OrderPreviewPage";
+import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
+import CategoryPage from "./dashboard/pages/category/CategoryPage";
+import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
 import { LoginDashboardPage } from "./dashboard/pages/login/LoginDashboardPage";
 import { OrdersPage } from "./dashboard/pages/orders/OrdersPage";
 import { OverviewPage } from "./dashboard/pages/overview/OverviewPage";
@@ -13,23 +18,39 @@ import EditProductsPage from "./dashboard/pages/products/EditProductsPage";
 import ProductsPage from "./dashboard/pages/products/ProductsPage";
 import ShowProductDetails from "./dashboard/pages/products/ShowProductDetails";
 import ShowProductsPage from "./dashboard/pages/products/ShowProductsPage";
-import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
-import "./index.css";
-import { NotFoundPage } from "./pages/not-found/NotFoundPage";
-import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
+import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
 import AddEditSubscribePlan from "./dashboard/pages/subscribe-plans/AddEditSubscribePlan";
 import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
-import { Accessories } from "./dashboard/pages/Accessories/Accessories";
-import { ContactsPage } from "./dashboard/pages/contact/ContactsPage";
-import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
-import { ReviewPage } from "./dashboard/pages/review/ReviewPage";
-import CategoryPage from "./dashboard/pages/category/CategoryPage";
+import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
+import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
+import "./index.css";
+import Home from "./pages/Home/Home";
+import { NotFoundPage } from "./pages/not-found/NotFoundPage";
+import ProductPage from "./pages/product-info/ProductInfo";
+import AboutUsPage from "./pages/AboutUs/AboutUs";
+
+import CheckoutPage from "./pages/checkout/CheckoutPage";
+import GiftDiscount from "./dashboard/pages/giftDiscount/GiftDiscount";
+import Subscribe from "./pages/subscribe/Subscribe";
+// import SubscribeHero from "./Components/SubscribeHero";
 
 const routers = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: "/", element: <App /> },
+      {
+        path: "/",
+        element: <Website />,
+        children: [
+          { index: true, element: <Home /> },
+          { path: "category/:id", element: <CategoryWeb /> },
+          { path: "/product/:id", element: <ProductPage /> },
+          { path: "/about-us", element: <AboutUsPage /> },
+          { path: "/check-out", element: <CheckoutPage /> },
+          {path: "/subscribe", element: <Subscribe />}
+
+        ],
+      },
       {
         path: "/dashboard",
         element: <Dashboard />,
@@ -108,10 +129,6 @@ const routers = createBrowserRouter([
               },
             ],
           },
-          // {
-          //   path: "carts",
-          //   element: <CartsPage />,
-          // },
           {
             path: "reviews",
             element: <ReviewPage />,
@@ -121,13 +138,13 @@ const routers = createBrowserRouter([
             path: "category",
             element: <CategoryPage />,
           },
-          // {
-          //   path: "/dashboard",
-          //   element: <Navigate to={"/dashboard/overview"} replace />,
-          // },
           {
             path: "reminder",
             element: <ShowRemindersPage />,
+          },
+          {
+            path: "gift-discount",
+            element: <GiftDiscount />,
           },
         ],
       },

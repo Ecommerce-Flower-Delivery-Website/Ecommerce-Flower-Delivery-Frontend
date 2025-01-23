@@ -4,22 +4,23 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 import { getProduct, updateProduct } from "../../../store/slices/productSlice";
 import Loader from "../../components/Loader";
+import { getCategories } from "../../../store/slices/categorySlice";
 
 
 const EditProductsPage = () => {
   const { id } = useParams();
   const dispatch = useReduxDispatch();
   const { product, loading } = useReduxSelector((state) => state.product);
+  const { categories } = useReduxSelector((state) => state.category);
   console.log(id);
   const file = useRef<HTMLInputElement | null>(null);
   const [previewImage, setpreviewImage] = useState<string>("");
   // const [loading, setloading] = useState(false);
   const [title, settitle] = useState<string>("");
   const [description, setdescription] = useState<string>("");
-  const [stock, setstock] = useState<string>("");
-  const [price, setprice] = useState<string>("");
+  const [stock, setstock] = useState<string | number>("");
+  const [price, setprice] = useState<string | number>("");
   const [quantity, setQuantity] = useState<string>("");
-  const [priceAfterDiscount, setPriceAfterDiscount] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [image, setimage] = useState<string | File>("");
   const navigate = useNavigate();
@@ -51,9 +52,6 @@ const EditProductsPage = () => {
       formData.append("price", price);
     }    
 
-    if(priceAfterDiscount) {
-      formData.append("priceAfterDiscount", priceAfterDiscount);
-    }
 
     if (quantity) {
       formData.append("quantity", quantity);
@@ -79,22 +77,32 @@ const EditProductsPage = () => {
   useEffect(()=> {
     dispatch(getProduct(id)).then((result) => {
       if(result.meta.requestStatus === "fulfilled"){
-        
-        settitle(product?.product.title);
-        setdescription(product?.product.description);
-        setstock(product?.product.stock);
-        setprice(product?.product.price);
-        setPriceAfterDiscount(product?.product.priceAfterDiscount);
-        setQuantity(product?.product.quantity);
-        setCategoryId(product.product.category_id);
-        setpreviewImage(`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${product?.product.image}`);
+        console.log(product);
+        settitle(product.title);
+        setdescription(product.description);
+        setstock(product.stock);
+        setprice(product.price);
+        setQuantity(product.quantity);
+        setCategoryId(product.category_id._id);
+        setpreviewImage(`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${product.image}`);
       }
     });
   },[]);
+   useEffect(() => {
+      dispatch(getCategories({})).then((result) => {
+        if (result.meta.requestStatus === "fulfilled") {
+          console.log(categories);
+        }
+      });
+    }, []);
+    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      console.log(event.target.value);
+      setCategoryId(event.target.value);
+    };
 
   return (
     <>
-      <div>
+      <div className="dark:text-white">
         <NavLink to={"/dashboard/products"}>
           <ArrowBigLeft size={40} />
         </NavLink>
@@ -170,35 +178,25 @@ const EditProductsPage = () => {
                   required
                 />
               </div>
-              <div className="flex-1 min-w-[200px]">
-                <label htmlFor="priceAfterDiscount" className="block mb-2">
-                  Price After Discount :
-                </label>
-                <input
-                  type="number"
-                  id="priceAfterDiscount"
-                  name="priceAfterDiscount"
-                  value={priceAfterDiscount}
-                  onChange={(e) => setPriceAfterDiscount(e.target.value)}
-                  placeholder="Price After Discount"
-                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                  required
-                />
-              </div>
+              
               <div className="flex-1 min-w-[200px]">
                 <label htmlFor="category_id" className="block mb-2">
-                  Category Id :
+                  Category name :
                 </label>
-                <input
-                  type="text"
-                  id="category_id"
-                  name="category_id"
+                <select
+                  className="w-full h-12 px-3 dark:text-white dark:bg-gray-800 font-semibold border border-gray-300 rounded"
+                  id="category-select"
                   value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
-                  placeholder="Category Id"
-                  className="w-full h-12 px-3 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
-                  required
-                />
+                  onChange={handleChange}>
+                  <option value="" disabled>
+                    Select Category
+                  </option>
+                  {categories.map((category) => (
+                    <option key={category._id} value={category._id}>
+                      {category.title}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

@@ -50,7 +50,39 @@ export const sendReminder = createAsyncThunk(
             return rejectWithValue(error instanceof Error ? error.message : "Error");
         }
     }
-)
+);
+
+export const addReminder = createAsyncThunk(
+    'reminder/addReminder',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.post('/reminder','');
+            if (response.status === 200) {
+                toast.success('You Are Now subscribed to the Reminder Service');
+                return;
+            }
+        } catch (error) {
+            handleApiError(error);
+            return rejectWithValue(error instanceof Error ? error.message : "Error");
+        }
+    }
+);
+export const removeReminder = createAsyncThunk(
+    'reminder/removeReminder',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.delete('/reminder');
+            if (response.status === 200) {
+                toast.success('You Are Not subscribed in Reminder Service');
+                return;
+            }
+        } catch (error) {
+            handleApiError(error);
+            return rejectWithValue(error instanceof Error ? error.message : "Error");
+        }
+    }
+);
+ 
 
 const ReminderSlice = createSlice({
     name: 'reminder',
@@ -81,6 +113,28 @@ const ReminderSlice = createSlice({
             toast.success("send successfully");
         })
         .addCase(sendReminder.rejected,(state,action)=>{
+            state.loading = false;
+            state.error = action.payload;
+        })
+        .addCase(addReminder.pending,(state)=>{
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(addReminder.fulfilled,(state)=>{
+            state.loading = false;
+        })
+        .addCase(addReminder.rejected,(state,action)=>{
+            state.loading = false;
+            state.error = action.payload;
+        })
+        .addCase(removeReminder.pending,(state)=>{
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(removeReminder.fulfilled,(state)=>{
+            state.loading = false;
+        })
+        .addCase(removeReminder.rejected,(state,action)=>{
             state.loading = false;
             state.error = action.payload;
         })

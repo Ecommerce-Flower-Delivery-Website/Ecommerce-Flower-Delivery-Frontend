@@ -17,8 +17,8 @@ const AddEditSubscribePlan = () => {
   const [isFreeDelivery, setIsFreeDelivery] = useState<string>("0");
 
   const [price, setprice] = useState<string>('');
-  const [deliveryFrequency, setDeliveryFrequency] = useState<string>('');
-  const [deliveryCount, setDeliveryCount] = useState<string>('');
+  // const [deliveryFrequency, setDeliveryFrequency] = useState<string>('');
+  // const [deliveryCount, setDeliveryCount] = useState<string>('');
   const [features, setFeatures] = useState('');
 
   const [image, setimage] = useState<string | File>('');
@@ -38,8 +38,8 @@ const AddEditSubscribePlan = () => {
         setIsFreeDelivery(oldDataSubscribe.isFreeDelivery)
         settitle(oldDataSubscribe.title)
         setprice(oldDataSubscribe.price)
-        setDeliveryCount(oldDataSubscribe.deliveryCount)
-        setDeliveryFrequency(oldDataSubscribe.deliveryFrequency)
+        // setDeliveryCount(oldDataSubscribe.deliveryCount)
+        // setDeliveryFrequency(oldDataSubscribe.deliveryFrequency)
         setFeatures(oldDataSubscribe.features?.join(","))
 
         setpreviewImage(`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${oldDataSubscribe.image}`);
@@ -68,8 +68,8 @@ const AddEditSubscribePlan = () => {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("price", price);
-      formData.append("deliveryCount", deliveryCount);
-      formData.append("deliveryFrequency", deliveryFrequency);
+      // formData.append("deliveryCount", deliveryCount);
+      // formData.append("deliveryFrequency", deliveryFrequency);
       formData.append("isFreeDelivery", isFreeDelivery);
 
       if(features){
@@ -155,7 +155,7 @@ const AddEditSubscribePlan = () => {
                 required
               />
             </div>
-            <div>
+            {/* <div>
               <label htmlFor="deliveryFrequency" className="block mb-2">
               Delivery Frequency :
               </label>
@@ -169,8 +169,8 @@ const AddEditSubscribePlan = () => {
                 className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
                 required
               />
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <label htmlFor="deliveryCount" className="block mb-2">
               Delivery Count :
               </label>
@@ -185,7 +185,8 @@ const AddEditSubscribePlan = () => {
                 className="w-full p-2 dark:bg-gray-800 font-semibold border border-gray-300 rounded"
                 required
               />
-            </div>
+            </div> */}
+            
 
 
             <div>

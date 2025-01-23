@@ -9,7 +9,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getUsers, TUserFromBackend } from "../../../store/slices/userSlice";
 import {
   RootState,
@@ -43,6 +43,7 @@ import {
   TableRow,
 } from "../../components/table";
 import * as UserForms from "./components/user-forms";
+import { Button } from "../../components/button";
 
 export const UserManagementPage = () => {
   const { users, pagination, loading } = useReduxSelector(
@@ -52,15 +53,21 @@ export const UserManagementPage = () => {
   const dispatch = useReduxDispatch();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowsPerPage, setRowsPerPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
+
+  const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
+  const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
+
+  const [nameSearch, setNameSearch] = useState("");
+
   const totalPages = pagination.totalPages;
-  const setCurrentPage = ({ page }: { page: number }) => {
-    dispatch(getUsers({ page, limit: rowsPerPage }));
+  const setCurrentPage = ({ page }: { page: number }) => {    
+    dispatch(getUsers({ page, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
   };
+
   useEffect(() => {
-    dispatch(getUsers({ page: pagination.currentPage, limit: rowsPerPage }));
-  }, [dispatch, pagination.currentPage, rowsPerPage]);
+    dispatch(getUsers({ page: 1, limit: rowsPerPage, field: fieldSearch, value: valueSearch  }));
+  }, [dispatch, rowsPerPage, fieldSearch, valueSearch]);
 
   const columns: ColumnDef<TUserFromBackend, unknown>[] = [
     {
@@ -116,11 +123,8 @@ export const UserManagementPage = () => {
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      columnFilters,
       pagination: {
         pageSize: rowsPerPage,
         pageIndex: pagination.currentPage - 1,
@@ -128,45 +132,72 @@ export const UserManagementPage = () => {
     },
   });
 
+  const searchByNameInput = useRef<HTMLInputElement | null>(null);
+  
+  const handleSearch = (field: string, value : string) => {
+    setFieldSearch(field);
+    setValueSearch(value);
+  }
+  
+  const handleResetSearch = () => {
+    setFieldSearch(undefined);
+    setValueSearch(undefined);    
+
+    setNameSearch("");
+  }   
+  
+  const handleSearchByName = (field : string, value : string) => {
+    setNameSearch(value);
+    handleSearch(field, value);
+  }
+
   if (loading) {
     return <LoadingSpinner />;
   }
 
   return (
     <Card>
-      <CardHeader className="flex items-end justify-end gap-4">
-        <div className="flex w-full flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center space-x-2">
-            <span className="text-sm">Show</span>
-            <Select
-              value={rowsPerPage.toString()}
-              onValueChange={(value) => setRowsPerPage(parseInt(value))}
-            >
-              <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
-                <SelectValue placeholder={rowsPerPage} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="25">25</SelectItem>
-                <SelectItem value="50">50</SelectItem>
-                <SelectItem value="100">100</SelectItem>
-              </SelectContent>
-            </Select>
-            <span className="text-sm">entries</span>
-          </div>
-          <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
-             <Input
-              placeholder="Search by email..."
-              value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("email")?.setFilterValue(event.target.value)
-              }
-              className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
-            />
-          </div>
-        </div>
-      </CardHeader>
+
+        <CardHeader className="flex items-center justify-between gap-4">
+              {/* First Column */}
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm">Show</span>
+                    <Select
+                      value={rowsPerPage.toString()}
+                      onValueChange={(value) => setRowsPerPage(parseInt(value))}
+                    >
+                      <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
+                        <SelectValue placeholder={rowsPerPage} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 3, 10, 25, 50, 100].map((value) => (
+                          <SelectItem key={value} value={value.toString()}>
+                            {value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  <span className="text-sm">entries</span>
+                </div>
+                <div>
+                <Button onClick={() => handleResetSearch()}>Reset Search</Button> {/*to reset search */}
+                </div>
+              </div>
+      
+              {/* Second Column */}
+              <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2 max-md:flex-wrap">
+                   <Input
+                      placeholder="Search by name..."
+                      className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
+                      ref={searchByNameInput}
+                      defaultValue={nameSearch}
+                    />
+                    <Button onClick={()=> handleSearchByName("name", searchByNameInput.current?.value as string)}>search</Button>
+                </div>
+              </div>
+           </CardHeader>
 
       <CardContent className="rounded-md min-h-14">
         <Table>
@@ -213,12 +244,7 @@ export const UserManagementPage = () => {
           </TableBody>
         </Table>
         <div className="flex items-center justify-between py-4">
-          <div className="text-nowrap text-sm text-muted-foreground">
-            Showing{" "}
-            {table.getPrePaginationRowModel().rows?.length +
-              (pagination.currentPage - 1) * rowsPerPage}
-            of {pagination.totalus} entries
-          </div>
+          
           <Pagination>
             <PaginationContent>
               <PaginationItem>

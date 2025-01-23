@@ -15,6 +15,7 @@ const passwordZodSchema = (name = "password") =>
 const UserSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters long."),
   email: z.string().email("Invalid email address."),
+  phone: z.string(),
   subscriptions: z.string().nullable().default(null),
   verified: z.boolean().optional().default(false),
   password: passwordZodSchema("password"),
@@ -26,17 +27,17 @@ const signup = UserSchema.omit({
 });
 
 const login = UserSchema.pick({ email: true, password: true });
+const Forgot_Password = UserSchema.pick({ email: true });
+const ResendVerifyCode = UserSchema.pick({ email: true });
 
 const addReviewSchema = z.object({
   name: z.string().trim().min(1, "name is required"),
   text: z.string().trim().min(1, "text is required"),
-  shouldShow: z.string().default("0"),
 });
 
 const validateUpdateReviewSchema = z.object({
   name: z.string().trim().min(1, "name is required"),
   text: z.string().trim().min(1, "text is required"),
-  shouldShow: z.string().default("0"),
 });
 
 const CartSchema = z.object({
@@ -152,9 +153,18 @@ const editOrderSchema = z
     isDone: z.boolean(),
   })
   .partial();
+
+  const CompareVerification = z.object({
+    emailConfirmToken: z.string().min(1, "Verify Code is required"),
+    email: z.string().email("Invalid email address."),
+  });
+  
 export const validateSchemas = {
   signup,
   login,
+  Forgot_Password,
+  ResendVerifyCode,
+  CompareVerification,
   user: UserSchema,
   addReview: addReviewSchema,
   editReview: validateUpdateReviewSchema,
@@ -166,4 +176,5 @@ export const validateSchemas = {
   order: OrderSchema,
   createOrder: createOrderSchema,
   editOrder: editOrderSchema,
+
 };

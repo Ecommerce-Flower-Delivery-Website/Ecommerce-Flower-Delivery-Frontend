@@ -1,45 +1,46 @@
-import { useLocalStorage } from "@mantine/hooks"
-import { createContext, PropsWithChildren, useLayoutEffect } from "react"
+import { useLocalStorage } from "@mantine/hooks";
+import { createContext, PropsWithChildren, useLayoutEffect } from "react";
 
 export const ThemeContext = createContext<{
-  toggleTheme: () => void
-  theme: "dark" | "light" | null
+  toggleTheme: () => void;
+  theme: "dark" | "light" | null;
 }>({
   toggleTheme: () => {},
   theme: null,
-})
+});
 
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const [isDarkMode, setIsDarkMode] = useLocalStorage<boolean | undefined>({
     key: "theme",
-  })
+    defaultValue: true
+  });
   const toggleTheme = () => {
     setIsDarkMode((prev) => {
-      document.documentElement.classList.toggle("dark", !prev)
-      return !prev
-    })
-  }
+      document.documentElement.classList.toggle("dark", !prev);
+      return !prev;
+    });
+  };
   useLayoutEffect(() => {
     const isDark = JSON.parse(localStorage.getItem("theme") ?? "null") as
       | boolean
-      | null
+      | null;
     const isPreferDarkTheme = window.matchMedia(
       "(prefers-color-scheme: dark)"
-    ).matches
+    ).matches;
     if (isDark == null) {
-      document.documentElement.classList.toggle("dark", isPreferDarkTheme)
-      setIsDarkMode(isPreferDarkTheme)
+      document.documentElement.classList.toggle("dark", isPreferDarkTheme);
+      setIsDarkMode(isPreferDarkTheme);
     } else if (isDark) {
-      document.documentElement.classList.toggle("dark", isDark)
-      setIsDarkMode(isDark)
+      document.documentElement.classList.toggle("dark", isDark);
+      setIsDarkMode(isDark);
     }
-  }, [])
+  }, [setIsDarkMode]);
 
-  const theme = isDarkMode ? "dark" : "light"
+  const theme = isDarkMode ? "dark" : "light";
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
-  )
-}
+  );
+};

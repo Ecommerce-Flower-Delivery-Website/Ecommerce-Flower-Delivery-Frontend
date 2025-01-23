@@ -146,8 +146,9 @@ export const UserManagementPage = () => {
                 <SelectValue placeholder={rowsPerPage} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="10">10</SelectItem>
+              <SelectItem value="1">1</SelectItem>
+              <SelectItem value="3">3</SelectItem>
+              <SelectItem value="10">10</SelectItem>
                 <SelectItem value="25">25</SelectItem>
                 <SelectItem value="50">50</SelectItem>
                 <SelectItem value="100">100</SelectItem>

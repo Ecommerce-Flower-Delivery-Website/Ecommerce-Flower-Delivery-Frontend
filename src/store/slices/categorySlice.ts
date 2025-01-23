@@ -1,11 +1,24 @@
-import axios, { AxiosError } from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
+import { api } from "../../lib/ajax/api";
+import { parseErrorMessage } from "../../utils/helper";
 
-const API_BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL;
-const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
-const API_URL = `${API_BASE_URL}/api/${API_VERSION}`;
+interface Product {
+  priceAfterDiscount: string;
+  discount?: string;
+  quantity: string;
+  id: string;
+  title: string;
+  price: string;
+  stock: string;
+  description: string;
+  image?: string;
+  category_id: string;
+  accessory_id: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export type TCategoryFromBackEnd = {
   _id: string;
@@ -14,6 +27,7 @@ export type TCategoryFromBackEnd = {
   description: string;
   createdAt: string;
   updatedAt: string;
+  products: Product[];
   __v: number;
 };
 
@@ -26,6 +40,7 @@ export type TCatergoryUpdate = Partial<TCatergoryAdd>;
 
 type TInitialState = {
   categories: TCategoryFromBackEnd[];
+  category: TCategoryFromBackEnd;
   loading: boolean;
   error: string | null;
   pagination: {
@@ -38,6 +53,16 @@ type TInitialState = {
 
 const initialState: TInitialState = {
   categories: [],
+  category: {
+    _id: "",
+    title: "",
+    image: "",
+    description: "",
+    createdAt: "",
+    updatedAt: "",
+    products: [],
+    __v: 0,
+  },
   loading: false,
   error: null,
   pagination: {
@@ -48,49 +73,36 @@ const initialState: TInitialState = {
   },
 };
 
-// Utility function for handling API errors
-const handleError = (error: unknown, defaultMessage: string): string => {
-  if (error instanceof AxiosError && error.response?.data?.message) {
-    return error.response.data.message;
-  }
-  return defaultMessage;
-};
-
 export const getCategories = createAsyncThunk(
   "category/getCategories",
   async (
-    paginationInfo: { page: number; limit: number },
+    queryParams: { page?: number; limit?: number, field?:string, value?:string },
     { rejectWithValue }
   ) => {
     try {
-      const { page, limit } = paginationInfo;
-      const response = await axios.get(`${API_URL}/category`, {
-        params: {
-          page: page,
-          limit: limit,
-        },
+      const response = await api.get(`/category`, {
+        params: queryParams,
       });
 
       return response.data.data;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to get categories";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
-
 export const addCategory = createAsyncThunk(
   "category/addCategory",
-  async (values: TCatergotyAdd, { rejectWithValue }) => {
+  async (values: TCatergoryAdd, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/category`, values);
+      const response = await api.post(`/category`, values);
 
       return response.data.data.category;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to add category";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -102,15 +114,12 @@ export const editCategory = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.put(
-        `${API_URL}/category/${id}`,
-        categoryInfo
-      );
+      const response = await api.put(`/category/${id}`, categoryInfo);
       return response.data.data.updatedCategory;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to edit category";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -119,12 +128,27 @@ export const deleteCategory = createAsyncThunk(
   "category/deleteCategory",
   async (id: string, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/category/${id}`);
+      await api.delete(`/category/${id}`);
       return id;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to delete category";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
+    }
+  }
+);
+export const getCategory = createAsyncThunk(
+  "category/getCategory",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/category/${id}`);
+      if (response.status === 201 || response.status === 200) {
+        console.log(response.data.data);
+        return response.data.data;
+      }
+    } catch (error) {
+      handleApiError(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Error");
     }
   }
 );
@@ -146,6 +170,19 @@ const categorySlice = createSlice({
         state.pagination = action.payload.pagination;
       })
       .addCase(getCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // handle get category
+      .addCase(getCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.category = action.payload.category;
+      })
+      .addCase(getCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

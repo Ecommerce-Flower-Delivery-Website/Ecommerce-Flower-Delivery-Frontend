@@ -43,6 +43,10 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        textPrimaryColor: "rgba(18, 18, 18, 1)",
+        textSecondrayColor: "rgba(128, 128, 128, 1)",
+        extraLight: "rgba(245, 245, 247, 1)",
+        faq: "rgba(18, 18, 18, 0.9)",
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",

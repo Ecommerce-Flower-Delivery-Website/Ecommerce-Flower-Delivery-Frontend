@@ -1,17 +1,13 @@
-import axios, { AxiosError } from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
-
-const API_BASE_URL = import.meta.env.VITE_PUBLIC_API_BASE_URL;
-const API_VERSION = import.meta.env.VITE_PUBLIC_API_VERSION;
-const API_URL = `${API_BASE_URL}/api/${API_VERSION}`;
+import { parseErrorMessage } from "../../utils/helper";
+import { api } from "../../lib/ajax/api";
 
 export type TReviewFromBackEnd = {
   _id: "string";
   name: "string";
   text: "string";
-  shouldShow: boolean;
   createdAt: "string";
   updatedAt: "string";
   __v: "number";
@@ -41,34 +37,22 @@ const initialState: TInitialState = {
   },
 };
 
-// Utility function for handling API errors
-const handleError = (error: unknown, defaultMessage: string): string => {
-  if (error instanceof AxiosError && error.response?.data?.message) {
-    return error.response.data.message;
-  }
-  return defaultMessage;
-};
-
 export const getReviews = createAsyncThunk(
   "review/getReviews",
   async (
-    paginationInfo: { page: number; limit: number },
+    queryParams: { page?: number; limit?: number, field?:string, value?:string },
     { rejectWithValue }
   ) => {
-    try {
-      const { page, limit } = paginationInfo;
-      const response = await axios.get(`${API_URL}/review`, {
-        params: {
-          page: page,
-          limit: limit,
-        },
+    try {      
+      const response = await api.get(`/review`, {
+        params: queryParams
       });
 
       return response.data.data;
     } catch (error) {
       handleApiError(error);
-      const generalMessage = "failed to get review";
-      return rejectWithValue(handleError(error, generalMessage));
+      const generalMessage = "Failed to get reviews";
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -80,13 +64,13 @@ export const addReview = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.post(`${API_URL}/review`, values);
+      const response = await api.post(`/review`, values);
 
       return response.data.data;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to add review";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -104,14 +88,13 @@ export const editReview = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.put(`${API_URL}/review/${id}`, reviewInfo);
-      console.log(response.data.data);
+      const response = await api.put(`/review/${id}`, reviewInfo);
 
       return response.data.data;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to edit review";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -120,12 +103,12 @@ export const deleteReview = createAsyncThunk(
   "review/deleteReview",
   async (id: string, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/review/${id}`);
+      await api.delete(`/review/${id}`);
       return id;
     } catch (error) {
       handleApiError(error);
       const generalMessage = "failed to delete review";
-      return rejectWithValue(handleError(error, generalMessage));
+      return rejectWithValue(parseErrorMessage(error, generalMessage));
     }
   }
 );
@@ -146,6 +129,9 @@ const reviewSlice = createSlice({
         state.loading = false;
         state.reviews = action.payload.reviews;
         state.pagination = action.payload.pagination;
+
+        console.log("hi hero5", action.payload);
+        
       })
       .addCase(getReviews.rejected, (state, action) => {
         state.loading = false;

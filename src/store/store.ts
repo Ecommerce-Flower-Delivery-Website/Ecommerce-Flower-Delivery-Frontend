@@ -11,6 +11,8 @@ import reviewReducer from "./slices/reviewSlice";
 import userReducer from "./slices/userSlice";
 import reminderReducer from "./slices/reminderSlice";
 import categoryReducer from "./slices/categorySlice";
+import { userCartReducer } from "./slices/userCartSlice";
+import giftDiscountReducer from "./slices/giftDiscountSlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +24,8 @@ export const store = configureStore({
     reminder: reminderReducer,
     review: reviewReducer,
     category: categoryReducer,
+    userCart: userCartReducer,
+    giftDiscount: giftDiscountReducer
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

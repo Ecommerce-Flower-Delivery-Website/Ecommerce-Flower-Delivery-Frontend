@@ -1,5 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import {
+  addReview,
+  deleteReview,
+  editReview,
+  TReviewFromBackEnd,
+} from "../../../../store/slices/reviewSlice";
+import { useReduxDispatch } from "../../../../store/store";
 import { Button } from "../../../components/button";
 import {
   Dialog,
@@ -9,21 +16,8 @@ import {
   DialogTrigger,
 } from "../../../components/dialog";
 import { Input } from "../../../components/input";
-import { useReduxDispatch } from "../../../../store/store";
-import {
-  addReview,
-  editReview,
-  deleteReview,
-  TReviewFromBackEnd,
-} from "../../../../store/slices/reviewSlice";
-import { CheckCheck } from "lucide-react";
 import { Textarea } from "../../../components/textarea";
 
-// Types for forms
-type ReviewFormType = Omit<
-  TReviewFromBackEnd,
-  "createdAt" | "updatedAt" | "__v" | "_id"
->;
 
 // Create Component
 export const Create = () => {
@@ -31,9 +25,9 @@ export const Create = () => {
   const dispatch = useReduxDispatch();
 
   const { register, handleSubmit, reset, formState } =
-    useForm<ReviewFormType>();
+    useForm<TReviewFromBackEnd>();
 
-  const onSubmit = (data: ReviewFormType) => {
+  const onSubmit = (data: TReviewFromBackEnd) => {
     dispatch(addReview(data));
     reset();
     setIsOpen(false);
@@ -64,16 +58,6 @@ export const Create = () => {
             required
             className="dark:bg-gray-800 h-52 mb-5"
           />
-
-          <div className="flex items-center gap-2 mb-4">
-            <label htmlFor="shouldShow">should show </label>
-            <Input
-              id="shouldShow"
-              type="checkbox"
-              {...register("shouldShow")}
-              className="h-4 w-4"
-            />
-          </div>
           <Button type="submit" disabled={formState.isSubmitting}>
             Submit
           </Button>
@@ -89,9 +73,9 @@ export const Edit = ({ review }: { review: TReviewFromBackEnd }) => {
   const dispatch = useReduxDispatch();
 
   const { register, handleSubmit, reset, formState } =
-    useForm<ReviewFormType>();
+    useForm<TReviewFromBackEnd>();
 
-  const onSubmit = (data: ReviewFormType) => {
+  const onSubmit = (data: TReviewFromBackEnd) => {
     dispatch(editReview({ reviewInfo: { ...data }, id: review._id }));
     reset();
     setIsOpen(false);
@@ -117,21 +101,11 @@ export const Edit = ({ review }: { review: TReviewFromBackEnd }) => {
 
           <Textarea
             {...register("text")}
+            defaultValue={review.text}
             placeholder="Text"
             required
             className="dark:bg-gray-800 h-52 mb-5"
           />
-
-          <div className="flex items-center gap-2 mb-4">
-            <label htmlFor="shouldShow">should show </label>
-            <Input
-              id="shouldShow"
-              type="checkbox"
-              {...register("shouldShow")}
-              className="h-4 w-4"
-              defaultChecked={review.shouldShow ? true : false}
-            />
-          </div>
           <Button type="submit" disabled={formState.isSubmitting}>
             Submit
           </Button>
@@ -161,7 +135,7 @@ export const Remove = ({ reviewId }: { reviewId: string }) => {
         </DialogHeader>
         <p>Are you sure you want to delete this review?</p>
         <div className="flex justify-between">
-          <Button variant="ghost" onClick={() => setIsOpen(false)}>
+          <Button onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
           <Button onClick={onConfirm} className=" text-white">

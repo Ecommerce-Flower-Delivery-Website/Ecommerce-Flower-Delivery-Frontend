@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 interface Product {
   priceAfterDiscount: string;
-  discount?:string;
+  discount?: string;
   quantity: string;
   id: string;
   title: string;
@@ -23,7 +23,7 @@ interface ProductState {
   products: Product[];
   product: {
     priceAfterDiscount: string;
-    discount?:string;
+    discount?: string;
     quantity: string;
     id: string;
     title: string;
@@ -38,6 +38,12 @@ interface ProductState {
   };
   loading: boolean;
   error: null | string;
+  pagination: {
+    totalCategories: number;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+  }
 }
 
 const initialState: ProductState = {
@@ -59,18 +65,24 @@ const initialState: ProductState = {
   },
   loading: false,
   error: null,
+  pagination: {
+    totalCategories: 0,
+    totalPages: 0,
+    currentPage: 1,
+    pageSize: 1,
+  },
 };
 
 export const getProducts = createAsyncThunk(
   "product/getProducts",
-  async (_, { rejectWithValue }) => {
+  async (paginationInfo: { page?: number; limit?: number }, { rejectWithValue }) => {
+    const { page, limit } = paginationInfo;
     try {
-      const response = await api.get("/product");
+      const response = await api.get(`/product?page=${page}&limit=${limit}`);
       if (response.status === 201 || response.status === 200) {
-
-        return response.data.data.products;
+        console.log(response.data.data);
+        return response.data.data;
       }
-      
     } catch (error) {
       handleApiError(error);
       return rejectWithValue(error instanceof Error ? error.message : "Error");
@@ -89,7 +101,7 @@ export const addProducts = createAsyncThunk(
       }
     } catch (error) {
       console.log(error);
-      
+
       handleApiError(error);
       return rejectWithValue(error instanceof Error ? error.message : "Error");
     }
@@ -101,9 +113,25 @@ export const getProduct = createAsyncThunk(
   async (id: string | undefined, { rejectWithValue }) => {
     try {
       const response = await api.get(`/product/${id}`);
+
+      if (response.status === 201 || response.status === 200) {
+        return response.data.data.product;
+      }
+    } catch (error) {
+      handleApiError(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Error");
+    }
+  }
+);
+export const getRelatedProduct = createAsyncThunk(
+  "product/getRelatedProduct",
+  async (id: string | undefined, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/product/${id}/relate`);
       
       if (response.status === 201 || response.status === 200) {
-        return response.data.data;
+        console.log(response.data.data.relatedProducts);
+        return response.data.data.relatedProducts;
       }
     } catch (error) {
       handleApiError(error);
@@ -142,7 +170,8 @@ export const updateProduct = createAsyncThunk<
     const response = await api.put(`/product/${id}`, data);
     if (response.status === 201 || response.status === 200) {
       toast.success("Product updated successfully");
-      return response.data;
+      return response.data.data.product
+;
     }
   } catch (error) {
     handleApiError(error);
@@ -161,7 +190,8 @@ const ProductSlice = createSlice({
       })
       .addCase(getProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.products = action.payload.products;
+        state.pagination = action.payload.pagination;
       })
       .addCase(getProducts.rejected, (state, action) => {
         state.error = action.payload as string;
@@ -185,6 +215,16 @@ const ProductSlice = createSlice({
         state.product = action.payload;
       })
       .addCase(getProduct.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(getRelatedProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getRelatedProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = action.payload;
+      })
+      .addCase(getRelatedProduct.rejected, (state, action) => {
         state.error = action.payload as string;
       })
       .addCase(updateProduct.pending, (state) => {

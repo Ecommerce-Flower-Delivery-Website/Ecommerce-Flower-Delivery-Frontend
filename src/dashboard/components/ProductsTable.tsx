@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -5,38 +7,32 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  getPaginationRowModel,
   SortingState,
   useReactTable,
-  PaginationState,
 } from "@tanstack/react-table";
-import {
-  Edit2,
-  Trash2,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react";
-import { useState } from "react";
+import { Edit2, Loader, Trash2 } from "lucide-react";
+import { useReduxDispatch, useReduxSelector } from "../../store/store";
+import { deleteProduct, getProducts } from "../../store/slices/productSlice";
 import DeleteModal from "./DeleteModal";
-import { useNavigate } from "react-router-dom";
-import { useReduxDispatch } from "../../store/store";
-import { deleteProduct } from "../../store/slices/productSlice";
-
-const dummyProducts = [
-  {
-    _id: "1",
-    title: "Gaming Laptop Pro",
-    price: 1299.99,
-    stock: 15,
-    description:
-      "High-performance gaming laptop with RTX 3080, 32GB RAM, and 1TB SSD",
-    accessory_id: 1,
-    created_at: "2024-01-01T00:00:00.000Z",
-    updated_at: "2024-01-01T00:00:00.000Z",
-  },
-];
+import { Input } from "./input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./pagination";
+import { Card, CardContent, CardHeader } from "./card";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface Product {
   priceAfterDiscount: string;
@@ -54,33 +50,30 @@ interface Product {
   updated_at: string;
 }
 
-interface ProductsTableProps {
-  productsArray: Product[];
-  fetchData: () => void;
-}
-
-const ProductsTable: React.FC<ProductsTableProps> = ({
-  productsArray,
-  fetchData,
-}) => {
+const ProductsTable = () => {
   const navigate = useNavigate();
+  const dispatch = useReduxDispatch();
+  const { products, loading, pagination } = useReduxSelector(
+    (state) => state.product
+  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [show, setShow] = useState(false);
   const [id, setId] = useState<string>("");
-  const dispatch = useReduxDispatch();
-
-  // Pagination state
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-
-  const pagination = { pageIndex, pageSize };
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const totalPages = pagination?.totalPages;
 
   const handleRowClick = (rowData: Product) => {
     navigate(`/dashboard/products/product/${rowData._id}`);
   };
+
+  useEffect(() => {
+    dispatch(getProducts({ page: 1, limit: rowsPerPage })).then((result)=>{
+      if(result.meta.requestStatus === "fulfilled"){
+        console.log(totalPages);
+      }
+    });
+  }, [dispatch]);
 
   const deleteProductFunc = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -90,11 +83,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
 
   const onConfirm = async (id: string) => {
     await dispatch(deleteProduct(id));
-    fetchData();
-    setShow(false);
-  };
-
-  const onClose = () => {
     setShow(false);
   };
 
@@ -110,10 +98,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   };
 
   const columns: ColumnDef<Product>[] = [
-    {
-      accessorKey: "category_id",
-      header: "Category ID",
-    },
     {
       accessorKey: "title",
       header: "Title",
@@ -137,27 +121,21 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
       header: "Price",
       cell: ({ row }) => `$${row.getValue("price")}`,
     },
-    {
-      accessorKey: "priceAfterDiscount",
-      header: "Price After Discount",
-      cell: ({ row }) => `$${row.getValue("priceAfterDiscount")}`,
-    },
+    
     {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => (
-        <div className="flex space-x-2">
+        <div className="flex gap-2">
           <button
-            className="text-blue-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-            onClick={(e) => editProduct(e, row.original._id)}
-          >
-            <Edit2 size={15} />
+            className="p-2 rounded-full text-blue-500 hover:bg-primary"
+            onClick={(e) => editProduct(e, row.original._id)}>
+            <Edit2 className="h-4 w-4" />
           </button>
           <button
-            className="text-red-500 dark:bg-gray-900 bg-gray-300 rounded-full p-2 dark:hover:bg-gray-800"
-            onClick={(e) => deleteProductFunc(e, row.original._id)}
-          >
-            <Trash2 size={15} />
+            className="p-2 rounded-full text-red-500 hover:bg-primary"
+            onClick={(e) => deleteProductFunc(e, row.original._id)}>
+            <Trash2 className="h-4 w-4" />
           </button>
         </div>
       ),
@@ -165,140 +143,161 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   ];
 
   const table = useReactTable({
-    data: productsArray,
+    data: products,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
-      pagination,
     },
   });
 
-  console.log(productsArray);
-  
+    const setCurrentPage = ({ page }: { page: number }) => {
+      dispatch(getProducts({ page, limit: rowsPerPage }));
+    };
+
+    if (loading) {
+      return <LoadingSpinner />;
+    }
 
   return (
-    <>
-      <div className="p-4 dark:bg-[#020817] shadow-lg dark:text-white rounded-lg">
-        <div className="flex justify-between items-center mb-4">
-          <input
-            type="text"
+    <Card className="w-full">
+      <CardHeader className="space-y-4">
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
+          <Input
             placeholder="Search by title..."
-            className="p-2 w-full rounded dark:bg-gray-800 border border-gray-600"
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
             onChange={(e) =>
               table.getColumn("title")?.setFilterValue(e.target.value)
             }
+            className="max-w-sm"
           />
         </div>
-        <div className="w-full overflow-auto">
-          {productsArray.length === 0 ? (
-            <div className="text-center text-gray-500 dark:text-gray-300 p-4">
-              No Products Found
-            </div>
-          ) : (
-            <>
-              <table className="w-full border-collapse border border-gray-600 text-left">
-                <thead className="dark:bg-gray-800">
+      </CardHeader>
+
+      <CardContent>
+        {products?.length === 0 ? (
+          <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+            No Products Found
+          </div>
+        ) : (
+          <>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
+                    <TableRow key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
-                        <th
+                        <TableHead
                           key={header.id}
-                          className="p-2 border border-gray-600 cursor-pointer hover:underline"
+                          className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
                           onClick={() =>
                             header.column.toggleSorting(
                               header.column.getIsSorted() === "asc"
                             )
-                          }
-                        >
+                          }>
                           {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                          {header.column.getIsSorted() &&
-                            (header.column.getIsSorted() === "asc" ? " ▲" : " ▼")}
-                        </th>
+                          {header.column.getIsSorted() && (
+                            <span className="ml-1">
+                              {header.column.getIsSorted() === "asc"
+                                ? "▲"
+                                : "▼"}
+                            </span>
+                          )}
+                        </TableHead>
                       ))}
-                    </tr>
+                    </TableRow>
                   ))}
-                </thead>
-                <tbody>
+                </TableHeader>
+                <TableBody>
                   {table.getRowModel().rows.map((row) => (
-                    <tr
+                    <TableRow
                       key={row.id}
-                      className="dark:hover:bg-gray-700 hover:bg-gray-200 cursor-pointer"
-                      onClick={() => handleRowClick(row.original)}
-                    >
+                      className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
+                      onClick={() => handleRowClick(row.original)}>
                       {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id} className="p-2 border border-gray-600">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
                       ))}
-                    </tr>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
+            </div>
 
-              {/* Pagination Controls */}
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-2">
-                  {/* <select
-                    value={table.getState().pagination.pageSize}
-                    onChange={(e) => table.setPageSize(Number(e.target.value))}
-                    className="p-2 bg-transparent border border-gray-600 rounded dark:bg-gray-800">
-                    {[10, 20, 30, 40, 50].map((size) => (
-                      <option key={size} value={size}>
-                        Show {size}
-                      </option>
+            <div className="mt-4">
+              {loading ? (
+                <div>Loading...</div>
+              ) : (
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() =>
+                          setCurrentPage({
+                            page: Math.max(pagination.currentPage - 1, 1),
+                          })
+                        }
+                        className={
+                          (pagination?.currentPage || 1) === 1
+                            ? "pointer-events-none opacity-50"
+                            : ""
+                        }
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage({ page: i + 1 })}
+                          isActive={(pagination?.currentPage || 1) === i + 1}>
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
                     ))}
-                  </select> */}
-                  <span className="text-sm">
-                    Page {table.getState().pagination.pageIndex + 1} of{" "}
-                    {table.getPageCount()}
-                  </span>
-                </div>
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() =>
+                          setCurrentPage({
+                            page: Math.min(
+                              pagination.currentPage + 1,
+                              totalPages
+                            ),
+                          })
+                        }
+                        className={
+                          (pagination?.currentPage || 1) === totalPages
+                            ? "pointer-events-none opacity-50"
+                            : ""
+                        }
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              )}
+            </div>
+          </>
+        )}
+      </CardContent>
 
-                <div className="flex gap-2">
-                  <button
-                    className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
-                    onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}>
-                    <ChevronsLeft size={20} />
-                  </button>
-                  <button
-                    className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}>
-                    <ChevronLeft size={20} />
-                  </button>
-                  <button
-                    className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}>
-                    <ChevronRight size={20} />
-                  </button>
-                  <button
-                    className="p-1 border border-gray-600 rounded dark:hover:bg-gray-800 disabled:opacity-50"
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}>
-                    <ChevronsRight size={20} />
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-      {show && <DeleteModal onClose={onClose} onConfirm={onConfirm} id={id} />}
-    </>
+      {show && (
+        <DeleteModal
+          onClose={() => setShow(false)}
+          onConfirm={onConfirm}
+          id={id}
+        />
+      )}
+    </Card>
   );
 };
 

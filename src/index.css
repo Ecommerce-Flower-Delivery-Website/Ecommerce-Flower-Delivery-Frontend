@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  .light {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --muted: 210 40% 96.1%;
@@ -57,7 +57,21 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply  bg-background font-sans text-foreground;
+    @apply h-screen bg-background font-sans;
   }
+}
+.swiper {
+  height: 150px;
+}
+
+/* For Webkit browsers (e.g., Chrome, Edge, Safari) */
+ul::-webkit-scrollbar {
+  width: 5px;
+}
+
+ul::-webkit-scrollbar-thumb {
+  background-color: rgba(150, 150, 150, 0.8);
+  border-radius: 10px;
 }

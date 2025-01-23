@@ -10,8 +10,10 @@ import {
 interface SubscribePlanStates {
   subscribePlansData: ResponseDataSubscribePlan;
   loading: boolean;
+  loading_delete:boolean;
   error: null | string;
   subscribePlanData: SubscribePlan | null;
+
 }
 
 const initialState: SubscribePlanStates = {
@@ -26,15 +28,16 @@ const initialState: SubscribePlanStates = {
   },
   subscribePlanData: null,
   loading: false,
+  loading_delete:false,
   error: null,
 };
 
 export const getSubscribePlans = createAsyncThunk(
   "subscribe_plans/getSubscribePlans",
-  async (values: { page: number; limit: number }, { rejectWithValue }) => {
+  async (queryParams: { page?: number; limit?: number, field?:string, value?:string }, { rejectWithValue }) => {
     try {
       const response = await api.get("/subscribe", {
-        params: values,
+        params: queryParams,
       });
       if (response.status === 201 || response.status === 200) {
         return response.data.data;
@@ -91,6 +94,39 @@ export const deleteSubsciblePlan = createAsyncThunk(
   }
 );
 
+export const addUserSubscribePlan = createAsyncThunk(
+  "subscribe_plans/addUserSubscribePlan",
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async ({data,id_subscibe}:{data:any,id_subscibe:string}, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/subscribe/users/${id_subscibe}`, data);
+      if (response.status === 201 || response.status === 200) {
+        toast.success("User is added successfully to the Plan");
+        return response.data.data;
+      }
+    } catch (error) {
+      handleApiError(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Error");
+    }
+  }
+);
+
+export const deleteUserSubsciblePlan = createAsyncThunk(
+  "subscribe_plans/deleteUserSubsciblePlan",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/subscribe/users/${id}`);
+      if (response.status === 201 || response.status === 200) {
+        toast.success("User was deleted successfully from the Plan");
+        return response.data;
+      }
+    } catch (error) {
+      handleApiError(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Error");
+    }
+  }
+);
+
 interface updateParameters {
   data: FormData;
   id: string | undefined;
@@ -137,6 +173,8 @@ const SubscribePlanSlice = createSlice({
     builder
       .addCase(getSubscribePlans.pending, (state) => {
         state.loading = true;
+        state.error =null;
+
       })
       .addCase(getSubscribePlans.fulfilled, (state, action) => {
         state.loading = false;
@@ -144,6 +182,36 @@ const SubscribePlanSlice = createSlice({
       })
       .addCase(getSubscribePlans.rejected, (state, action) => {
         state.error = action.payload as string;
+        state.loading = false;
+
+      });
+      builder
+      .addCase(addUserSubscribePlan.pending, (state) => {
+        state.loading = true;
+        state.error =null;
+
+      })
+      .addCase(addUserSubscribePlan.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(addUserSubscribePlan.rejected, (state, action) => {
+        state.error = action.payload as string;
+        state.loading = false;
+
+      });
+      builder
+      .addCase(deleteUserSubsciblePlan.pending, (state) => {
+        state.loading_delete = true;
+        state.error =null;
+
+      })
+      .addCase(deleteUserSubsciblePlan.fulfilled, (state) => {
+        state.loading_delete = false;
+      })
+      .addCase(deleteUserSubsciblePlan.rejected, (state, action) => {
+        state.error = action.payload as string;
+        state.loading_delete = false;
+
       });
     builder
       .addCase(addSubscribePlan.pending, (state) => {
