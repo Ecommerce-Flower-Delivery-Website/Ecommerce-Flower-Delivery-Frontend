@@ -2,9 +2,6 @@ import { StrictMode, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { RootLayout } from "./RootLayout";
-import CategoryWeb from "./components/category/CategoryWeb";
-import { Dashboard } from "./layouts/Dashboard";
-import Website from "./layouts/Website";
 import { Accessories } from "./dashboard/pages/Accessories/Accessories";
 import { OrderPreviewPage } from "./dashboard/pages/OrderPreviewPage";
 import ShowRemindersPage from "./dashboard/pages/Reminder/ShowRemindersPage";
@@ -24,14 +21,18 @@ import SubscribePlans from "./dashboard/pages/subscribe-plans/SubscribePlans";
 import SubscribePlansDetails from "./dashboard/pages/subscribe-plans/SubscribePlansDetails";
 import { UserManagementPage } from "./dashboard/pages/user-management/UserManagementPage";
 import "./index.css";
+import { Dashboard } from "./layouts/Dashboard";
+import Website from "./layouts/Website";
+import AboutUsPage from "./pages/AboutUs/AboutUs";
 import Home from "./pages/Home/Home";
 import { NotFoundPage } from "./pages/not-found/NotFoundPage";
 import ProductPage from "./pages/product-info/ProductInfo";
-import AboutUsPage from "./pages/AboutUs/AboutUs";
 
-import CheckoutPage from "./pages/checkout/CheckoutPage";
 import GiftDiscount from "./dashboard/pages/giftDiscount/GiftDiscount";
+import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Subscribe from "./pages/subscribe/Subscribe";
+import CategoryWeb from "./Components/category/CategoryWeb";
+import { ThemeProvider } from "./contexts/ThemeProvider";
 // import SubscribeHero from "./Components/SubscribeHero";
 
 const routers = createBrowserRouter([
@@ -47,16 +48,23 @@ const routers = createBrowserRouter([
           { path: "/product/:id", element: <ProductPage /> },
           { path: "/about-us", element: <AboutUsPage /> },
           { path: "/check-out", element: <CheckoutPage /> },
-          {path: "/subscribe", element: <Subscribe />}
-
+          { path: "/subscribe", element: <Subscribe /> },
         ],
       },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: (
+          <ThemeProvider>
+            <Dashboard />
+          </ThemeProvider>
+        ),
         children: [
           {
             index: true,
+            path: "*",
+            element: <OverviewPage />,
+          },
+          {
             path: "overview",
             element: <OverviewPage />,
           },

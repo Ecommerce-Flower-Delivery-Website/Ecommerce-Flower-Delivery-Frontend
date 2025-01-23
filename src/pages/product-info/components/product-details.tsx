@@ -4,14 +4,14 @@ import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Label } from "../../../components/ui/label";
-import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group";
 import { ScrollArea } from "../../../components/ui/ScrollArea";
 import { useCart } from "../../../contexts/CartContext";
 import { Button } from "../../../dashboard/components/button";
 import LoadingSpinner from "../../../dashboard/components/LoadingSpinner";
 import { api } from "../../../lib/ajax/api";
 import { cn } from "../../../lib/utils";
+import { Label } from "../../../Components/ui/label";
+import { RadioGroup, RadioGroupItem } from "../../../Components/ui/radio-group";
 
 type Category = {
   _id: string;
@@ -47,7 +47,7 @@ type AccessoryType = {
 
 export const ProductDetails = ({ productId }: { productId: string }) => {
   const { data: product, isLoading } = useQuery<Product>({
-    queryKey: [`product/${productId}`, "cart"],
+    queryKey: [`product/${productId}`],
     queryFn: async () => {
       const res = await api.get(`/product/${productId}`);
       return res.data?.data?.product as Product & { _id: string };
@@ -66,7 +66,6 @@ export const ProductDetails = ({ productId }: { productId: string }) => {
   const [selectedAccessories, setSelectedAccessories] = useState<string[]>(
     accessoriesIds ?? []
   );
-  const backendBaseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -206,7 +205,6 @@ function AccessoriesSection({
   setSelectedAccessories: (accessoryId: string) => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const backendBaseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -261,7 +259,6 @@ function AccessoriesSection({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-
                   <button
                     className="flex flex-col transition-colors hover:bg-pink-100 cursor-pointer w-[150px]"
                     onClick={() => setSelectedAccessories(accessory._id)}
@@ -269,7 +266,9 @@ function AccessoriesSection({
                   >
                     <div className="relative h-[150px] w-full">
                       <img
-                        src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${accessory.image}`}
+                        src={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${
+                          accessory.image
+                        }`}
                         alt={accessory.title}
                         className=" absolute inset-0 size-full"
                       />

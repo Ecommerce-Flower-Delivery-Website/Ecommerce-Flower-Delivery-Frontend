@@ -14,7 +14,7 @@ const Website = () => {
 
   return (
     <CartProvider>
-      <ScrollArea className=" h-screen bg-white text-black light">
+      <ScrollArea className=" h-screen bg-white text-black ">
         <Navbar />
         <Outlet />
         <Footer />
