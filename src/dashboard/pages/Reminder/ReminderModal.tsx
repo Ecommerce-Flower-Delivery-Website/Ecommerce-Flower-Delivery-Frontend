@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { useState } from "react";
-import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 import { sendReminder } from "../../../store/slices/reminderSlice";
+import { useReduxDispatch } from "../../../store/store";
 import { Textarea } from "../../components/textarea";
 
 interface DeleteModalProps {
@@ -13,20 +13,18 @@ const ReminderModal: React.FC<DeleteModalProps> = ({ onClose }) => {
   const [festivalDate, setfestivalDate] = useState<string>("");
   const [subject, setsubject] = useState<string>("");
   const [text, settext] = useState<string>("");
-  const { reminders, loading, error } = useReduxSelector(
-    (state) => state.reminder
-  );
+
   const dispatch = useReduxDispatch();
 
   const onSend = (): void => {
     console.log("Sending reminder", festivalName, festivalDate, subject, text);
-    const data = {
-      festivalName,
-      festivalDate,
-      subject,
-      text,
-    };
-    dispatch(sendReminder(data));
+    // const data = {
+    //   festivalName,
+    //   festivalDate,
+    //   subject,
+    //   text,
+    // };
+    dispatch(sendReminder());
     onClose();
   };
 

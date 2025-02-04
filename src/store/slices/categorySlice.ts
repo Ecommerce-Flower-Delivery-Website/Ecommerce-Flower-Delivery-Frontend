@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 import { api } from "../../lib/ajax/api";
+import { handleApiError } from "../../lib/utils";
 import { parseErrorMessage } from "../../utils/helper";
 
 interface Product {
+  _id: string;
   priceAfterDiscount: string;
   discount?: string;
   quantity: string;
@@ -76,7 +77,12 @@ const initialState: TInitialState = {
 export const getCategories = createAsyncThunk(
   "category/getCategories",
   async (
-    queryParams: { page?: number; limit?: number, field?:string, value?:string },
+    queryParams: {
+      page?: number;
+      limit?: number;
+      field?: string;
+      value?: string;
+    },
     { rejectWithValue }
   ) => {
     try {

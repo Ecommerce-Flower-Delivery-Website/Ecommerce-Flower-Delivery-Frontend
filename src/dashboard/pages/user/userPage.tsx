@@ -146,9 +146,9 @@ export const UserManagementPage = () => {
                 <SelectValue placeholder={rowsPerPage} />
               </SelectTrigger>
               <SelectContent>
-              <SelectItem value="1">1</SelectItem>
-              <SelectItem value="3">3</SelectItem>
-              <SelectItem value="10">10</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+                <SelectItem value="10">10</SelectItem>
                 <SelectItem value="25">25</SelectItem>
                 <SelectItem value="50">50</SelectItem>
                 <SelectItem value="100">100</SelectItem>
@@ -157,9 +157,11 @@ export const UserManagementPage = () => {
             <span className="text-sm">entries</span>
           </div>
           <div className="flex flex-1 items-center justify-end gap-2 max-md:flex-wrap">
-             <Input
+            <Input
               placeholder="Search by email..."
-              value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+              value={
+                (table.getColumn("email")?.getFilterValue() as string) ?? ""
+              }
               onChange={(event) =>
                 table.getColumn("email")?.setFilterValue(event.target.value)
               }
@@ -218,7 +220,7 @@ export const UserManagementPage = () => {
             Showing{" "}
             {table.getPrePaginationRowModel().rows?.length +
               (pagination.currentPage - 1) * rowsPerPage}
-            of {pagination.totalus} entries
+            of {pagination.totalPages} entries
           </div>
           <Pagination>
             <PaginationContent>
@@ -267,5 +269,3 @@ export const UserManagementPage = () => {
     </Card>
   );
 };
-
-

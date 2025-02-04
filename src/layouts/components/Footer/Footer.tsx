@@ -10,10 +10,10 @@ import {
 import { useReduxDispatch } from "../../../store/store";
 
 const Footer = () => {
-  const [email, setemail] = useState<string>("");
+  const [, setemail] = useState<string>("");
   const storedUser = localStorage.getItem("user");
-  const user = JSON.parse(storedUser);
-  
+  const user = JSON.parse(storedUser || "");
+
   const isReminder = user ? user.isReminder : false;
   console.log(isReminder);
   const dispatch = useReduxDispatch();

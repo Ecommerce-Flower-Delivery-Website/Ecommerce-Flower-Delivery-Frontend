@@ -1,26 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import React, { useEffect } from "react";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
-import GoogleImage from "./../../../assets/google-logo.png";
-import { api } from "../../../lib/ajax/api";
-import SectionTitle from "../SectionTitle/SectionTitle";
 import { getReviews } from "../../../store/slices/reviewSlice";
-import { RootState, useReduxDispatch, useReduxSelector } from "../../../store/store";
-
-interface Reviews {
-  name: string;
-  text: string;
-}
+import {
+  RootState,
+  useReduxDispatch,
+  useReduxSelector,
+} from "../../../store/store";
+import SectionTitle from "../SectionTitle/SectionTitle";
+import GoogleImage from "./../../../assets/google-logo.png";
 
 const OurClientsSay: React.FC = () => {
-
-  const { reviews, loading, error } = useReduxSelector((state: RootState) => state.review);
+  const { reviews, loading, error } = useReduxSelector(
+    (state: RootState) => state.review
+  );
   const dispatch = useReduxDispatch();
 
-    useEffect(() => {
-      dispatch(getReviews({}));
-    }, [dispatch]);  
+  useEffect(() => {
+    dispatch(getReviews({}));
+  }, [dispatch]);
 
   if (error) {
     return (

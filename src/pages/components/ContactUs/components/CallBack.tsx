@@ -1,11 +1,7 @@
-import React, { useState, FormEvent } from "react";
-import axios, { AxiosError } from "axios";
-import SectionTitle from "../../SectionTitle/SectionTitle";
+import { AxiosError } from "axios";
+import React, { FormEvent, useState } from "react";
 import { api } from "../../../../lib/ajax/api";
-
-interface ApiResponse {
-  message?: string;
-}
+import SectionTitle from "../../SectionTitle/SectionTitle";
 
 const CallBack: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -13,11 +9,11 @@ const CallBack: React.FC = () => {
 
   const storedUser = localStorage.getItem("user");
 
-  let phoneInputValue =" click on book a call";
+  let phoneInputValue = " click on book a call";
   if (storedUser) {
     const user = JSON.parse(storedUser);
     if (user.phone) phoneInputValue = user.phone;
-  }    
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -25,7 +21,6 @@ const CallBack: React.FC = () => {
     setResponseMessage("");
 
     try {
-
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -37,7 +32,10 @@ const CallBack: React.FC = () => {
       const response = await api.post("/contact");
 
       if (response.status === 201) {
-        setResponseMessage(response.data.message || "Your request has been submitted successfully!");
+        setResponseMessage(
+          response.data.message ||
+            "Your request has been submitted successfully!"
+        );
       } else {
         setResponseMessage("Failed to submit your request. Please try again.");
       }
@@ -56,8 +54,13 @@ const CallBack: React.FC = () => {
   return (
     <div className="aj-callback px-4 py-10 md:px-[80px] md:pt-[80px] md:pb-[99px] border border-[#121212] border-b-0">
       <SectionTitle title="To Contact Us" />
-      <p className="mb-4 leading-[25.2px] mt-6 md:mt-0 text-lg">We will call you back</p>
-      <form className="flex flex-col flex-wrap md:flex-row gap-4" onSubmit={handleSubmit}>
+      <p className="mb-4 leading-[25.2px] mt-6 md:mt-0 text-lg">
+        We will call you back
+      </p>
+      <form
+        className="flex flex-col flex-wrap md:flex-row gap-4"
+        onSubmit={handleSubmit}
+      >
         <input
           type="tel"
           placeholder="+380 XX XXX XX XX"

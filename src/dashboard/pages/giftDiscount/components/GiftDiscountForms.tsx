@@ -22,10 +22,9 @@ export const CreateGiftDiscount = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useReduxDispatch();
 
-  const { register, handleSubmit, reset, formState } =
-    useForm<TGiftDiscount>();
+  const { register, handleSubmit, reset, formState } = useForm<TGiftDiscount>();
 
-  const onSubmit = (data: TGiftDiscount) => {    
+  const onSubmit = (data: TGiftDiscount) => {
     dispatch(addGiftDiscount(data));
     reset();
     setIsOpen(false);
@@ -43,11 +42,9 @@ export const CreateGiftDiscount = () => {
           <DialogTitle>Create Gift Discount</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
-          
-
-        <label htmlFor="codeGift" className="block mb-2">
-           Code Gift :
-        </label>
+          <label htmlFor="codeGift" className="block mb-2">
+            Code Gift :
+          </label>
 
           <Input
             {...register("codeGift")}
@@ -57,11 +54,11 @@ export const CreateGiftDiscount = () => {
           />
 
           <label htmlFor="discountGift" className="block mb-2">
-             Discount Gift :
+            Discount Gift :
           </label>
 
           <Input
-            {...register("discountGift", {valueAsNumber: true})}
+            {...register("discountGift", { valueAsNumber: true })}
             placeholder="Discount Percentage"
             type="number"
             required
@@ -78,12 +75,15 @@ export const CreateGiftDiscount = () => {
 };
 
 // Edit Component
-export const EditGiftDiscount = ({ giftDiscount }: { giftDiscount: TGiftDiscount }) => {
+export const EditGiftDiscount = ({
+  giftDiscount,
+}: {
+  giftDiscount: TGiftDiscount;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useReduxDispatch();
 
-  const { register, handleSubmit, reset, formState } =
-    useForm<TGiftDiscount>();
+  const { register, handleSubmit, reset, formState } = useForm<TGiftDiscount>();
 
   const onSubmit = (data: TGiftDiscount) => {
     dispatch(updateGiftDiscount({ id: giftDiscount._id, values: data }));
@@ -101,10 +101,9 @@ export const EditGiftDiscount = ({ giftDiscount }: { giftDiscount: TGiftDiscount
           <DialogTitle>Edit Gift Discount</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
-
-        <label htmlFor="codeGift" className="block mb-2">
-           Code Gift :
-        </label>
+          <label htmlFor="codeGift" className="block mb-2">
+            Code Gift :
+          </label>
 
           <Input
             {...register("codeGift")}
@@ -115,11 +114,11 @@ export const EditGiftDiscount = ({ giftDiscount }: { giftDiscount: TGiftDiscount
           />
 
           <label htmlFor="discountGift" className="block mb-2">
-             Discount Gift :
+            Discount Gift :
           </label>
 
           <Input
-            {...register("discountGift", {valueAsNumber: true})}
+            {...register("discountGift", { valueAsNumber: true })}
             defaultValue={giftDiscount.discountGift}
             placeholder="Discount Percentage"
             type="number"
@@ -136,7 +135,11 @@ export const EditGiftDiscount = ({ giftDiscount }: { giftDiscount: TGiftDiscount
   );
 };
 
-export const RemoveGiftDiscount = ({ giftDiscountId }: { giftDiscountId: string }) => {
+export const RemoveGiftDiscount = ({
+  giftDiscountId,
+}: {
+  giftDiscountId: string;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useReduxDispatch();
 
@@ -159,9 +162,7 @@ export const RemoveGiftDiscount = ({ giftDiscountId }: { giftDiscountId: string 
           <Button variant="ghost" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={onConfirm}>
-            Confirm
-          </Button>
+          <Button onClick={onConfirm}>Confirm</Button>
         </div>
       </DialogContent>
     </Dialog>

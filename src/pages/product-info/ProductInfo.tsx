@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ProductDetails } from "./components/product-details";
-import { RelatedProducts } from "../../Components/RelatedProducts/RelatedProducts";
+import { RelatedProducts } from "../../components/RelatedProducts/RelatedProducts";
 
 export default function ProductPage() {
   const params = useParams();

@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
-import { parseErrorMessage } from "../../utils/helper";
 import { api } from "../../lib/ajax/api";
+import { handleApiError } from "../../lib/utils";
+import { parseErrorMessage } from "../../utils/helper";
 
 export type TReviewFromBackEnd = {
   _id: "string";
@@ -40,12 +40,17 @@ const initialState: TInitialState = {
 export const getReviews = createAsyncThunk(
   "review/getReviews",
   async (
-    queryParams: { page?: number; limit?: number, field?:string, value?:string },
+    queryParams: {
+      page?: number;
+      limit?: number;
+      field?: string;
+      value?: string;
+    },
     { rejectWithValue }
   ) => {
-    try {      
+    try {
       const response = await api.get(`/review`, {
-        params: queryParams
+        params: queryParams,
       });
 
       return response.data.data;
@@ -131,7 +136,6 @@ const reviewSlice = createSlice({
         state.pagination = action.payload.pagination;
 
         console.log("hi hero5", action.payload);
-        
       })
       .addCase(getReviews.rejected, (state, action) => {
         state.loading = false;

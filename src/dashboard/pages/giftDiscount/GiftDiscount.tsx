@@ -1,10 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useReduxDispatch, useReduxSelector, RootState } from "../../../store/store";
-import { getGiftDiscounts, TGiftDiscount } from "../../../store/slices/giftDiscountSlice";
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getFilteredRowModel } from "@tanstack/react-table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/select";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useEffect, useRef, useState } from "react";
+import {
+  getGiftDiscounts,
+  TGiftDiscount,
+} from "../../../store/slices/giftDiscountSlice";
+import {
+  RootState,
+  useReduxDispatch,
+  useReduxSelector,
+} from "../../../store/store";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { Button } from "../../components/button";
 import { Card, CardContent, CardHeader } from "../../components/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/table";
+import { Input } from "../../components/input";
 import {
   Pagination,
   PaginationContent,
@@ -13,13 +26,31 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../../components/pagination";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import { Input } from "../../components/input";
-import { CreateGiftDiscount, EditGiftDiscount, RemoveGiftDiscount } from "./components/GiftDiscountForms";
-import { Button } from "../../components/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/table";
+import {
+  CreateGiftDiscount,
+  EditGiftDiscount,
+  RemoveGiftDiscount,
+} from "./components/GiftDiscountForms";
 
 const GiftDiscount = () => {
-  const { giftDiscounts, loading, pagination } = useReduxSelector((state: RootState) => state.giftDiscount);
+  const { giftDiscounts, loading, pagination } = useReduxSelector(
+    (state: RootState) => state.giftDiscount
+  );
   const dispatch = useReduxDispatch();
 
   const [rowsPerPage, setRowsPerPage] = useState(3);
@@ -28,10 +59,16 @@ const GiftDiscount = () => {
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
   const [CodeSearch, setCodeSearch] = useState("");
-  
 
   useEffect(() => {
-    dispatch(getGiftDiscounts({ page: 1, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
+    dispatch(
+      getGiftDiscounts({
+        page: 1,
+        limit: rowsPerPage,
+        field: fieldSearch,
+        value: valueSearch,
+      })
+    );
   }, [dispatch, rowsPerPage, fieldSearch, valueSearch]);
 
   const totalPages = pagination.totalPages;
@@ -40,7 +77,7 @@ const GiftDiscount = () => {
     {
       accessorKey: "codeGift",
       header: "Code",
-      filterFn: 'includesString',
+      filterFn: "includesString",
     },
     {
       accessorKey: "discountGift",
@@ -67,27 +104,34 @@ const GiftDiscount = () => {
   });
 
   const setCurrentPage = ({ page }: { page: number }) => {
-    dispatch(getGiftDiscounts({ page, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
+    dispatch(
+      getGiftDiscounts({
+        page,
+        limit: rowsPerPage,
+        field: fieldSearch,
+        value: valueSearch,
+      })
+    );
   };
 
   const searchByCodeInput = useRef<HTMLInputElement | null>(null);
-  
-  const handleSearch = (field: string, value : string) => {
+
+  const handleSearch = (field: string, value: string) => {
     setFieldSearch(field);
-     setValueSearch(value);
-    }
-  
+    setValueSearch(value);
+  };
+
   const handleResetSearch = () => {
-     setFieldSearch(undefined);
-      setValueSearch(undefined);    
+    setFieldSearch(undefined);
+    setValueSearch(undefined);
 
-      setCodeSearch("");
-   }  
+    setCodeSearch("");
+  };
 
-   const handleSearchByCode = (field : string, value : string) => {
+  const handleSearchByCode = (field: string, value: string) => {
     setCodeSearch(value);
     handleSearch(field, value);
-  }
+  };
 
   if (loading) {
     return <LoadingSpinner />;
@@ -95,7 +139,7 @@ const GiftDiscount = () => {
 
   return (
     <Card>
-       <CardHeader className="flex items-center justify-between gap-4">
+      <CardHeader className="flex items-center justify-between gap-4">
         {/* First Column */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center space-x-2">
@@ -108,7 +152,7 @@ const GiftDiscount = () => {
                 <SelectValue placeholder={rowsPerPage} />
               </SelectTrigger>
               <SelectContent>
-                {[1,3, 10, 25, 50, 100].map((value) => (
+                {[1, 3, 10, 25, 50, 100].map((value) => (
                   <SelectItem key={value} value={value.toString()}>
                     {value}
                   </SelectItem>
@@ -124,23 +168,30 @@ const GiftDiscount = () => {
 
         {/* Second Column */}
         <div className="flex flex-col gap-2">
-            <div>
-              <CreateGiftDiscount />
-            </div>
-            <div className="flex items-center gap-2 max-md:flex-wrap">
-              <Input
-                placeholder="Search by code..."
-                className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
-                ref={searchByCodeInput}
-                defaultValue={CodeSearch}
-              />
-              
-              <Button onClick={()=> handleSearchByCode("title", searchByCodeInput.current?.value as string)}>search</Button>
-              
+          <div>
+            <CreateGiftDiscount />
+          </div>
+          <div className="flex items-center gap-2 max-md:flex-wrap">
+            <Input
+              placeholder="Search by code..."
+              className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
+              ref={searchByCodeInput}
+              defaultValue={CodeSearch}
+            />
+
+            <Button
+              onClick={() =>
+                handleSearchByCode(
+                  "title",
+                  searchByCodeInput.current?.value as string
+                )
+              }
+            >
+              search
+            </Button>
           </div>
         </div>
       </CardHeader>
-
 
       <CardContent>
         <Table className="table-auto border-collapse w-full mb-7">
@@ -151,7 +202,10 @@ const GiftDiscount = () => {
                   <TableHead key={header.id} className="text-left px-4 py-2">
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -163,14 +217,20 @@ const GiftDiscount = () => {
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="px-4">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow className="py-5">
-                <TableCell colSpan={columns.length} className="text-center px-4">
+                <TableCell
+                  colSpan={columns.length}
+                  className="text-center px-4"
+                >
                   No gift discounts found.
                 </TableCell>
               </TableRow>
@@ -186,7 +246,11 @@ const GiftDiscount = () => {
                     page: Math.max(pagination.currentPage - 1, 1),
                   })
                 }
-                className={pagination.currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                className={
+                  pagination.currentPage === 1
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
               />
             </PaginationItem>
             {Array.from({ length: totalPages }).map((_, i) => (
@@ -206,7 +270,11 @@ const GiftDiscount = () => {
                     page: Math.min(pagination.currentPage + 1, totalPages),
                   })
                 }
-                className={pagination.currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                className={
+                  pagination.currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>

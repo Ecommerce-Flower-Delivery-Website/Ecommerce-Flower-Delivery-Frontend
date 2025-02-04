@@ -17,6 +17,7 @@ import {
   LoaderIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getAllOrdersThunk, Order } from "../../../store/slices/orderSlice";
 import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 import { Button } from "../../components/button";
@@ -46,7 +47,6 @@ import {
   TableRow,
 } from "../../components/table";
 import * as OrdersForms from "./components/order-forms";
-import { Link } from "react-router-dom";
 
 export const OrdersPage = () => {
   const { orders, isPending, pagination } = useReduxSelector(
@@ -144,7 +144,7 @@ export const OrdersPage = () => {
             <Link to={`${order._id}`}>
               <Eye className=" size-4" />
             </Link>
-            <OrdersForms.Remove orderId={order._id} />
+            <OrdersForms.Remove rowsPerPage={rowsPerPage} orderId={order._id} />
             <OrdersForms.ToggleStatusButton order={order} />
           </div>
         );
@@ -190,9 +190,9 @@ export const OrdersPage = () => {
                 <SelectValue placeholder={rowsPerPage} />
               </SelectTrigger>
               <SelectContent>
-              <SelectItem value="1">1</SelectItem>
-              <SelectItem value="3">3</SelectItem>
-              <SelectItem value="10">10</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+                <SelectItem value="10">10</SelectItem>
                 <SelectItem value="25">25</SelectItem>
                 <SelectItem value="50">50</SelectItem>
                 <SelectItem value="100">100</SelectItem>

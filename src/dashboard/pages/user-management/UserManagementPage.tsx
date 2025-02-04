@@ -1,9 +1,7 @@
 import {
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
@@ -16,6 +14,7 @@ import {
   useReduxDispatch,
   useReduxSelector,
 } from "../../../store/store";
+import { Button } from "../../components/button";
 import { Card, CardContent, CardHeader } from "../../components/card";
 import { Input } from "../../components/input";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -43,7 +42,6 @@ import {
   TableRow,
 } from "../../components/table";
 import * as UserForms from "./components/user-forms";
-import { Button } from "../../components/button";
 
 export const UserManagementPage = () => {
   const { users, pagination, loading } = useReduxSelector(
@@ -61,12 +59,26 @@ export const UserManagementPage = () => {
   const [nameSearch, setNameSearch] = useState("");
 
   const totalPages = pagination.totalPages;
-  const setCurrentPage = ({ page }: { page: number }) => {    
-    dispatch(getUsers({ page, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
+  const setCurrentPage = ({ page }: { page: number }) => {
+    dispatch(
+      getUsers({
+        page,
+        limit: rowsPerPage,
+        field: fieldSearch,
+        value: valueSearch,
+      })
+    );
   };
 
   useEffect(() => {
-    dispatch(getUsers({ page: 1, limit: rowsPerPage, field: fieldSearch, value: valueSearch  }));
+    dispatch(
+      getUsers({
+        page: 1,
+        limit: rowsPerPage,
+        field: fieldSearch,
+        value: valueSearch,
+      })
+    );
   }, [dispatch, rowsPerPage, fieldSearch, valueSearch]);
 
   const columns: ColumnDef<TUserFromBackend, unknown>[] = [
@@ -133,23 +145,23 @@ export const UserManagementPage = () => {
   });
 
   const searchByNameInput = useRef<HTMLInputElement | null>(null);
-  
-  const handleSearch = (field: string, value : string) => {
+
+  const handleSearch = (field: string, value: string) => {
     setFieldSearch(field);
     setValueSearch(value);
-  }
-  
+  };
+
   const handleResetSearch = () => {
     setFieldSearch(undefined);
-    setValueSearch(undefined);    
+    setValueSearch(undefined);
 
     setNameSearch("");
-  }   
-  
-  const handleSearchByName = (field : string, value : string) => {
+  };
+
+  const handleSearchByName = (field: string, value: string) => {
     setNameSearch(value);
     handleSearch(field, value);
-  }
+  };
 
   if (loading) {
     return <LoadingSpinner />;
@@ -157,47 +169,56 @@ export const UserManagementPage = () => {
 
   return (
     <Card>
+      <CardHeader className="flex items-center justify-between gap-4">
+        {/* First Column */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm">Show</span>
+            <Select
+              value={rowsPerPage.toString()}
+              onValueChange={(value) => setRowsPerPage(parseInt(value))}
+            >
+              <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
+                <SelectValue placeholder={rowsPerPage} />
+              </SelectTrigger>
+              <SelectContent>
+                {[1, 3, 10, 25, 50, 100].map((value) => (
+                  <SelectItem key={value} value={value.toString()}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span className="text-sm">entries</span>
+          </div>
+          <div>
+            <Button onClick={() => handleResetSearch()}>Reset Search</Button>{" "}
+            {/*to reset search */}
+          </div>
+        </div>
 
-        <CardHeader className="flex items-center justify-between gap-4">
-              {/* First Column */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm">Show</span>
-                    <Select
-                      value={rowsPerPage.toString()}
-                      onValueChange={(value) => setRowsPerPage(parseInt(value))}
-                    >
-                      <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
-                        <SelectValue placeholder={rowsPerPage} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1, 3, 10, 25, 50, 100].map((value) => (
-                          <SelectItem key={value} value={value.toString()}>
-                            {value}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  <span className="text-sm">entries</span>
-                </div>
-                <div>
-                <Button onClick={() => handleResetSearch()}>Reset Search</Button> {/*to reset search */}
-                </div>
-              </div>
-      
-              {/* Second Column */}
-              <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2 max-md:flex-wrap">
-                   <Input
-                      placeholder="Search by name..."
-                      className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
-                      ref={searchByNameInput}
-                      defaultValue={nameSearch}
-                    />
-                    <Button onClick={()=> handleSearchByName("name", searchByNameInput.current?.value as string)}>search</Button>
-                </div>
-              </div>
-           </CardHeader>
+        {/* Second Column */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 max-md:flex-wrap">
+            <Input
+              placeholder="Search by name..."
+              className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
+              ref={searchByNameInput}
+              defaultValue={nameSearch}
+            />
+            <Button
+              onClick={() =>
+                handleSearchByName(
+                  "name",
+                  searchByNameInput.current?.value as string
+                )
+              }
+            >
+              search
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
 
       <CardContent className="rounded-md min-h-14">
         <Table>
@@ -244,7 +265,6 @@ export const UserManagementPage = () => {
           </TableBody>
         </Table>
         <div className="flex items-center justify-between py-4">
-          
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -292,5 +312,3 @@ export const UserManagementPage = () => {
     </Card>
   );
 };
-
-

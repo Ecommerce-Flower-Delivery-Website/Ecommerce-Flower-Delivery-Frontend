@@ -1,36 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  useReduxDispatch,
-  useReduxSelector,
-  RootState,
-} from "../../../store/store";
-import {
-  getCategories,
-  TCategoryFromBackEnd,
-} from "../../../store/slices/categorySlice";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getFilteredRowModel,
 } from "@tanstack/react-table";
+import { useEffect, useRef, useState } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/select";
+  getCategories,
+  TCategoryFromBackEnd,
+} from "../../../store/slices/categorySlice";
+import {
+  RootState,
+  useReduxDispatch,
+  useReduxSelector,
+} from "../../../store/store";
+import { Button } from "../../components/button";
 import { Card, CardContent, CardHeader } from "../../components/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/table";
+import { Input } from "../../components/input";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import {
   Pagination,
   PaginationContent,
@@ -39,10 +26,22 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../../components/pagination";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/table";
 import * as CategoryForms from "./components/CategoryForms";
-import { Input } from "../../components/input";
-import { Button } from "../../components/button";
 
 const CategoryPage = () => {
   const { categories, loading, pagination } = useReduxSelector(
@@ -54,11 +53,17 @@ const CategoryPage = () => {
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
 
-   const [titleSearch, setTitleSearch] = useState("");
-
+  const [titleSearch, setTitleSearch] = useState("");
 
   useEffect(() => {
-    dispatch(getCategories({ page: 1, limit: rowsPerPage, field: fieldSearch, value: valueSearch  }));
+    dispatch(
+      getCategories({
+        page: 1,
+        limit: rowsPerPage,
+        field: fieldSearch,
+        value: valueSearch,
+      })
+    );
   }, [dispatch, rowsPerPage, fieldSearch, valueSearch]);
 
   const totalPages = pagination.totalPages;
@@ -67,7 +72,7 @@ const CategoryPage = () => {
     {
       accessorKey: "title",
       header: "Title",
-      filterFn: "includesString", 
+      filterFn: "includesString",
     },
     {
       accessorKey: "image",
@@ -111,27 +116,34 @@ const CategoryPage = () => {
   });
 
   const setCurrentPage = ({ page }: { page: number }) => {
-    dispatch(getCategories({ page, limit: rowsPerPage, field: fieldSearch, value: valueSearch }));
+    dispatch(
+      getCategories({
+        page,
+        limit: rowsPerPage,
+        field: fieldSearch,
+        value: valueSearch,
+      })
+    );
   };
 
   const searchByTitleInput = useRef<HTMLInputElement | null>(null);
 
-  const handleSearch = (field: string, value : string) => {
+  const handleSearch = (field: string, value: string) => {
     setFieldSearch(field);
     setValueSearch(value);
-   }
+  };
 
   const handleResetSearch = () => {
-     setFieldSearch(undefined);
-     setValueSearch(undefined);  
-     
-     setTitleSearch("");
-   }      
+    setFieldSearch(undefined);
+    setValueSearch(undefined);
 
-   const handleSearchByTitle = (field : string, value : string) => {
+    setTitleSearch("");
+  };
+
+  const handleSearchByTitle = (field: string, value: string) => {
     setTitleSearch(value);
     handleSearch(field, value);
-  }
+  };
 
   if (loading) {
     return <LoadingSpinner />;
@@ -139,49 +151,59 @@ const CategoryPage = () => {
 
   return (
     <Card>
-          <CardHeader className="flex items-center justify-between gap-4">
-              {/* First Column */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm">Show</span>
-                    <Select
-                      value={rowsPerPage.toString()}
-                      onValueChange={(value) => setRowsPerPage(parseInt(value))}
-                    >
-                      <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
-                        <SelectValue placeholder={rowsPerPage} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1,3, 10, 25, 50, 100].map((value) => (
-                          <SelectItem key={value} value={value.toString()}>
-                            {value}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  <span className="text-sm">entries</span>
-                </div>
-                <div>
-                <Button onClick={() => handleResetSearch()}>Reset Search</Button> {/*to reset search */}
-                </div>
-              </div>
-      
-              {/* Second Column */}
-              <div className="flex flex-col gap-2">
-                  <div>
-                  <CategoryForms.CreateCategory />
-                  </div>
-                  <div className="flex items-center gap-2 max-md:flex-wrap">
-                     <Input
-                        placeholder="Search by title..."
-                        className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
-                        ref={searchByTitleInput}
-                        defaultValue={titleSearch}
-                      />
-                    <Button onClick={()=> handleSearchByTitle("title", searchByTitleInput.current?.value as string)}>search</Button>
-                </div>
-              </div>
-            </CardHeader>
+      <CardHeader className="flex items-center justify-between gap-4">
+        {/* First Column */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm">Show</span>
+            <Select
+              value={rowsPerPage.toString()}
+              onValueChange={(value) => setRowsPerPage(parseInt(value))}
+            >
+              <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
+                <SelectValue placeholder={rowsPerPage} />
+              </SelectTrigger>
+              <SelectContent>
+                {[1, 3, 10, 25, 50, 100].map((value) => (
+                  <SelectItem key={value} value={value.toString()}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span className="text-sm">entries</span>
+          </div>
+          <div>
+            <Button onClick={() => handleResetSearch()}>Reset Search</Button>{" "}
+            {/*to reset search */}
+          </div>
+        </div>
+
+        {/* Second Column */}
+        <div className="flex flex-col gap-2">
+          <div>
+            <CategoryForms.CreateCategory />
+          </div>
+          <div className="flex items-center gap-2 max-md:flex-wrap">
+            <Input
+              placeholder="Search by title..."
+              className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
+              ref={searchByTitleInput}
+              defaultValue={titleSearch}
+            />
+            <Button
+              onClick={() =>
+                handleSearchByTitle(
+                  "title",
+                  searchByTitleInput.current?.value as string
+                )
+              }
+            >
+              search
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
 
       <CardContent>
         <Table className="table-auto border-collapse w-full mb-7">

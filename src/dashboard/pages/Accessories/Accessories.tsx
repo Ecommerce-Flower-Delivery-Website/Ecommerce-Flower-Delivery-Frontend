@@ -1,4 +1,3 @@
-import React, { useState, useEffect, useRef } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -7,11 +6,30 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/select";
-import { ArrowUpDown, ChevronDown, ChevronUp, Trash, Edit } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { api } from "../../../lib/ajax/api";
+import { handleApiError } from "../../../lib/utils";
 import { Button } from "../../components/button";
 import { Card, CardContent, CardHeader } from "../../components/card";
 import { Input } from "../../components/input";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../../components/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/select";
 import {
   Table,
   TableBody,
@@ -22,11 +40,6 @@ import {
 } from "../../components/table";
 import AddPopup from "./components/AddPopup";
 import EditPopup from "./components/EditPopup";
-import { api } from "../../../lib/ajax/api";
-import {Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../../components/pagination";
-import { handleApiError } from "../../../lib/utils";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import { toast } from "react-toastify";
 
 interface Accessory {
   _id: number;
@@ -70,16 +83,14 @@ export const Accessories: React.FC = () => {
     const fetchAccessories = async () => {
       try {
         setLoading(true);
-        const response = await api.get(
-          `/accessory`, {
-            params: {
-              page: currentPage,
-              limit: rowsPerPage,
-              field: fieldSearch,
-              value: valueSearch
-            }
-          }
-        );
+        const response = await api.get(`/accessory`, {
+          params: {
+            page: currentPage,
+            limit: rowsPerPage,
+            field: fieldSearch,
+            value: valueSearch,
+          },
+        });
         setAccessories(response.data.accessories);
         setTotalPages(response.data.totalPages);
         setLoading(false);
@@ -91,29 +102,29 @@ export const Accessories: React.FC = () => {
     fetchAccessories();
   }, [currentPage, rowsPerPage, fieldSearch, valueSearch]);
 
-  const handeleChangeRowPerPage = (newRowPerPage : number) => {
+  const handeleChangeRowPerPage = (newRowPerPage: number) => {
     setCurrentPage(1);
     setRowsPerPage(newRowPerPage);
-  }
+  };
 
   const searchByTitleInput = useRef<HTMLInputElement | null>(null);
-    
-  const handleSearch = (field: string, value : string) => {
+
+  const handleSearch = (field: string, value: string) => {
     setFieldSearch(field);
     setValueSearch(value);
-  }
+  };
 
   const handleResetSearch = () => {
-     setFieldSearch(undefined);
-     setValueSearch(undefined);
+    setFieldSearch(undefined);
+    setValueSearch(undefined);
 
-     setTitleSearch("");
-  }
+    setTitleSearch("");
+  };
 
-  const handleSearchByTitle = (field : string, value : string) => {
+  const handleSearchByTitle = (field: string, value: string) => {
     setTitleSearch(value);
     handleSearch(field, value);
-  }
+  };
 
   const handleEdit = (id: number) => {
     const accessoryToEdit = accessories.find((item) => item._id === id);
@@ -132,16 +143,14 @@ export const Accessories: React.FC = () => {
     }
 
     try {
-      const response = await api.delete(
-        `/accessory/${id}`
-      );
+      const response = await api.delete(`/accessory/${id}`);
       if (response.status === 200) {
         // Remove the deleted accessory from the state
         setAccessories((prev) =>
           prev.filter((accessory) => accessory._id !== id)
         );
-        
-       toast.success("accessory added successfully");
+
+        toast.success("accessory added successfully");
       }
     } catch (error) {
       console.error("Error deleting accessory:", error);
@@ -161,12 +170,10 @@ export const Accessories: React.FC = () => {
       accessorKey: "title",
       header: ({ column }) => (
         <div
-          variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="p-0 hover:bg-transparent"
         >
           Title
-          
         </div>
       ),
     },
@@ -240,54 +247,63 @@ export const Accessories: React.FC = () => {
   return (
     <>
       <Card className="mb-7">
+        <CardHeader className="flex items-center justify-between gap-4">
+          {/* First Column */}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm">Show</span>
+              <Select
+                value={rowsPerPage.toString()}
+                onValueChange={(value) =>
+                  handeleChangeRowPerPage(parseInt(value))
+                }
+              >
+                <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
+                  <SelectValue placeholder={rowsPerPage} />
+                </SelectTrigger>
+                <SelectContent>
+                  {[1, 3, 10, 25, 50, 100].map((value) => (
+                    <SelectItem key={value} value={value.toString()}>
+                      {value}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="text-sm">entries</span>
+            </div>
+            <div>
+              <Button onClick={() => handleResetSearch()}>Reset Search</Button>
+            </div>
+          </div>
 
-      <CardHeader className="flex items-center justify-between gap-4">
-              {/* First Column */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm">Show</span>
-                    <Select
-                      value={rowsPerPage.toString()}
-                      onValueChange={(value) => handeleChangeRowPerPage(parseInt(value))}
-                    >
-                      <SelectTrigger className="w-[70px] bg-white dark:bg-gray-800">
-                        <SelectValue placeholder={rowsPerPage} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1,3, 10, 25, 50, 100].map((value) => (
-                          <SelectItem key={value} value={value.toString()}>
-                            {value}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  <span className="text-sm">entries</span>
-                </div>
-                <div>
-                 <Button onClick={() => handleResetSearch()}>Reset Search</Button> 
-                </div>
-              </div>
-      
-              {/* Second Column */}
-              <div className="flex flex-col gap-2">
-                  <div>
-                  <Button onClick={() => setPopupVisible(true)}>
-                    Add New Accessory
-                  </Button>     
-                 </div>
-                  <div className="flex items-center gap-2 max-md:flex-wrap">
-                     <Input
-                        placeholder="Search by name..."
-                        className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
-                         ref={searchByTitleInput}
-                         defaultValue={titleSearch}
-                      />
-                     <Button onClick={()=> handleSearchByTitle("title", searchByTitleInput.current?.value as string)}>search</Button> 
-                </div>
-              </div>
-            </CardHeader>
+          {/* Second Column */}
+          <div className="flex flex-col gap-2">
+            <div>
+              <Button onClick={() => setPopupVisible(true)}>
+                Add New Accessory
+              </Button>
+            </div>
+            <div className="flex items-center gap-2 max-md:flex-wrap">
+              <Input
+                placeholder="Search by name..."
+                className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
+                ref={searchByTitleInput}
+                defaultValue={titleSearch}
+              />
+              <Button
+                onClick={() =>
+                  handleSearchByTitle(
+                    "title",
+                    searchByTitleInput.current?.value as string
+                  )
+                }
+              >
+                search
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
 
-        
         <CardContent>
           <Table>
             <TableHeader>
@@ -331,52 +347,59 @@ export const Accessories: React.FC = () => {
           </Table>
         </CardContent>
       </Card>
-       <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() =>
-                  setCurrentPage( Math.max(currentPage - 1, 1))
-                }
-                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-              />
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
+              className={
+                currentPage === 1 ? "pointer-events-none opacity-50" : ""
+              }
+            />
+          </PaginationItem>
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <PaginationItem key={i}>
+              <PaginationLink
+                onClick={() => setCurrentPage(i + 1)}
+                isActive={currentPage === i + 1}
+              >
+                {i + 1}
+              </PaginationLink>
             </PaginationItem>
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <PaginationItem key={i}>
-                <PaginationLink
-                  onClick={() => setCurrentPage(i + 1 )}
-                  isActive={currentPage === i + 1}
-                >
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                onClick={() =>
-                  setCurrentPage(Math.min(currentPage + 1, totalPages))
-                }
-                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>       
+          ))}
+          <PaginationItem>
+            <PaginationNext
+              onClick={() =>
+                setCurrentPage(Math.min(currentPage + 1, totalPages))
+              }
+              className={
+                currentPage === totalPages
+                  ? "pointer-events-none opacity-50"
+                  : ""
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
       {isPopupVisible && (
         <AddPopup
+          //@ts-expect-error unknown
           setAccessories={setAccessories}
           setPopupVisible={setPopupVisible}
           newAccessory={newAccessory}
+          //@ts-expect-error unknown
           setNewAccessory={setNewAccessory}
         />
       )}
       {isEditPopupVisible && selectedAccessory && (
         <EditPopup
+          //@ts-expect-error unknown
           accessory={selectedAccessory}
           setPopupVisible={setEditPopupVisible}
+          //@ts-expect-error unknown
           updateAccessory={updateAccessory}
         />
       )}
-      
     </>
   );
 };

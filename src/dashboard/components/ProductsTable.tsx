@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,19 +8,15 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Edit2, Loader, Trash2 } from "lucide-react";
-import { useReduxDispatch, useReduxSelector } from "../../store/store";
+import { Edit2, Trash2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { deleteProduct, getProducts } from "../../store/slices/productSlice";
+import { useReduxDispatch, useReduxSelector } from "../../store/store";
+import { Card, CardContent, CardHeader } from "./card";
 import DeleteModal from "./DeleteModal";
 import { Input } from "./input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "./table";
+import LoadingSpinner from "./LoadingSpinner";
 import {
   Pagination,
   PaginationContent,
@@ -31,8 +25,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./pagination";
-import { Card, CardContent, CardHeader } from "./card";
-import LoadingSpinner from "./LoadingSpinner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./table";
 
 interface Product {
   priceAfterDiscount: string;
@@ -60,7 +60,7 @@ const ProductsTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [show, setShow] = useState(false);
   const [id, setId] = useState<string>("");
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage] = useState(5);
   const totalPages = pagination?.totalPages;
 
   const handleRowClick = (rowData: Product) => {
@@ -68,12 +68,12 @@ const ProductsTable = () => {
   };
 
   useEffect(() => {
-    dispatch(getProducts({ page: 1, limit: rowsPerPage })).then((result)=>{
-      if(result.meta.requestStatus === "fulfilled"){
+    dispatch(getProducts({ page: 1, limit: rowsPerPage })).then((result) => {
+      if (result.meta.requestStatus === "fulfilled") {
         console.log(totalPages);
       }
     });
-  }, [dispatch]);
+  }, [dispatch, rowsPerPage, totalPages]);
 
   const deleteProductFunc = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -121,7 +121,7 @@ const ProductsTable = () => {
       header: "Price",
       cell: ({ row }) => `$${row.getValue("price")}`,
     },
-    
+
     {
       id: "actions",
       header: "Actions",
@@ -129,12 +129,14 @@ const ProductsTable = () => {
         <div className="flex gap-2">
           <button
             className="p-2 rounded-full text-blue-500 hover:bg-primary"
-            onClick={(e) => editProduct(e, row.original._id)}>
+            onClick={(e) => editProduct(e, row.original._id)}
+          >
             <Edit2 className="h-4 w-4" />
           </button>
           <button
             className="p-2 rounded-full text-red-500 hover:bg-primary"
-            onClick={(e) => deleteProductFunc(e, row.original._id)}>
+            onClick={(e) => deleteProductFunc(e, row.original._id)}
+          >
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -156,13 +158,13 @@ const ProductsTable = () => {
     },
   });
 
-    const setCurrentPage = ({ page }: { page: number }) => {
-      dispatch(getProducts({ page, limit: rowsPerPage }));
-    };
+  const setCurrentPage = ({ page }: { page: number }) => {
+    dispatch(getProducts({ page, limit: rowsPerPage }));
+  };
 
-    if (loading) {
-      return <LoadingSpinner />;
-    }
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Card className="w-full">
@@ -199,7 +201,8 @@ const ProductsTable = () => {
                             header.column.toggleSorting(
                               header.column.getIsSorted() === "asc"
                             )
-                          }>
+                          }
+                        >
                           {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
@@ -221,7 +224,8 @@ const ProductsTable = () => {
                     <TableRow
                       key={row.id}
                       className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
-                      onClick={() => handleRowClick(row.original)}>
+                      onClick={() => handleRowClick(row.original)}
+                    >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           {flexRender(
@@ -260,7 +264,8 @@ const ProductsTable = () => {
                       <PaginationItem key={i}>
                         <PaginationLink
                           onClick={() => setCurrentPage({ page: i + 1 })}
-                          isActive={(pagination?.currentPage || 1) === i + 1}>
+                          isActive={(pagination?.currentPage || 1) === i + 1}
+                        >
                           {i + 1}
                         </PaginationLink>
                       </PaginationItem>
