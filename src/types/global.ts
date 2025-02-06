@@ -48,6 +48,7 @@ declare global {
     createdAt: Date | string;
     emailConfirmToken?: string;
     isAccountVerified?: boolean;
+    isReminder: boolean;
   };
 
   type SubProduct = {

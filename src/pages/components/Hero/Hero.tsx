@@ -75,18 +75,16 @@ const Hero = () => {
                   }`}
                   key={index}
                 >
-                  <div className="relative w-1/2 border border-t-[#121212] p-4">
+                  <div className="relative w-1/2  aspect-square border border-t-[#121212] p-4">
                     <DetailPart
                       id={el._id}
                       title={el.title}
                       dir={`${index % 2 ? "left" : "right"}`}
                     />
                   </div>
-                  <div className="w-1/2 border border-[#121212] border-b-0">
+                  <div className="w-1/2  aspect-square border border-[#121212] border-b-0">
                     <ImagePart
-                      image={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${
-                        el.image
-                      }`}
+                      image={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${el.image}`}
                     />
                   </div>
                 </div>

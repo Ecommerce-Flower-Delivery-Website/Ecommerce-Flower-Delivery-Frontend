@@ -27,7 +27,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user")
+    localStorage.removeItem("user");
     window.location.reload();
   };
 
@@ -51,14 +51,14 @@ const Navbar = () => {
         <div className="lg:w-1/4 ">
           {localStorage.getItem("token") ? (
             <button
-              className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+              className=" lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
               onClick={handleLogout}
             >
               Sign out
             </button>
           ) : (
             <button
-              className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+              className=" lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
               onClick={() => {
                 setSearchParams((prevParams) => {
                   prevParams.set(

@@ -12,6 +12,7 @@ import LoadingSpinner from "../../../dashboard/components/LoadingSpinner";
 import { api } from "../../../lib/ajax/api";
 import { cn } from "../../../lib/utils";
 import { ScrollArea } from "../../../components/ui/ScrollArea";
+import { useReduxSelector } from "../../../store/store";
 
 type Category = {
   _id: string;
@@ -54,7 +55,7 @@ export const ProductDetails = ({ productId }: { productId: string }) => {
     },
     throwOnError: true,
   });
-
+  const { user } = useReduxSelector((state) => state.auth);
   const [quantity, setQuantity] = useState(1);
   const { data, addItem, updateCartItem } = useCart();
   const InCartProduct = data?.items.find(
@@ -184,9 +185,9 @@ export const ProductDetails = ({ productId }: { productId: string }) => {
             <Button
               onClick={handleAddToCart}
               className="w-full bg-black rounded-none text-white py-6 hover:bg-gray-900 text-lg font-semibold"
-              disabled={product.stock === "0"}
+              disabled={product.stock === "0" || !user}
             >
-              ADD TO BASKET
+              {user ? "ADD TO BASKET" : "Login To Continue"}
             </Button>
           </motion.div>
         </AnimatePresence>
