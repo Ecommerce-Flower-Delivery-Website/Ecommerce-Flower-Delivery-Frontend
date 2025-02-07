@@ -47,9 +47,7 @@ const Navbar = () => {
           <button className="hidden lg:inline-block w-1/2 h-[81px] text-center border-r border-textPrimaryColor font-medium text-base ">
             Contact
           </button>
-          <Link to="/dashboard">
-            <h6 className="text-purple-700">Dashboard</h6>
-          </Link>
+        
         </div>
         <div className="lg:w-1/4 ">
           {localStorage.getItem("token") ? (
@@ -142,12 +140,15 @@ const Navbar = () => {
             >
               Contact
             </button>
-            <button
-              className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
-              style={{ fontSize: "21px" }}
-            >
-              About us
-            </button>
+            <Link to={"/about-us"}>
+              <button
+                className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
+                style={{ fontSize: "21px" }}
+              >
+                About us
+              </button>
+            </Link>
+            
             <div className="w-full flex flex-col p-6 border-b border-textPrimaryColor">
               <a href="" className="mb-4 font-medium">
                 Shipping & returns

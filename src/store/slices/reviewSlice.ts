@@ -135,7 +135,6 @@ const reviewSlice = createSlice({
         state.reviews = action.payload.reviews;
         state.pagination = action.payload.pagination;
 
-        console.log("hi hero5", action.payload);
       })
       .addCase(getReviews.rejected, (state, action) => {
         state.loading = false;
