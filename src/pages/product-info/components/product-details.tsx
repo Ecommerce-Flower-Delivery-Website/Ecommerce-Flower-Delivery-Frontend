@@ -4,14 +4,14 @@ import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Label } from "../../../components/ui/label";
-import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group";
+import { Label } from "../../../Components/ui/label";
+import { RadioGroup, RadioGroupItem } from "../../../Components/ui/radio-group";
 import { useCart } from "../../../contexts/CartContext";
 import { Button } from "../../../dashboard/components/button";
 import LoadingSpinner from "../../../dashboard/components/LoadingSpinner";
 import { api } from "../../../lib/ajax/api";
 import { cn } from "../../../lib/utils";
-import { ScrollArea } from "../../../components/ui/ScrollArea";
+import { ScrollArea } from "../../../Components/ui/ScrollArea";
 import { useReduxSelector } from "../../../store/store";
 
 type Category = {

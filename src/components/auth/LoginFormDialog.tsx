@@ -46,18 +46,23 @@ const LoginFormDialog = ({
   const onSubmit = async (data: LoginFormType) => {
     const res = await dispatch(loginUser(data));
     if (res.meta.requestStatus === "fulfilled") {
-      if (res.payload?.data?.user?.isAccountVerified === false) {
-        setSearchParams((prevParams) => {
-          prevParams.set(EnumsSearchParams.dialog, EnumsDialogShow.Verify);
-          return prevParams;
-        });
-      } else if (
-        res.payload?.data?.user?.isAdmin === true &&
-        res.payload?.data?.user?.isAccountVerified === true
+
+    //admin email => move to dashboard
+     if (
+        res.payload?.data?.user?.isAdmin === true
       ) {
         handleClose();
         navigate("/dashboard", {
           replace: true,
+        });
+      }
+
+     //user email
+
+      else if (res.payload?.data?.user?.isAccountVerified === false) {
+        setSearchParams((prevParams) => {
+          prevParams.set(EnumsSearchParams.dialog, EnumsDialogShow.Verify);
+          return prevParams;
         });
       } else if (
         res.payload?.data?.user?.isAdmin === false &&

@@ -31,7 +31,7 @@ import ProductPage from "./pages/product-info/ProductInfo";
 import GiftDiscount from "./dashboard/pages/giftDiscount/GiftDiscount";
 import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Subscribe from "./pages/subscribe/Subscribe";
-import CategoryWeb from "./components/category/CategoryWeb";
+import CategoryWeb from "./Components/category/CategoryWeb";
 import { ThemeProvider } from "./contexts/ThemeProvider";
 
 const routers = createBrowserRouter(
