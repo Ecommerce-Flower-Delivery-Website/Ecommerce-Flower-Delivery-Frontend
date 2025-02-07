@@ -233,12 +233,12 @@ export const OrdersPage = () => {
       </CardHeader>
 
       <CardContent className=" relative rounded-md">
-        <Table>
-          {isPending ? (
-            <div className="h-40 flex justify-center items-center">
-              <LoaderIcon />
-            </div>
-          ) : (
+        {isPending ? (
+          <div className="h-40 flex justify-center items-center">
+            <LoaderIcon className=" animate-[spin_1s_infinite]" />
+          </div>
+        ) : (
+          <Table>
             <>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -285,8 +285,8 @@ export const OrdersPage = () => {
                 )}
               </TableBody>
             </>
-          )}
-        </Table>
+          </Table>
+        )}
         <div className="flex items-center justify-between py-4">
           <div className="text-nowrap text-sm text-muted-foreground">
             Showing{" "}

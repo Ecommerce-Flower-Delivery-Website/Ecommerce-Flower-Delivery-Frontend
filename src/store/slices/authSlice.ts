@@ -32,7 +32,7 @@ const removeFromLocalStorage = (key: string) => {
 };
 
 const initialState: AuthState = {
-  token: loadFromLocalStorage("token"),
+  token: localStorage.getItem("token"),
   user: loadFromLocalStorage("user"),
   isPending: false,
   isPendingResend: false,
@@ -142,9 +142,8 @@ export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (values: ForgotPasswordType, { rejectWithValue }) => {
     try {
-      const result = await validateSchemas.Forgot_Password.safeParseAsync(
-        values
-      );
+      const result =
+        await validateSchemas.Forgot_Password.safeParseAsync(values);
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
       }
@@ -162,9 +161,8 @@ export const compareVeificationCode = createAsyncThunk(
   "auth/compareVeificationCode",
   async (values: CompareVerificationType, { rejectWithValue }) => {
     try {
-      const result = await validateSchemas.CompareVerification.safeParseAsync(
-        values
-      );
+      const result =
+        await validateSchemas.CompareVerification.safeParseAsync(values);
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
       }
@@ -182,9 +180,8 @@ export const resendVerifyCode = createAsyncThunk(
   "auth/resendVerifyCode",
   async (values: resendVerifyCodeType, { rejectWithValue }) => {
     try {
-      const result = await validateSchemas.ResendVerifyCode.safeParseAsync(
-        values
-      );
+      const result =
+        await validateSchemas.ResendVerifyCode.safeParseAsync(values);
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
       }

@@ -33,6 +33,7 @@ import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Subscribe from "./pages/subscribe/Subscribe";
 import CategoryWeb from "./components/category/CategoryWeb";
 import { ThemeProvider } from "./contexts/ThemeProvider";
+import ContactUs from "./pages/components/ContactUs/ContactUs";
 
 const routers = createBrowserRouter(
   [
@@ -50,6 +51,7 @@ const routers = createBrowserRouter(
             { path: "/about-us", element: <AboutUsPage /> },
             { path: "/check-out", element: <CheckoutPage /> },
             { path: "/subscribe", element: <Subscribe /> },
+            { path: "/contact", element: <ContactUs /> },
           ],
         },
         {
