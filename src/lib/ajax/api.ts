@@ -5,8 +5,8 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  config.headers.Authorization = `Bearer ${token || ""}`;
+  const token = JSON.parse(localStorage.getItem("token") || "null");
+  config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
@@ -16,13 +16,14 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.log("this is error", error);
+    console.log(error);
 
     const { response } = error;
-    if (response.status === 401) {
+    if (response?.status === 401) {
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       // window.location.reload();
-    } else if (response.status === 404) {
+    } else if (response?.status === 404) {
       //Show not found
     }
 

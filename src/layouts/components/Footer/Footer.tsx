@@ -7,15 +7,13 @@ import {
   addReminder,
   removeReminder,
 } from "../../../store/slices/reminderSlice";
-import { useReduxDispatch } from "../../../store/store";
+import { useReduxDispatch, useReduxSelector } from "../../../store/store";
 
 const Footer = () => {
-  const [email, setemail] = useState<string>("");
-  const storedUser = localStorage.getItem("user");
-  const user = JSON.parse(storedUser);
-  
+  const [, setemail] = useState<string>("");
+  const user = useReduxSelector((state) => state.auth.user);
+
   const isReminder = user ? user.isReminder : false;
-  console.log(isReminder);
   const dispatch = useReduxDispatch();
   const handleOnReminderClick = () => {
     dispatch(addReminder());

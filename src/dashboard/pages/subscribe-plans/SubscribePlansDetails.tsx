@@ -1,5 +1,4 @@
-
-  import { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useReduxDispatch, useReduxSelector } from "../../../store/store";
@@ -50,46 +49,54 @@ export const SubscribePlansDetails = () => {
           <h1 className="text-3xl font-bold mb-6 ">SubScribe Plan Details</h1>
 
           <Section title="Recipient Information">
-            <InfoItem label="Name"  value={subscribePlanData?.title ?subscribePlanData?.title:"No Title" }/>
-            <InfoItem label="Price"  value={subscribePlanData?.price ? `${subscribePlanData?.price}$` : "No Price"} />
+            <InfoItem
+              label="Name"
+              value={
+                subscribePlanData?.title ? subscribePlanData?.title : "No Title"
+              }
+            />
+            <InfoItem
+              label="Price"
+              value={
+                subscribePlanData?.price
+                  ? `${subscribePlanData?.price}$`
+                  : "No Price"
+              }
+            />
             <InfoItem
               label="Is Free Delivery"
-              value={subscribePlanData?.isFreeDelivery==="1" ?"Yes":"No"}
+              value={subscribePlanData?.isFreeDelivery === "1" ? "Yes" : "No"}
             />
           </Section>
 
           <Section title="Features">
             <InfoItem
               label="Features"
-              value={Array.isArray(subscribePlanData?.features) ? subscribePlanData?.features.join(', ').length > 50 ? 
-                `${subscribePlanData?.features.slice(0, 47).join(',')}...` :
-                subscribePlanData?.features.join(', ') :"_"
+              value={
+                Array.isArray(subscribePlanData?.features)
+                  ? subscribePlanData?.features.join(", ").length > 50
+                    ? `${subscribePlanData?.features.slice(0, 47).join(",")}...`
+                    : subscribePlanData?.features.join(", ")
+                  : "_"
               }
-              />
-
+            />
           </Section>
-          
+
           <Section title="Users">
             <InfoItem
               label="Users"
-              value={Array.isArray(subscribePlanData?.users_id) ? 
-
-                `${subscribePlanData?.users_id.map((item) => (
-                  `Email: ${item?.user?.email}  - 
+              value={
+                Array.isArray(subscribePlanData?.users_id)
+                  ? `${subscribePlanData?.users_id.map(
+                      (item) =>
+                        `Email: ${item?.user?.email}  - 
                   Delivery Count: ${item?.deliveryCount} - 
-                  Delivery Frequency: ${item?.deliveryFrequency} ${subscribePlanData?.users_id?.length>1 ? " , ":""}\n`
-                  
-                ))}`
-
-                :"No Users"
+                  Delivery Frequency: ${item?.deliveryFrequency} ${subscribePlanData?.users_id?.length > 1 ? " , " : ""}\n`
+                    )}`
+                  : "No Users"
               }
-              />
-
-     
+            />
           </Section>
-
-
-
         </CardContent>
       </Card>
     </motion.div>

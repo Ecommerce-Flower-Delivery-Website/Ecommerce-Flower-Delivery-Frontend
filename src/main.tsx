@@ -31,146 +31,152 @@ import ProductPage from "./pages/product-info/ProductInfo";
 import GiftDiscount from "./dashboard/pages/giftDiscount/GiftDiscount";
 import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Subscribe from "./pages/subscribe/Subscribe";
-import CategoryWeb from "./Components/category/CategoryWeb";
+import CategoryWeb from "./components/category/CategoryWeb";
 import { ThemeProvider } from "./contexts/ThemeProvider";
-// import SubscribeHero from "./Components/SubscribeHero";
+import ContactUs from "./pages/components/ContactUs/ContactUs";
 
-const routers = createBrowserRouter([
+const routers = createBrowserRouter(
+  [
+    {
+      element: <RootLayout />,
+      path: "/",
+      children: [
+        {
+          path: "/",
+          element: <Website />,
+          children: [
+            { index: true, element: <Home /> },
+            { path: "category/:id", element: <CategoryWeb /> },
+            { path: "/product/:id", element: <ProductPage /> },
+            { path: "/about-us", element: <AboutUsPage /> },
+            { path: "/check-out", element: <CheckoutPage /> },
+            { path: "/subscribe", element: <Subscribe /> },
+            { path: "/contact", element: <ContactUs /> },
+          ],
+        },
+        {
+          path: "/dashboard",
+          element: (
+            <ThemeProvider>
+              <Dashboard />
+            </ThemeProvider>
+          ),
+          children: [
+            {
+              index: true,
+              element: <OverviewPage />,
+            },
+            {
+              path: "overview",
+              element: <OverviewPage />,
+            },
+            {
+              path: "users",
+              element: <UserManagementPage />,
+            },
+            {
+              path: "accessories",
+              element: <Accessories />,
+            },
+            {
+              path: "contact",
+              element: <ContactsPage />,
+            },
+            {
+              path: "products",
+              element: <ProductsPage />,
+              children: [
+                {
+                  index: true,
+                  path: "",
+                  element: <ShowProductsPage />,
+                },
+                {
+                  path: "add",
+                  element: <AddProductsPage />,
+                },
+                {
+                  path: "edit/:id",
+                  element: <EditProductsPage />,
+                },
+                {
+                  path: "product/:id",
+                  element: <ShowProductDetails />,
+                },
+              ],
+            },
+            {
+              path: "orders",
+              children: [
+                {
+                  index: true,
+                  element: <OrdersPage />,
+                },
+                {
+                  path: ":id",
+                  element: <OrderPreviewPage />,
+                },
+              ],
+            },
+            {
+              path: "subscribe-plans",
+              children: [
+                {
+                  index: true,
+                  element: <SubscribePlans />,
+                },
+                {
+                  path: ":id",
+                  element: <SubscribePlansDetails />,
+                },
+                {
+                  path: "add",
+                  element: <AddEditSubscribePlan />,
+                },
+                {
+                  path: "edit/:id",
+                  element: <AddEditSubscribePlan />,
+                },
+              ],
+            },
+            {
+              path: "reviews",
+              element: <ReviewPage />,
+            },
+
+            {
+              path: "category",
+              element: <CategoryPage />,
+            },
+            {
+              path: "reminder",
+              element: <ShowRemindersPage />,
+            },
+            {
+              path: "gift-discount",
+              element: <GiftDiscount />,
+            },
+          ],
+        },
+        {
+          path: "/dashboard/login_dashboard",
+          element: <LoginDashboardPage />,
+        },
+        {
+          path: "/accessories",
+          element: <Accessories />,
+        },
+        {
+          path: "/*",
+          element: <NotFoundPage />,
+        },
+      ],
+    },
+  ],
   {
-    element: <RootLayout />,
-    children: [
-      {
-        path: "/",
-        element: <Website />,
-        children: [
-          { index: true, element: <Home /> },
-          { path: "category/:id", element: <CategoryWeb /> },
-          { path: "/product/:id", element: <ProductPage /> },
-          { path: "/about-us", element: <AboutUsPage /> },
-          { path: "/check-out", element: <CheckoutPage /> },
-          { path: "/subscribe", element: <Subscribe /> },
-        ],
-      },
-      {
-        path: "/dashboard",
-        element: (
-          <ThemeProvider>
-            <Dashboard />
-          </ThemeProvider>
-        ),
-        children: [
-          {
-            index: true,
-            path: "*",
-            element: <OverviewPage />,
-          },
-          {
-            path: "overview",
-            element: <OverviewPage />,
-          },
-          {
-            path: "users",
-            element: <UserManagementPage />,
-          },
-          {
-            path: "accessories",
-            element: <Accessories />,
-          },
-          {
-            path: "contact",
-            element: <ContactsPage />,
-          },
-          {
-            path: "products",
-            element: <ProductsPage />,
-            children: [
-              {
-                index: true,
-                path: "",
-                element: <ShowProductsPage />,
-              },
-              {
-                path: "add",
-                element: <AddProductsPage />,
-              },
-              {
-                path: "edit/:id",
-                element: <EditProductsPage />,
-              },
-              {
-                path: "product/:id",
-                element: <ShowProductDetails />,
-              },
-            ],
-          },
-          {
-            path: "orders",
-            children: [
-              {
-                index: true,
-                element: <OrdersPage />,
-              },
-              {
-                path: ":id",
-                element: <OrderPreviewPage />,
-              },
-            ],
-          },
-          {
-            path: "subscribe-plans",
-            children: [
-              {
-                index: true,
-                element: <SubscribePlans />,
-              },
-              {
-                path: ":id",
-                element: <SubscribePlansDetails />,
-              },
-              {
-                path: "add",
-                element: <AddEditSubscribePlan />,
-              },
-              {
-                path: "edit/:id",
-                element: <AddEditSubscribePlan />,
-              },
-            ],
-          },
-          {
-            path: "reviews",
-            element: <ReviewPage />,
-          },
-
-          {
-            path: "category",
-            element: <CategoryPage />,
-          },
-          {
-            path: "reminder",
-            element: <ShowRemindersPage />,
-          },
-          {
-            path: "gift-discount",
-            element: <GiftDiscount />,
-          },
-        ],
-      },
-      {
-        path: "/dashboard/login_dashboard",
-        element: <LoginDashboardPage />,
-      },
-      {
-        path: "/accessories",
-        element: <Accessories />,
-      },
-      {
-        path: "/*",
-        element: <NotFoundPage />,
-      },
-    ],
-  },
-]);
+    basename: "/",
+  }
+);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <StrictMode>

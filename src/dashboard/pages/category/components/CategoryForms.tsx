@@ -1,5 +1,14 @@
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import {
+  addCategory,
+  deleteCategory,
+  editCategory,
+  TCategoryFromBackEnd,
+  TCatergoryAdd,
+  TCatergoryUpdate,
+} from "../../../../store/slices/categorySlice";
+import { useReduxDispatch } from "../../../../store/store";
 import { Button } from "../../../components/button";
 import {
   Dialog,
@@ -10,15 +19,6 @@ import {
 } from "../../../components/dialog";
 import { Input } from "../../../components/input";
 import { Textarea } from "../../../components/textarea";
-import { useReduxDispatch } from "../../../../store/store";
-import {
-  addCategory,
-  editCategory,
-  deleteCategory,
-  TCatergoryAdd,
-  TCatergoryUpdate,
-  TCategoryFromBackEnd,
-} from "../../../../store/slices/categorySlice";
 
 // Create Component
 export const CreateCategory = () => {
@@ -50,7 +50,9 @@ export const CreateCategory = () => {
     if (image) {
       formData.append("image", image);
     }
-    dispatch(addCategory(formData));
+    dispatch(
+      addCategory(formData as unknown as Parameters<typeof addCategory>[0])
+    );
     reset();
     setPreviewImage("");
     setImage(null);
@@ -163,7 +165,12 @@ export const EditCategory = ({
       formData.append("image", image);
     }
 
-    dispatch(editCategory({ categoryInfo: formData, id: category._id }));
+    dispatch(
+      editCategory({
+        categoryInfo: formData as unknown as TCatergoryAdd,
+        id: category._id,
+      })
+    );
     reset();
     setPreviewImage("");
     setImage(null);
@@ -261,9 +268,7 @@ export const RemoveCategory = ({ categoryId }: { categoryId: string }) => {
           <Button variant="ghost" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} >
-            Confirm
-          </Button>
+          <Button onClick={onConfirm}>Confirm</Button>
         </div>
       </DialogContent>
     </Dialog>

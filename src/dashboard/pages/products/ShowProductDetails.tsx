@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { getProduct } from "../../../store/slices/productSlice";
 import { useReduxDispatch, useReduxSelector } from "../../../store/store";
-import AccessoryPhoto from "../../components/AccessoryPhoto";
 import Loader from "../../components/Loader";
 
 const ShowProductDetails = () => {
@@ -25,19 +24,15 @@ const ShowProductDetails = () => {
     );
   }
 
-  const {
-    title,
-    price,
-    description,
-    stock,
-    discount,
-    quantity,
-    category_id,
-  } = product;
+  const { title, price, description, stock, discount, quantity, category_id } =
+    product;
   return (
     <div className="min-h-screen text-white p-5">
       <NavLink to="/dashboard/products" className="mb-5 inline-block">
-        <ArrowBigLeft size={40} className="cursor-pointer text-black dark:text-white" />
+        <ArrowBigLeft
+          size={40}
+          className="cursor-pointer text-black dark:text-white"
+        />
       </NavLink>
       <div className="text-[#020817] dark:text-white dark:bg-[#020817] shadow-lg w-full mx-auto rounded p-5 flex flex-col lg:flex-row gap-6">
         <div className="lg:w-1/2 w-full">
@@ -54,7 +49,6 @@ const ShowProductDetails = () => {
             </h3>
             <div className="flex justify-between mb-4">
               <h3 className="text-lg lg:text-xl font-bold">Price: {price}$</h3>
-             
             </div>
             {discount && (
               <h3 className="text-lg lg:text-xl font-bold mb-4">
@@ -71,10 +65,13 @@ const ShowProductDetails = () => {
               Description: {description}
             </h3>
             <h3 className="text-lg lg:text-xl font-bold mb-4">
-              Category Name: {category_id.title}
+              Category Name:{" "}
+              {
+                //@ts-expect-error types conflict
+                category_id.title
+              }
             </h3>
           </div>
-     
         </div>
       </div>
     </div>

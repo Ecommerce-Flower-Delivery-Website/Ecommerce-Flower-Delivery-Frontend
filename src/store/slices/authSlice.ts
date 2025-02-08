@@ -72,7 +72,6 @@ export const signUpUser = createAsyncThunk(
       toast.success(
         "Signed up successfully , Verification code was sent to your email"
       );
-      console.log(res, "rrrRegister");
 
       return res.data;
     } catch (error) {
@@ -90,10 +89,9 @@ export const loginUser = createAsyncThunk(
         throw new Error(result.error.errors[0].message);
       }
       const res = await api.post("/auth/login", result.data);
-      console.log(res, "resresresre");
       toast.success(
         `login successfully ${
-          res.data.data?.token ? "" : "sent the verfication code to your email"
+          res.data.data?.token ? "" : "sent the verification code to your email"
         }`
       );
       return res.data;
@@ -107,7 +105,6 @@ export const loginAdmin = createAsyncThunk(
   "auth/loginAdmin",
   async (values: LoginFormType, { rejectWithValue }) => {
     try {
-      console.log(values);
       const result = await validateSchemas.login.safeParseAsync(values);
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
@@ -142,9 +139,8 @@ export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (values: ForgotPasswordType, { rejectWithValue }) => {
     try {
-      const result = await validateSchemas.Forgot_Password.safeParseAsync(
-        values
-      );
+      const result =
+        await validateSchemas.Forgot_Password.safeParseAsync(values);
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
       }
@@ -162,9 +158,8 @@ export const compareVeificationCode = createAsyncThunk(
   "auth/compareVeificationCode",
   async (values: CompareVerificationType, { rejectWithValue }) => {
     try {
-      const result = await validateSchemas.CompareVerification.safeParseAsync(
-        values
-      );
+      const result =
+        await validateSchemas.CompareVerification.safeParseAsync(values);
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
       }
@@ -182,9 +177,8 @@ export const resendVerifyCode = createAsyncThunk(
   "auth/resendVerifyCode",
   async (values: resendVerifyCodeType, { rejectWithValue }) => {
     try {
-      const result = await validateSchemas.ResendVerifyCode.safeParseAsync(
-        values
-      );
+      const result =
+        await validateSchemas.ResendVerifyCode.safeParseAsync(values);
       if (!result.success) {
         throw new Error(result.error.errors[0].message);
       }
@@ -242,8 +236,8 @@ export const authSlice = createSlice({
         state.isPending = false;
         state.token = action.payload.data?.token;
         state.user = action.payload.data.user;
-        localStorage.setItem("token", action.payload.data?.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.data.user));
+        saveToLocalStorage("token", action.payload.data?.token);
+        saveToLocalStorage("user", action.payload.data.user);
       })
       .addCase(loginAdmin.rejected, (state, action) => {
         state.isPending = false;
@@ -270,8 +264,8 @@ export const authSlice = createSlice({
         state.isPending = false;
         state.token = action.payload.data.token;
         state.user = action.payload.data.user;
-        localStorage.setItem("token", action.payload.data.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.data.user));
+        saveToLocalStorage("token", action.payload.data.token);
+        saveToLocalStorage("user", action.payload.data.user);
       })
       .addCase(compareVeificationCode.rejected, (state, action) => {
         state.isPending = false;

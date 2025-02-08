@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
+import { toast } from "react-toastify";
 import { api } from "../../../../lib/ajax/api";
+import { handleApiError } from "../../../../lib/utils";
+import { getProducts } from "../../../../store/slices/productSlice";
 import { useReduxDispatch, useReduxSelector } from "../../../../store/store";
 import { Button } from "../../../components/button";
 import { Input } from "../../../components/input";
-import { getProducts, IProduct } from "../../../../store/slices/productSlice";
-import { handleApiError } from "../../../../lib/utils";
-import { toast } from "react-toastify";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 
 export interface Accessory {
@@ -33,7 +33,7 @@ const AddPopup: React.FC<AddPopupProps> = ({
 }) => {
   const { products, loading } = useReduxSelector((state) => state.product);
   const [selectedProducts, setSelectedProducts] = useState<
-    { label: string; value: IProduct }[]
+    { label: string; value: Product }[]
   >([]);
 
   const dispatch = useReduxDispatch();
@@ -42,7 +42,9 @@ const AddPopup: React.FC<AddPopupProps> = ({
     dispatch(getProducts({}));
   }, [dispatch]);
 
-  const handleAddAccessory = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleAddAccessory = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     try {
       const selectedProductIds = selectedProducts.map((el) => el.value._id);
@@ -81,7 +83,6 @@ const AddPopup: React.FC<AddPopupProps> = ({
       toast.success("accessory added successfully");
     } catch (error) {
       handleApiError(error);
-      
     }
   };
 
@@ -101,120 +102,115 @@ const AddPopup: React.FC<AddPopupProps> = ({
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md dark:bg-gray-900">
         <h2 className="text-xl font-semibold mb-4">Add New Accessory</h2>
-        {loading ? <LoadingSpinner /> :
-        <form onSubmit={handleAddAccessory}>
-        <div className="flex flex-col gap-4">
-   
-          <div>
-            <label className="block mb-2">
-              Title :
-            </label>
-            <Input
-              required
-              placeholder="Title"
-              value={newAccessory.title}
-              onChange={(e) =>
-                setNewAccessory({ ...newAccessory, title: e.target.value })
-              }
-            />
-          </div>
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <form onSubmit={handleAddAccessory}>
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="block mb-2">Title :</label>
+                <Input
+                  required
+                  placeholder="Title"
+                  value={newAccessory.title}
+                  onChange={(e) =>
+                    setNewAccessory({ ...newAccessory, title: e.target.value })
+                  }
+                />
+              </div>
 
-          <div>
-            <label className="block mb-2">
-              Select Products:
-            </label>
-             <Select
-              isMulti
-              options={productOptions}
-              value={selectedProducts}
-              onChange={(newValue) => setSelectedProducts([...newValue])}
-              placeholder="Search and select products..."
-              className="react-select-container"
-              classNamePrefix="react-select"
-              styles={{
-                menu: (provided) => ({
-                  ...provided,
-                  maxHeight: "300px", // Set max height for the dropdown
-                  overflowY: "auto", // Enable scrolling
-                }),
-                control: (provided) => ({
-                  ...provided,
-                  cursor: "text", // Set cursor to text
-                }),
-              }}
-            />
-            
-          </div>
-          
-          <div>
-            <label className="block mb-2">
-              Image :
-            </label>
-            <input
-              required
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
-            />
-          </div>
+              <div>
+                <label className="block mb-2">Select Products:</label>
+                <Select
+                  isMulti
+                  //@ts-expect-error types conflict
+                  options={productOptions}
+                  value={selectedProducts}
+                  onChange={(newValue) => setSelectedProducts([...newValue])}
+                  placeholder="Search and select products..."
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  styles={{
+                    menu: (provided) => ({
+                      ...provided,
+                      maxHeight: "300px", // Set max height for the dropdown
+                      overflowY: "auto", // Enable scrolling
+                    }),
+                    control: (provided) => ({
+                      ...provided,
+                      cursor: "text", // Set cursor to text
+                    }),
+                  }}
+                />
+              </div>
 
-         <div>
-            <label className="block mb-2">
-            Stock :
-          </label>
-          <Input
-            required
-            placeholder="Stock"
-            type="number"
-            onChange={(e) =>
-              setNewAccessory({
-                ...newAccessory,
-                stock: parseInt(e.target.value) || 0,
-              })
-            }
-          />
-        </div>
-          
-        <div className="block mb-2">
-          <label className="block mb-2">
-              Description :
-            </label>
-            <Input
-              required
-              placeholder="Description"
-              onChange={(e) =>
-                setNewAccessory({ ...newAccessory, description: e.target.value })
-              }
-            />
-        </div>
-          
-          <div>
-            <label className="block mb-2">
-              Price :
-            </label>
-            <Input
-              required
-              placeholder="Price"
-              type="number"
-              onChange={(e) =>
-                setNewAccessory({
-                  ...newAccessory,
-                  price: parseFloat(e.target.value) || 0,
-                })
-              }
-            />
-          </div>
-          
-          <div className="flex justify-end gap-4">
-            <Button variant="outline" onClick={() => setPopupVisible(false)}>
-              Cancel
-            </Button>
-            <Button type="submit">Add</Button>
-          </div>
-        </div>
-        </form>
-}
+              <div>
+                <label className="block mb-2">Image :</label>
+                <input
+                  required
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2">Stock :</label>
+                <Input
+                  required
+                  placeholder="Stock"
+                  type="number"
+                  onChange={(e) =>
+                    setNewAccessory({
+                      ...newAccessory,
+                      stock: parseInt(e.target.value) || 0,
+                    })
+                  }
+                />
+              </div>
+
+              <div className="block mb-2">
+                <label className="block mb-2">Description :</label>
+                <Input
+                  required
+                  placeholder="Description"
+                  onChange={(e) =>
+                    setNewAccessory({
+                      ...newAccessory,
+                      description: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2">Price :</label>
+                <Input
+                  required
+                  placeholder="Price"
+                  type="number"
+                  onChange={(e) =>
+                    setNewAccessory({
+                      ...newAccessory,
+                      price: parseFloat(e.target.value) || 0,
+                    })
+                  }
+                />
+              </div>
+
+              <div className="flex justify-end gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setPopupVisible(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">Add</Button>
+              </div>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

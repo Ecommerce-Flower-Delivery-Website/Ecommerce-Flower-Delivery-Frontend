@@ -1,21 +1,19 @@
 import { ArrowBigLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Loader from "../../components/Loader";
+import "react-select-search/style.css";
+import { getCategories } from "../../../store/slices/categorySlice";
+import { addProducts } from "../../../store/slices/productSlice";
 import {
   RootState,
   useReduxDispatch,
   useReduxSelector,
 } from "../../../store/store";
-import { addProducts } from "../../../store/slices/productSlice";
-import "react-select-search/style.css";
-import { getCategories } from "../../../store/slices/categorySlice";
+import Loader from "../../components/Loader";
 
 const AddProductsPage = () => {
   const file = useRef<HTMLInputElement | null>(null);
-  const { categories, loading } = useReduxSelector(
-    (state: RootState) => state.category
-  );
+  const { categories } = useReduxSelector((state: RootState) => state.category);
   const [previewImage, setPreviewImage] = useState<string>("");
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [title, setTitle] = useState<string>("");
@@ -43,14 +41,13 @@ const AddProductsPage = () => {
   useEffect(() => {
     dispatch(getCategories({})).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
-        console.log(categories);
+        // console.log(categories);
       }
     });
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(categoryId);
     setLoadingProducts(true);
     const formData = new FormData();
     formData.append("title", title);
@@ -71,7 +68,6 @@ const AddProductsPage = () => {
     });
   };
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value);
     setCategoryId(event.target.value);
   };
 
@@ -106,8 +102,6 @@ const AddProductsPage = () => {
                 />
               </div>
 
-              
-
               <div className="flex-1 min-w-[200px]">
                 <label htmlFor="category_id" className="block mb-2">
                   Category Name :
@@ -116,10 +110,11 @@ const AddProductsPage = () => {
                   className="w-full h-12 px-3 text-white dark:bg-gray-800 font-semibold border border-gray-300 rounded"
                   id="category-select"
                   value={categoryId}
-                  onChange={handleChange}>
-                    <option value="" disabled>
-                      Select Category
-                    </option>
+                  onChange={handleChange}
+                >
+                  <option value="" disabled>
+                    Select Category
+                  </option>
                   {categories.map((category) => (
                     <option key={category._id} value={category._id}>
                       {category.title}
@@ -199,7 +194,8 @@ const AddProductsPage = () => {
                 </label>
                 <div
                   className="w-full h-48 border bg-white border-dashed dark:border-white border-gray-300 border-2 dark:bg-gray-800 rounded overflow-hidden"
-                  onClick={handleClick}>
+                  onClick={handleClick}
+                >
                   {previewImage ? (
                     <img
                       src={previewImage}
@@ -231,7 +227,8 @@ const AddProductsPage = () => {
             <div>
               <button
                 type="submit"
-                className="bg-primary text-white py-3 px-16 font-semibold rounded hover:bg-opacity-90 transition-colors">
+                className="bg-primary text-white py-3 px-16 font-semibold rounded hover:bg-opacity-90 transition-colors"
+              >
                 Add Product
               </button>
             </div>

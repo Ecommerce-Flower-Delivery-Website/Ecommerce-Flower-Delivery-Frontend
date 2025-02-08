@@ -18,7 +18,6 @@ import {
 import { Input } from "../../../components/input";
 import { Textarea } from "../../../components/textarea";
 
-
 // Create Component
 export const Create = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,6 +27,7 @@ export const Create = () => {
     useForm<TReviewFromBackEnd>();
 
   const onSubmit = (data: TReviewFromBackEnd) => {
+    //@ts-expect-error unknown type conflict
     dispatch(addReview(data));
     reset();
     setIsOpen(false);
@@ -76,6 +76,7 @@ export const Edit = ({ review }: { review: TReviewFromBackEnd }) => {
     useForm<TReviewFromBackEnd>();
 
   const onSubmit = (data: TReviewFromBackEnd) => {
+    //@ts-expect-error unknown type conflict
     dispatch(editReview({ reviewInfo: { ...data }, id: review._id }));
     reset();
     setIsOpen(false);
@@ -135,12 +136,14 @@ export const Remove = ({ reviewId }: { reviewId: string }) => {
         </DialogHeader>
         <p>Are you sure you want to delete this review?</p>
         <div className="flex justify-between">
-          <Button variant="ghost"  className=" dark:text-white" onClick={() => setIsOpen(false)}>
+          <Button
+            variant="ghost"
+            className=" dark:text-white"
+            onClick={() => setIsOpen(false)}
+          >
             Cancel
           </Button>
-          <Button onClick={onConfirm}>
-            Confirm
-          </Button>
+          <Button onClick={onConfirm}>Confirm</Button>
         </div>
       </DialogContent>
     </Dialog>

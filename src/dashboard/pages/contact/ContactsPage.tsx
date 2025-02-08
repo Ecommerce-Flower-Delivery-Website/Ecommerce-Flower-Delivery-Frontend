@@ -96,7 +96,7 @@ export const ContactsPage: React.FC = () => {
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     isOpen: boolean;
     id: number | null;
-  }>({ isOpen: false, id: null });  
+  }>({ isOpen: false, id: null });
 
   const [fieldSearch, setFieldSearch] = useState<string | undefined>(undefined);
   const [valueSearch, setValueSearch] = useState<string | undefined>(undefined);
@@ -113,11 +113,11 @@ export const ContactsPage: React.FC = () => {
             page: currentPage,
             limit: 5,
             field: fieldSearch,
-            value: valueSearch
-          }
-        })
+            value: valueSearch,
+          },
+        });
         const { contacts, pagination } = response.data.data;
-        
+
         setContacts(contacts);
         setTotalPages(pagination?.totalPages || 1);
         setIsLoading(false);
@@ -131,37 +131,35 @@ export const ContactsPage: React.FC = () => {
   }, [currentPage, fieldSearch, valueSearch]);
 
   const searchByNameInput = useRef<HTMLInputElement | null>(null);
-  
-    const handleSearch = (field: string, value : string) => {
-      setFieldSearch(field);
-      setValueSearch(value);
-     }
-  
-    const handleResetSearch = () => {
-       setFieldSearch(undefined);
-       setValueSearch(undefined);    
 
-       setNameSearch("");
+  const handleSearch = (field: string, value: string) => {
+    setFieldSearch(field);
+    setValueSearch(value);
+  };
 
-     }      
+  const handleResetSearch = () => {
+    setFieldSearch(undefined);
+    setValueSearch(undefined);
 
-     const handleSearchByName = (field : string, value : string) => {
-      setNameSearch(value);
-      handleSearch(field, value);
-    }
+    setNameSearch("");
+  };
+
+  const handleSearchByName = (field: string, value: string) => {
+    setNameSearch(value);
+    handleSearch(field, value);
+  };
 
   const filteredContacts = useMemo(() => {
-    return contacts
-      .filter((contact) => {
-        if (filter === "all") return true;
-        return filter === "checked" ? contact.isChecked : !contact.isChecked;
-      })
+    return contacts.filter((contact) => {
+      if (filter === "all") return true;
+      return filter === "checked" ? contact.isChecked : !contact.isChecked;
+    });
   }, [contacts, filter]);
 
   const handleToggleChecked = async (id: number) => {
     try {
       setIsUpdating(id);
-      const token = localStorage.getItem("token");
+      const token = JSON.parse(localStorage.getItem("token") || "null");
       if (!token) {
         throw new Error("Authentication token not found.");
       }
@@ -197,7 +195,7 @@ export const ContactsPage: React.FC = () => {
   const handleDeleteContact = async (id: number) => {
     try {
       setIsDeleting(id);
-      const token = localStorage.getItem("token");
+      const token = JSON.parse(localStorage.getItem("token") || "null");
       if (!token) {
         throw new Error("Authentication token not found.");
       }
@@ -302,10 +300,10 @@ export const ContactsPage: React.FC = () => {
   return (
     <>
       <Card>
-      <CardHeader className="flex items-center justify-between gap-4">
-              {/* First Column */}
-              <div className="flex flex-col gap-2">
-              <div className="flex justify-between items-center">
+        <CardHeader className="flex items-center justify-between gap-4">
+          {/* First Column */}
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between items-center">
               <div className="flex gap-2">
                 <Button
                   variant={filter === "all" ? "default" : "outline"}
@@ -327,28 +325,35 @@ export const ContactsPage: React.FC = () => {
                 </Button>
               </div>
             </div>
-                <div>
-                <Button onClick={() => handleResetSearch()}>Reset Search</Button> 
-                </div>
-              </div>
-      
-              {/* Second Column */}
-              <div className="flex flex-col gap-2">
-                  <div>
-                  </div>
-                  <div className="flex items-center gap-2 max-md:flex-wrap">
-                     <Input
-                        placeholder="Search by name..."
-                        className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
-                        ref={searchByNameInput}
-                        defaultValue={nameSearch}
-                      />
-                    <Button onClick={()=> handleSearchByName("name", searchByNameInput.current?.value as string)}>search</Button>
-                </div>
-              </div>
-            </CardHeader>
-            
-        
+            <div>
+              <Button onClick={() => handleResetSearch()}>Reset Search</Button>
+            </div>
+          </div>
+
+          {/* Second Column */}
+          <div className="flex flex-col gap-2">
+            <div></div>
+            <div className="flex items-center gap-2 max-md:flex-wrap">
+              <Input
+                placeholder="Search by name..."
+                className="max-w-sm dark:placeholder:text-white bg-white dark:bg-gray-800"
+                ref={searchByNameInput}
+                defaultValue={nameSearch}
+              />
+              <Button
+                onClick={() =>
+                  handleSearchByName(
+                    "name",
+                    searchByNameInput.current?.value as string
+                  )
+                }
+              >
+                search
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+
         <CardContent>
           <Table>
             <TableHeader>

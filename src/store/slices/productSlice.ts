@@ -4,6 +4,7 @@ import { handleApiError } from "../../lib/utils";
 import { toast } from "react-toastify";
 
 interface Product {
+  _id: string;
   priceAfterDiscount: string;
   discount?: string;
   quantity: string;
@@ -43,7 +44,7 @@ interface ProductState {
     totalPages: number;
     currentPage: number;
     pageSize: number;
-  }
+  };
 }
 
 const initialState: ProductState = {
@@ -75,12 +76,14 @@ const initialState: ProductState = {
 
 export const getProducts = createAsyncThunk(
   "product/getProducts",
-  async (paginationInfo: { page?: number; limit?: number }, { rejectWithValue }) => {
+  async (
+    paginationInfo: { page?: number; limit?: number },
+    { rejectWithValue }
+  ) => {
     const { page, limit } = paginationInfo;
     try {
       const response = await api.get(`/product?page=${page}&limit=${limit}`);
       if (response.status === 201 || response.status === 200) {
-        console.log(response.data.data);
         return response.data.data;
       }
     } catch (error) {
@@ -128,9 +131,8 @@ export const getRelatedProduct = createAsyncThunk(
   async (id: string | undefined, { rejectWithValue }) => {
     try {
       const response = await api.get(`/product/${id}/relate`);
-      
+
       if (response.status === 201 || response.status === 200) {
-        console.log(response.data.data.relatedProducts);
         return response.data.data.relatedProducts;
       }
     } catch (error) {
@@ -170,8 +172,7 @@ export const updateProduct = createAsyncThunk<
     const response = await api.put(`/product/${id}`, data);
     if (response.status === 201 || response.status === 200) {
       toast.success("Product updated successfully");
-      return response.data.data.product
-;
+      return response.data.data.product;
     }
   } catch (error) {
     handleApiError(error);

@@ -1,19 +1,18 @@
 import { Copyright } from "lucide-react";
-import FlowerImage from "./../../../assets/flower-1.jpeg";
-import HeroImage from "./../../../assets/hero.jpeg";
-import DetailPart from "../DetailPart";
-import ImagePart from "../ImagePart";
+import { useEffect } from "react";
+import LoadingSpinner from "../../../dashboard/components/LoadingSpinner";
+import { getCategories } from "../../../store/slices/categorySlice";
 import {
   RootState,
   useReduxDispatch,
   useReduxSelector,
 } from "../../../store/store";
-import { useEffect } from "react";
-import { getCategories } from "../../../store/slices/categorySlice";
-import LoadingSpinner from "../../../dashboard/components/LoadingSpinner";
+import DetailPart from "../DetailPart";
+import ImagePart from "../ImagePart";
+import HeroImage from "./../../../assets/hero.jpeg";
 
 const Hero = () => {
-  const { categories, loading, pagination, error } = useReduxSelector(
+  const { categories, loading, error } = useReduxSelector(
     (state: RootState) => state.category
   );
   const dispatch = useReduxDispatch();
@@ -65,31 +64,33 @@ const Hero = () => {
         </div>
 
         <div className="w-full lg:w-1/2 flex flex-col">
-          {loading ? <LoadingSpinner /> : categories.map((el, index) => {
-            return (
-              <div
-                className={`flex flex-grow ${
-                  index % 2 ? "flex-row-reverse" : ""
-                }`}
-                key={index}
-              >
-                <div className="relative w-1/2 border border-t-[#121212] p-4">
-                  <DetailPart
-                    id={el._id}
-                    title={el.title}
-                    dir={`${index % 2 ? "left" : "right"}`}
-                  />
+          {loading ? (
+            <LoadingSpinner />
+          ) : (
+            categories.map((el, index) => {
+              return (
+                <div
+                  className={`flex flex-grow ${
+                    index % 2 ? "flex-row-reverse" : ""
+                  }`}
+                  key={index}
+                >
+                  <div className="relative w-1/2  aspect-square border border-t-[#121212] p-4">
+                    <DetailPart
+                      id={el._id}
+                      title={el.title}
+                      dir={`${index % 2 ? "left" : "right"}`}
+                    />
+                  </div>
+                  <div className="w-1/2  aspect-square border border-[#121212] border-b-0">
+                    <ImagePart
+                      image={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${el.image}`}
+                    />
+                  </div>
                 </div>
-                <div className="w-1/2 border border-[#121212] border-b-0">
-                  <ImagePart
-                    image={`${import.meta.env.VITE_PUBLIC_API_BASE_URL}${
-                      el.image
-                    }`}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
     </div>

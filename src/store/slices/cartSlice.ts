@@ -5,53 +5,7 @@ type CartStateType = {
 };
 
 const initialState: CartStateType = {
-  carts: [
-    {
-      _id: "cart_1",
-      user_id: "user_123",
-      discount: 10,
-      status: "active",
-      totalAmount: 100,
-      products: ["prod_1", "prod_2"],
-      createdAt: `new Date("2024-11-01")`,
-    },
-    {
-      _id: "cart_2",
-      user_id: "user_456",
-      discount: 15,
-      status: "complete",
-      totalAmount: 200,
-      products: ["prod_3"],
-      createdAt: `new Date("2024-11-10")`,
-    },
-    {
-      _id: "cart_3",
-      user_id: "user_789",
-      discount: 5,
-      status: "active",
-      totalAmount: 150,
-      products: ["prod_1", "prod_3"],
-      createdAt: `new Date("2024-11-20")`,
-    },
-    {
-      _id: "cart_4",
-      user_id: "user_101",
-      discount: 20,
-      status: "complete",
-      totalAmount: 300,
-      products: ["prod_2"],
-      createdAt: `new Date("2024-11-25")`,
-    },
-    {
-      _id: "cart_5",
-      user_id: "user_202",
-      discount: 0,
-      status: "active",
-      totalAmount: 50,
-      products: [],
-      createdAt: `new Date("2024-11-28")`,
-    },
-  ],
+  carts: [],
 };
 
 export const cartSlice = createSlice({
@@ -64,6 +18,7 @@ export const cartSlice = createSlice({
     ) => {
       const newCart: Cart = {
         _id: crypto.randomUUID(),
+        //@ts-expect-error date type conflict
         createdAt: `${new Date()}`,
         ...action.payload,
       };

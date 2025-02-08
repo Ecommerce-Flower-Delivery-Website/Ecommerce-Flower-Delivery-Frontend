@@ -5,7 +5,7 @@ import { IoMdClose, IoMdMenu } from "react-icons/io";
 import { PiTelegramLogo } from "react-icons/pi";
 import { RiShoppingBagLine } from "react-icons/ri";
 import { SlSocialFacebook, SlSocialTwitter } from "react-icons/sl";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useReduxSelector } from "../../../store/store";
 import { EnumsDialogShow, EnumsSearchParams } from "../../../types/global";
 import CartModal from "./CartModal";
@@ -14,7 +14,6 @@ const Navbar = () => {
   const [navMenu, setNavMenu] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useReduxSelector((state) => state.auth);
-  console.log("user", user);
   const [, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -27,38 +26,41 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user")
+    localStorage.removeItem("user");
     window.location.reload();
   };
 
   return (
     <>
-      <div className="border sticky top-0 z-40 bg-white border-textPrimaryColor flex justify-between items-center">
-        <div className="lg:w-1/4 ">
+      <div className="border sticky h-[81px] top-0 z-40 bg-white divide-x divide-textPrimaryColor  border-textPrimaryColor flex justify-between items-center">
+        <div className="lg:w-1/4 h-full flex justify-center items-center ">
           <button
             onClick={() => setNavMenu(!navMenu)}
-            className="lg:hidden inline-block p-3 md:p-4 border-r border-textPrimaryColor hover:bg-gray-800 hover:text-white"
+            className="lg:hidden inline-block p-3 md:p-4 h-full hover:bg-gray-800 hover:text-white border-r border-textPrimaryColor"
           >
             <IoMdMenu size={"24"} />
           </button>
-          <button className="hidden lg:inline-block w-1/2 h-[81px] text-center border-r border-textPrimaryColor font-medium text-base ">
+          <button className="hidden lg:inline-block border-r border-textPrimaryColor w-1/2 h-full text-center  font-medium text-base ">
             Shop
           </button>
-          <button className="hidden lg:inline-block w-1/2 h-[81px] text-center border-r border-textPrimaryColor font-medium text-base ">
+          <Link
+            to="/contact"
+            className="hidden  border-r border-textPrimaryColor  lg:flex justify-center items-center w-1/2 h-full text-center  font-medium text-base "
+          >
             Contact
-          </button>
+          </Link>
         </div>
-        <div className="lg:w-1/4 ">
+        <div className="lg:w-1/4 h-full   flex justify-center items-center divide-x divide-textPrimaryColor  ">
           {localStorage.getItem("token") ? (
             <button
-              className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+              className=" lg:inline-block lg:w-1/2  h-full text-center  font-medium text-base "
               onClick={handleLogout}
             >
               Sign out
             </button>
           ) : (
             <button
-              className="hidden lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+              className=" lg:inline-block whitespace-nowrap lg:w-1/2 px-4 h-full text-center  font-medium text-base "
               onClick={() => {
                 setSearchParams((prevParams) => {
                   prevParams.set(
@@ -75,14 +77,14 @@ const Navbar = () => {
           <button
             onClick={() => setIsOpen(true)}
             disabled={!user}
-            className="hidden disabled:opacity-50 disabled:pointer-events-none lg:inline-block w-1/2 h-[81px] text-center border-l border-textPrimaryColor font-medium text-base "
+            className="hidden disabled:opacity-50 flex-1 disabled:pointer-events-none lg:inline-block  h-full text-center  font-medium text-base "
           >
             Cart
           </button>
           <button
             disabled={!user}
             onClick={() => setIsOpen(true)}
-            className="lg:hidden disabled:opacity-50 disabled:pointer-events-none inline-block p-3 md:p-4 border-l border-textPrimaryColor hover:bg-gray-800 hover:text-white"
+            className="lg:hidden disabled:opacity-50 flex-1 h-full disabled:pointer-events-none inline-block p-3 md:p-4  hover:bg-gray-800 hover:text-white"
           >
             <RiShoppingBagLine size={"24"} />
           </button>
@@ -133,18 +135,22 @@ const Navbar = () => {
             >
               Service
             </button>
-            <button
-              className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
-              style={{ fontSize: "21px" }}
-            >
-              Contact
-            </button>
-            <button
-              className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
-              style={{ fontSize: "21px" }}
-            >
-              About us
-            </button>
+            <Link to="/contact">
+              <button
+                className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
+                style={{ fontSize: "21px" }}
+              >
+                Contact
+              </button>
+            </Link>
+            <Link to="/about-us">
+              <button
+                className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
+                style={{ fontSize: "21px" }}
+              >
+                About us
+              </button>
+            </Link>
             <div className="w-full flex flex-col p-6 border-b border-textPrimaryColor">
               <a href="" className="mb-4 font-medium">
                 Shipping & returns

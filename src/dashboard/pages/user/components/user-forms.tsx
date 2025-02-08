@@ -14,7 +14,11 @@ import {
 } from "../../../components/dialog";
 import { ErrorMessage } from "../../../components/error-message";
 import { Input } from "../../../components/input";
-import { deleteUser, TUserFromBackend, updateUser } from "../../../../store/slices/userSlice";
+import {
+  deleteUser,
+  TUserFromBackend,
+  updateUser,
+} from "../../../../store/slices/userSlice";
 import { useReduxDispatch } from "../../../../store/store";
 type CreateUserFormType = z.infer<typeof validateSchemas.createUser>;
 
