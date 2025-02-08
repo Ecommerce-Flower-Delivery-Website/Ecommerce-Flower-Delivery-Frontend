@@ -93,7 +93,7 @@ export const loginUser = createAsyncThunk(
       console.log(res, "resresresre");
       toast.success(
         `login successfully ${
-          res.data.data?.token ? "" : "sent the verfication code to your email"
+          res.data.data?.token ? "" : "sent the verification code to your email"
         }`
       );
       return res.data;

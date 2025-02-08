@@ -144,12 +144,14 @@ const Navbar = () => {
                 Contact
               </button>
             </Link>
-            <button
-              className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
-              style={{ fontSize: "21px" }}
-            >
-              About us
-            </button>
+            <Link to="/about-us">
+              <button
+                className="w-full text-start p-6 font-medium border-b border-textPrimaryColor"
+                style={{ fontSize: "21px" }}
+              >
+                About us
+              </button>
+            </Link>
             <div className="w-full flex flex-col p-6 border-b border-textPrimaryColor">
               <a href="" className="mb-4 font-medium">
                 Shipping & returns
