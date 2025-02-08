@@ -11,7 +11,6 @@ const EditProductsPage = () => {
   const dispatch = useReduxDispatch();
   const { product, loading } = useReduxSelector((state) => state.product);
   const { categories } = useReduxSelector((state) => state.category);
-  console.log(id);
   const file = useRef<HTMLInputElement | null>(null);
   const [previewImage, setpreviewImage] = useState<string>("");
   // const [loading, setloading] = useState(false);
@@ -39,7 +38,6 @@ const EditProductsPage = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(title, description, stock, price, image);
     const formData = new FormData();
     if (title) {
       formData.append("title", title);
@@ -75,7 +73,6 @@ const EditProductsPage = () => {
   useEffect(() => {
     dispatch(getProduct(id)).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
-        console.log(product);
         settitle(product.title);
         setdescription(product.description);
         setstock(product.stock);
@@ -92,12 +89,11 @@ const EditProductsPage = () => {
   useEffect(() => {
     dispatch(getCategories({})).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
-        console.log(categories);
+        // console.log(categories);
       }
     });
   }, []);
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value);
     setCategoryId(event.target.value);
   };
 

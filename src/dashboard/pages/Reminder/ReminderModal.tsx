@@ -17,7 +17,6 @@ const ReminderModal: React.FC<DeleteModalProps> = ({ onClose }) => {
   const dispatch = useReduxDispatch();
 
   const onSend = (): void => {
-    console.log("Sending reminder", festivalName, festivalDate, subject, text);
     // const data = {
     //   festivalName,
     //   festivalDate,

@@ -41,14 +41,13 @@ const AddProductsPage = () => {
   useEffect(() => {
     dispatch(getCategories({})).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
-        console.log(categories);
+        // console.log(categories);
       }
     });
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(categoryId);
     setLoadingProducts(true);
     const formData = new FormData();
     formData.append("title", title);
@@ -69,7 +68,6 @@ const AddProductsPage = () => {
     });
   };
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value);
     setCategoryId(event.target.value);
   };
 

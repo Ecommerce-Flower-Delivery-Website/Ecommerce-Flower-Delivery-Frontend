@@ -14,7 +14,6 @@ const Navbar = () => {
   const [navMenu, setNavMenu] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useReduxSelector((state) => state.auth);
-  console.log("user", user);
   const [, setSearchParams] = useSearchParams();
 
   useEffect(() => {

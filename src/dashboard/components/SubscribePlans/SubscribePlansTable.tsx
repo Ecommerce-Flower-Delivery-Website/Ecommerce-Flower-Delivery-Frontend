@@ -60,7 +60,6 @@ import { deleteSubsciblePlan } from "../../../store/slices/subscribePlansSlice";
      };
   
     const handleRowClick = (rowData: (typeof subscribePlansData)[0]) => {
-      console.log("Row clicked:", rowData);
       naviagte(`/dashboard/subscribe-plans/${rowData._id}`);
     };
   

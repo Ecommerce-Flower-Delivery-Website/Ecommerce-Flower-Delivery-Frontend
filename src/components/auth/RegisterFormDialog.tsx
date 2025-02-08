@@ -42,7 +42,6 @@ const RegisterFormDialog = ({
 
   const onSubmit = async (data: CreateUserFormType) => {
     const res = await dispatch(signUpUser(data));
-    console.log(res, "Register");
 
     if (res.meta.requestStatus === "fulfilled") {
       if (res.payload?.data?.user?.isAccountVerified === false) {
@@ -52,7 +51,6 @@ const RegisterFormDialog = ({
         });
       }
     }
-    console.log(res, "Register");
   };
 
   return (

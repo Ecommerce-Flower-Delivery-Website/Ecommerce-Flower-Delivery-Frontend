@@ -72,7 +72,6 @@ export const signUpUser = createAsyncThunk(
       toast.success(
         "Signed up successfully , Verification code was sent to your email"
       );
-      console.log(res, "rrrRegister");
 
       return res.data;
     } catch (error) {
@@ -90,7 +89,6 @@ export const loginUser = createAsyncThunk(
         throw new Error(result.error.errors[0].message);
       }
       const res = await api.post("/auth/login", result.data);
-      console.log(res, "resresresre");
       toast.success(
         `login successfully ${
           res.data.data?.token ? "" : "sent the verification code to your email"
@@ -107,7 +105,6 @@ export const loginAdmin = createAsyncThunk(
   "auth/loginAdmin",
   async (values: LoginFormType, { rejectWithValue }) => {
     try {
-      console.log(values);
       const result = await validateSchemas.login.safeParseAsync(values);
       if (!result.success) {
         throw new Error(result.error.errors[0].message);

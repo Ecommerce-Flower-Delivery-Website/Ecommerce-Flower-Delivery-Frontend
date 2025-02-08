@@ -14,7 +14,6 @@ const Footer = () => {
   const user = useReduxSelector((state) => state.auth.user);
 
   const isReminder = user ? user.isReminder : false;
-  console.log(isReminder);
   const dispatch = useReduxDispatch();
   const handleOnReminderClick = () => {
     dispatch(addReminder());

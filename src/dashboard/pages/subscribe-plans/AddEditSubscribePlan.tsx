@@ -35,7 +35,6 @@ const AddEditSubscribePlan = () => {
     const oldDataSubscribe = subscribePlansData?.subscribePlans.find(
       (item) => item._id === id
     );
-    console.log(oldDataSubscribe, "subscribePlansData");
 
     if (oldDataSubscribe) {
       setIsFreeDelivery(oldDataSubscribe.isFreeDelivery);

@@ -70,7 +70,7 @@ const ProductsTable = () => {
   useEffect(() => {
     dispatch(getProducts({ page: 1, limit: rowsPerPage })).then((result) => {
       if (result.meta.requestStatus === "fulfilled") {
-        console.log(totalPages);
+        // console.log(totalPages);
       }
     });
   }, [dispatch, rowsPerPage, totalPages]);

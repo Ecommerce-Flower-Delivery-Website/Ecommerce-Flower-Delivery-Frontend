@@ -149,7 +149,6 @@ export const getCategory = createAsyncThunk(
     try {
       const response = await api.get(`/category/${id}`);
       if (response.status === 201 || response.status === 200) {
-        console.log(response.data.data);
         return response.data.data;
       }
     } catch (error) {

@@ -20,12 +20,8 @@ const ShowRemindersPage = () => {
     setshowModal(false);
   };
   useEffect(() => {
-    dispatch(getReminders()).then((result) => {
-      if (result.meta.requestStatus === "fulfilled") {
-        console.log(reminders);
-      }
-    });
-  }, [dispatch, reminders]);
+    dispatch(getReminders());
+  }, [dispatch]);
   return (
     <div>
       {loading ? (
