@@ -159,7 +159,7 @@ export const ContactsPage: React.FC = () => {
   const handleToggleChecked = async (id: number) => {
     try {
       setIsUpdating(id);
-      const token = localStorage.getItem("token");
+      const token = JSON.parse(localStorage.getItem("token") || "null");
       if (!token) {
         throw new Error("Authentication token not found.");
       }
@@ -195,7 +195,7 @@ export const ContactsPage: React.FC = () => {
   const handleDeleteContact = async (id: number) => {
     try {
       setIsDeleting(id);
-      const token = localStorage.getItem("token");
+      const token = JSON.parse(localStorage.getItem("token") || "null");
       if (!token) {
         throw new Error("Authentication token not found.");
       }
