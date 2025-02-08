@@ -32,7 +32,7 @@ const removeFromLocalStorage = (key: string) => {
 };
 
 const initialState: AuthState = {
-  token: localStorage.getItem("token"),
+  token: loadFromLocalStorage("token"),
   user: loadFromLocalStorage("user"),
   isPending: false,
   isPendingResend: false,
@@ -239,8 +239,8 @@ export const authSlice = createSlice({
         state.isPending = false;
         state.token = action.payload.data?.token;
         state.user = action.payload.data.user;
-        localStorage.setItem("token", action.payload.data?.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.data.user));
+        saveToLocalStorage("token", action.payload.data?.token);
+        saveToLocalStorage("user", action.payload.data.user);
       })
       .addCase(loginAdmin.rejected, (state, action) => {
         state.isPending = false;
@@ -267,8 +267,8 @@ export const authSlice = createSlice({
         state.isPending = false;
         state.token = action.payload.data.token;
         state.user = action.payload.data.user;
-        localStorage.setItem("token", action.payload.data.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.data.user));
+        saveToLocalStorage("token", action.payload.data.token);
+        saveToLocalStorage("user", action.payload.data.user);
       })
       .addCase(compareVeificationCode.rejected, (state, action) => {
         state.isPending = false;
